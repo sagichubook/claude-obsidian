@@ -1,0 +1,219 @@
+# =============================================================================
+# DRAFT PLACEHOLDER — NOT THE WIRE AUTHORITY (yet)
+#
+# Added 2026-07-09 to resolve blind spot BS-17a ("OpenAPI declared canonical
+# but does not exist in the repo"). Best practice is contract-first: this file
+# MOVES TO THE API SERVICE REPO at build start, gets Spectral lint + contract
+# tests in CI, and only then becomes the /v1/* wire authority (pinned v1.0.0).
+# Until that happens the prose contracts in 30-api/*.md remain canonical and
+# this skeleton must not be consumed by integrators.
+#
+# Scope: path inventory + auth + pagination limits from application-api.md and
+# public-data-api.md. Schemas are intentionally stubs (one-line descriptions);
+# full DTO shapes live in the prose docs until build.
+# =============================================================================
+openapi: 3.1.0
+info:
+  title: Dux API (draft skeleton)
+  version: 0.1.0-draft
+  description: |
+    **DRAFT — placeholder, not wire authority.** Three planes (see api-overview.md,
+    "do not conflate"): application API (Bearer JWT, `aud=api.dux.io`), management
+    API (`/v1/admin/*`, `/v1/agents/*`, platform-admin JWT, Gate-1 internal), and
+    public data API (`/v1/*`, Bearer API key `agt_…`). Rate limits (decisions-log D-6):
+    application plane 1,000/5,000/10,000 req/min by tier; public data plane
+    60/300/negotiated req/min. Error envelope uses `DuxErrorCode` (see
+    application-api.md §Error handling). Corrected 2026-07-12: this file previously
+    said "two planes" and omitted the management plane's paths/auth scheme entirely.
+servers:
+  - url: https://api.dux.io
+security:
+  - bearerJwt: []
+tags:
+  - name: dashboard
+  - name: research
+  - name: assessments
+  - name: cves
+  - name: connectors
+  - name: tenants
+  - name: chat
+  - name: admin
+  - name: management
+  - name: public-data
+paths:
+  # ---- Application plane (Phase 1 / Gate 1) --------------------------------
+  /dashboard/home:
+    get: { tags: [dashboard], summary: Dashboard home (DashboardHomeDto), responses: { "200": { description: DashboardHomeDto } } }
+  /dashboard/home/stream:
+    get: { tags: [dashboard], summary: SSE queue_update stream (<5 s), responses: { "200": { description: text/event-stream } } }
+  /research/dashboard:
+    get: { tags: [research], summary: Research queue (ResearchDashboardDto; view_mode by_cve|by_asset|by_instance), responses: { "200": { description: ResearchDashboardDto } } }
+  /research/dashboard/stream:
+    get: { tags: [research], summary: SSE queue_row_update patch (<1 s), responses: { "200": { description: text/event-stream } } }
+  /research/queue:
+    post:
+      tags: [research]
+      summary: Enqueue investigation (idempotent via AssessmentDeduplicationService)
+      requestBody: { content: { application/json: { schema: { $ref: "#/components/schemas/ResearchQueueRequest" } } } }
+      responses:
+        "202": { description: "{assessment_id, status: queued|deduplicated, queue_position}" }
+        "409": { description: "AssessmentDedupConflict — the rule distinguishing this from the soft 202/deduplicated response above is not yet stated (Engineering's to specify)" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /research/schedule:
+    get: { tags: [research], summary: Scheduled re-assessment config (US-021/FR-025), responses: { "200": { description: schedule } } }
+    post: { tags: [research], summary: Configure scheduled sweeps (default 24 h), responses: { "201": { description: created } } }
+  /assessments/{id}:
+    get:
+      tags: [assessments]
+      summary: AssessmentDto (404 on cross-tenant — never 403)
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { "200": { description: AssessmentDto }, "404": { description: not found / cross-tenant } }
+  /assessments/{id}/trace:
+    get:
+      tags: [assessments]
+      summary: "AssessmentTraceDto (reasoning steps, code artifact, execution_results — populated at Gate 1)"
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { "200": { description: AssessmentTraceDto } }
+  /assessments/{id}/replay:
+    get:
+      tags: [assessments]
+      summary: "AssessmentReplayDto — read-time reconstruction of an assessment's reasoning/tool-calls/memory-access from its trace_id (application-api.md §2; added 2026-07-21 path-inventory sync)"
+      parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }]
+      responses: { "200": { description: AssessmentReplayDto }, "404": { description: not found / cross-tenant } }
+  /cves/{id}/detail:
+    get:
+      tags: [cves]
+      summary: "CveDetailDto (risk_groups, flow_bar, factor_cards, assets, attack_paths)"
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, pattern: "^CVE-\\d{4}-\\d{4,}$" } }
+        - { name: projection, in: query, schema: { type: string, enum: [exposure, protection, action_cards], default: exposure } }
+      responses: { "200": { description: CveDetailDto }, "404": { description: not found / cross-tenant } }
+  /assets/{id}/context:
+    get: { tags: [cves], summary: "AssetContextDto (US-002/FR-020, Gate 1, resolves OI-16 — full field shape in application-api.md §2)", parameters: [{ name: id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: AssetContextDto } } }
+  /mitigations:
+    post:
+      tags: [research]
+      summary: "Mitigation execution — unattended by default; re-gated 2026-07-13 (US-004; VendorActionGate + T2/T3 tier classification)"
+      parameters: [{ name: Idempotency-Key, in: header, required: true, schema: { type: string }, description: "Added 2026-07-21 — a replayed key returns the original 202/execution record rather than re-executing a real vendor-side action" }]
+      responses: { "202": { description: "accepted; executes via VendorActionGate — HITL only on anomaly escalation" }, "429": { $ref: "#/components/responses/RateLimited" } }
+  /fast-actions:
+    post:
+      tags: [research]
+      summary: "Fast Actions — one-click lightweight mitigation, unattended by default; re-gated 2026-07-13 (US-016/FR-011; QuickMitigationWorkflow)"
+      parameters: [{ name: Idempotency-Key, in: header, required: true, schema: { type: string }, description: "Added 2026-07-21 — see /mitigations" }]
+      responses: { "202": { description: "accepted; executes via VendorActionGate — audit-logged, kill-switch-covered (KS-L2 blocks enqueue)" }, "429": { $ref: "#/components/responses/RateLimited" } }
+  /remediation-tickets:
+    post:
+      tags: [research]
+      summary: "Remediation ticket create + route — unattended by default (US-018/FR-013; added 2026-07-21 path-inventory sync, was previously prose-only with no method/path)"
+      parameters: [{ name: Idempotency-Key, in: header, required: true, schema: { type: string }, description: "See /mitigations" }]
+      responses: { "202": { description: "{ticket_id, status: routed, canonical_action_id: \"ticket.create_remediation\"}" }, "429": { $ref: "#/components/responses/RateLimited" } }
+  /controls/refinements:
+    get: { tags: [cves], summary: Control refinement recommendations (US-005/FR-019; promoted Gate 1), responses: { "200": { description: refinements } } }
+  /connectors/aws/sync:
+    post: { tags: [connectors], summary: Trigger AWS sync, responses: { "202": { description: "{sync_id, status, assets_ingested, started_at}" }, "429": { $ref: "#/components/responses/RateLimited" } } }
+  /connectors/csv/upload:
+    post: { tags: [connectors], summary: "CSV fallback (50 K rows, UTF-8, unique (tenant_id, hostname))", responses: { "201": { description: ingested }, "422": { description: missing_column | invalid_os_family | duplicate_hostname }, "429": { $ref: "#/components/responses/RateLimited" } } }
+  /tenants/{id}/export:
+    post: { tags: [tenants], summary: Export bundle (Parquet default / JSON), parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }], responses: { "202": { description: export started } } }
+  /tenants/{id}:
+    delete: { tags: [tenants], summary: "GDPR deletion (GDPRDeletionWorkflow; 30-day read-only window, 90-day purge)", parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }], responses: { "202": { description: deletion scheduled } } }
+  /vulnerability-instances/{id}/acknowledgments:
+    post:
+      tags: [cves]
+      summary: "Acknowledge instance ({reason, expires_at?})"
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses: { "201": { description: "{acknowledgment_id, is_acknowledged: true, expires_at?}" } }
+  /vulnerability-instances/{id}/acknowledgments/{ack_id}:
+    delete: { tags: [cves], summary: "Revoke acknowledgment (application-api §Acknowledgment; renamed to the plural collection 2026-07-21, matching the acknowledgment_id field it returns)", parameters: [{ name: id, in: path, required: true, schema: { type: string } }, { name: ack_id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: revoked } } }
+  /chat/sessions/{id}/stream:
+    get: { tags: [chat], summary: "SSE chat events (query, response, citation, processing_step, prioritization_cards, request_research_ack, hitl_request)", parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }], responses: { "200": { description: text/event-stream } } }
+  /chat/sessions/{id}/hitl-response:
+    post: { tags: [chat], summary: "HITL approve/deny — anomaly-escalation path only since 2026-07-13 (rollbackProcedure URL required in payload)", parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }], responses: { "200": { description: recorded } } }
+  /webhooks/configure:
+    post: { tags: [admin], summary: Outbound webhook config (HMAC-SHA256 + Idempotency-Key delivery), responses: { "201": { description: configured } } }
+  # ---- Management plane /v1/admin, /v1/agents (Gate-1 internal; platform-admin JWT) ----
+  /v1/admin/kill-switch:
+    post:
+      tags: [management]
+      security: [{ platformAdminJwt: [] }]
+      summary: "Activate kill switch {level: L1|L2|L3|L4, tenant_id?, session_id?, reason} — propagation <5 s p99"
+      responses: { "201": { description: activated } }
+  /v1/admin/kill-switch/{id}:
+    delete: { tags: [management], security: [{ platformAdminJwt: [] }], summary: Deactivate, parameters: [{ name: id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: deactivated } } }
+  /v1/agents:
+    get: { tags: [management], security: [{ platformAdminJwt: [] }], summary: "List registered Dux Agent definitions — AgentDefinition[] (agent_id, tenant_id, identity_ref, agent_type, credential_id, status — agent-identity.md §2; only the config object's shape remains open)", responses: { "200": { description: "AgentDefinition[]" } } }
+    post: { tags: [management], security: [{ platformAdminJwt: [] }], summary: "Provision agent definition — request {identity_ref, agent_type, config}, response AgentDefinition (agent-identity.md §3; no API key issued by this call — agents authenticate via per-agent session JWT, D-46)", responses: { "201": { description: "AgentDefinition" } } }
+  /v1/agents/{id}/autonomy-request:
+    post: { tags: [management], security: [{ platformAdminJwt: [] }], summary: "Request max_autonomy: autonomous for an agent — requires tenant-admin approval (agent-identity.md; added 2026-07-21 path-inventory sync)", parameters: [{ name: id, in: path, required: true, schema: { type: string, format: uuid } }], responses: { "200": { description: "approved — AIBOM and agent record updated" } } }
+  /resident-agents/{id}/heartbeat:
+    post: { tags: [management], summary: "dux-resident-agent heartbeat — mTLS preferred, or a signed JWT with agent_id/tenant_id/nonce/exp<=60s (agent-identity.md, Gate 5; added 2026-07-21 path-inventory sync)", parameters: [{ name: id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: "acked; may carry halt: true to trip the kill switch" } } }
+  # ---- Public data plane /v1 (Seed trigger; API-key auth) ------------------
+  /v1/custom-metrics:
+    get:
+      tags: [public-data]
+      summary: Paginated custom metrics (FR-021)
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: size, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 10 } }
+        - { name: entity_type, in: query, schema: { $ref: "#/components/schemas/EntityType" } }
+      responses: { "200": { description: "PaginatedResponse[CustomMetricItem]" }, "429": { $ref: "#/components/responses/RateLimited" } }
+  /v1/custom-metrics/{id}:
+    get: { tags: [public-data], summary: CustomMetricItem, security: [{ apiKey: [] }], parameters: [{ name: id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: CustomMetricItem } } }
+  /v1/custom-metrics/{id}/data:
+    get: { tags: [public-data], summary: "CustomMetricDataResponse (timestamp, group_by_values, value)", security: [{ apiKey: [] }], parameters: [{ name: id, in: path, required: true, schema: { type: string } }], responses: { "200": { description: CustomMetricDataResponse } } }
+  /v1/vulnerability-instances/{cve_id}:
+    get:
+      tags: [public-data]
+      summary: Cursor-paginated instances (FR-022; expand=asset only; confidence_score never exposed)
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: cve_id, in: path, required: true, schema: { type: string, pattern: "^CVE-\\d{4}-\\d{4,}$" } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 5000, default: 3000 } }
+        - { name: expand, in: query, schema: { type: string, enum: [asset] } }
+      responses: { "200": { description: "CursorPaginatedResponse[VulnerabilityInstanceV1Response]" }, "429": { $ref: "#/components/responses/RateLimited" } }
+  /v1/cve-research:
+    post:
+      tags: [public-data]
+      summary: "Batch research request (1–50 CVE ids) → CveResearchV1Item[] (status backlog|completed); async-enqueue, matching POST /research/queue's 202 semantics (changed from 201, 2026-07-21)"
+      security: [{ apiKey: [] }]
+      responses: { "202": { description: "CveResearchV1Item[]" } }
+components:
+  securitySchemes:
+    bearerJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Application plane. aud=api.dux.io; wrong aud → 401. Access 60 min."
+    platformAdminJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Management plane (/v1/admin/*, /v1/agents/*). Distinct, higher-privilege scheme from bearerJwt — added 2026-07-12; kill-switch and agent-registry endpoints previously inherited the default application bearerJwt with no explicit scope."
+    apiKey:
+      type: http
+      scheme: bearer
+      description: "Public data plane. API key `agt_<prefix>_<secret>` (SHA-256 stored), data scopes."
+  responses:
+    RateLimited:
+      description: "429 — plane-specific limits (D-6): app 1,000/5,000/10,000 req/min; public 60/300/negotiated req/min. DuxErrorCode BUDGET_EXCEEDED for agent budgets."
+  schemas:
+    ResearchQueueRequest:
+      type: object
+      description: "Either cve_id (^CVE-\\d{4}-\\d{4,}$) or natural_language."
+      properties:
+        cve_id: { type: string, pattern: "^CVE-\\d{4}-\\d{4,}$" }
+        natural_language: { type: string }
+    EntityType:
+      type: string
+      description: Closed set (taxonomy §2).
+      enum: [device, user, label, finding, cloud_compute, vulnerability_instance, cve, mitigation]
+    DuxError:
+      type: object
+      description: "Shared error envelope — DuxErrorCode: AGENT_TIMEOUT 504, CONTEXT_EXHAUSTED 422, BUDGET_EXCEEDED 429, GOVERNANCE_BLOCKED 403, INSUFFICIENT_DATA 422 (asset_gap|intel_gap|context_limit), VALIDATION_FAILED 422 (details: [{field, message}] — the single 422 shape corpus-wide, added 2026-07-21, retiring the orphaned HTTPValidationError name). Full copy rules: taxonomy §7."
+      properties:
+        code: { type: string }
+        message: { type: string }
+        reason: { type: string }
