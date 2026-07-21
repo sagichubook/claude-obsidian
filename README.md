@@ -271,14 +271,14 @@ Switching modes does NOT auto-migrate existing files. Full guide: [`docs/methodo
 
 These describe **what** your vault is for. They compose with Methodology Modes (which describe **how** it is organized).
 
-| Use case | When to use |
-|----------|-------------|
-| **A: Website** | Sitemap, content audit, SEO wiki |
-| **B: GitHub** | Codebase map, architecture wiki |
-| **C: Business** | Project wiki, competitive intelligence |
-| **D: Personal** | Second brain, goals, journal synthesis |
-| **E: Research** | Papers, concepts, thesis |
-| **F: Book/Course** | Chapter tracker, course notes |
+| Use case           | When to use                            |
+| ------------------ | -------------------------------------- |
+| **A: Website**     | Sitemap, content audit, SEO wiki       |
+| **B: GitHub**      | Codebase map, architecture wiki        |
+| **C: Business**    | Project wiki, competitive intelligence |
+| **D: Personal**    | Second brain, goals, journal synthesis |
+| **E: Research**    | Papers, concepts, thesis               |
+| **F: Book/Course** | Chapter tracker, course notes          |
 
 Use cases can be combined. A Business + Research vault organized in PARA is a valid composition.
 

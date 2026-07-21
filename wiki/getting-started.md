@@ -9,9 +9,7 @@ status: evergreen
 related:
   - "[[index]]"
   - "[[overview]]"
-  - "[[LLM Wiki Pattern]]"
-  - "[[Wiki vs RAG]]"
-  - "[[Wiki Map]]"
+  - "[[hot]]"
 ---
 
 # Getting Started with claude-obsidian
@@ -88,13 +86,11 @@ After 3–5 ingests, the graph starts to look like a real knowledge network. Cro
 
 ## Navigate the Vault
 
-- **[[Wiki Map]]** — visual Fibonacci graph of all wiki pages
 - **[[index]]** — master catalog, all pages by type
 - **[[overview]]** — executive summary of vault contents
-- **[[LLM Wiki Pattern]]** — the pattern this vault is built on
-- **[[Wiki vs RAG]]** — why a wiki beats RAG at human scale
+- **[[hot]]** — recent session context
 - **[[dashboard]]** — live Dataview queries (requires Dataview plugin)
 
 ---
 
-*Built on the [LLM Wiki pattern](https://github.com/karpathy) by Andrej Karpathy.*
+*Dux Security knowledge base — built on the [LLM Wiki pattern](https://github.com/karpathy).* 
