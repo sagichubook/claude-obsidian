@@ -55,6 +55,10 @@ Provisioning: idempotent slug, validate AWS role (failure -> `status=aws_role_fa
 
 `DuxShadowAI` (`undeclared_count > 0`) triggers: page CTO within 5 min -> AI Safety Lead halts within 60s -> L2 kill switch -> export session evidence -> enumerate undeclared agents against the registry -> **block the deploy pipeline until `undeclared_count: 0`** -> register and baseline.
 
+### NVD sync stale (INFRA, P2)
+
+Trigger: `NVD_SYNC_WARN` above 2h; `NVD_SYNC_STALE` above 4h. Steps: check the API key in the secrets store -> read ingestion logs -> verify 429 backoff -> verify the cache (48h TTL, sha256) -> enable the intel fallback -> `admin:nvd-resume --chunk-days 120` -> clears once feed age drops below 7,200s. Notify the customer only if the outage exceeds 24h. **The AI safety check is omitted by design here — no agent is involved**; impact framing is platform-trust erosion rather than an agentic-safety concern.
+
 ### Seed-only extensions
 
 Agent quota exhaustion: hard-cap 1h after 100% alert, L2 at 120% — the governance-kernel cost cap fails closed, independently of Stripe meter reconciliation. Neo4j reconciliation failure: divergence above 0.1% sets `neo4j_graph` flag to 0% (CTE fallback), 7-day shadow period before retrying. Chaos Friday: first Friday monthly in staging, gates that week's production deploy. Billing reconciliation drift: Stripe-vs-platform delta above 5% triggers `admin:quota-hold`, requires 3 clean daily runs to clear.

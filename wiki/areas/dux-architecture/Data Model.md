@@ -26,7 +26,7 @@ Dux uses **shared database, shared schema with row-level security** (ADR-002), n
 
 Global entities (no `tenant_id`): `CVE`, `EPSS_SCORE`, `CALIBRATION_RECORD`, `AGENT_DEFINITION`. Everything else is tenant-scoped.
 
-### Core entities (selected)
+### Core entities (full list)
 
 | Entity | Notes |
 |---|---|
@@ -38,6 +38,18 @@ Global entities (no `tenant_id`): `CVE`, `EPSS_SCORE`, `CALIBRATION_RECORD`, `AG
 | `EXPLOITABILITY_ASSESSMENT` | `status` enum: `queued`/`researching`/`evaluating`/`complete`/`failed`; `confidence_score` (Platt-scaled); partial unique on `(tenant_id, finding_id) WHERE status IN (active states)` |
 | `AGENT_SESSION` | the KS-L1 kill-switch scope |
 | `MCP_TOOL_INVOCATION` | the PS-007 audit record: `tool_name`, `server_id`, `outcome`, `latency_ms` |
+| `ASSET_RELATIONSHIP` | `source_asset_id`, `target_asset_id`, `relationship_type`; unique on `(tenant_id, source, target, type)` |
+| `VULNERABILITY_INSTANCE` | `asset_id`, `cve_id`, `sources[]`, `exploitability_status`, `network_exposure`, `last_seen_at`, `external_uids` |
+| `VULNERABILITY_INSTANCE_ACKNOWLEDGMENT` | `reason`, `expires_at`, `revoked_at`; auto-expire job |
+| `CUSTOM_METRIC` | `display_name`, `entity_type`, `dql_filter`, `group_by[]`, `dashboard_id`, `ordinal` |
+| `ASSESSMENT_REASONING_STEP` | `step_order`, `step_type` (`reasoning`/`tool_result`/`conclusion`), `content`, `source_refs` |
+| `ATTACK_PATH` | `path_nodes` jsonb (normalizes to `ATTACK_PATH_NODE` at Gate 2 if the CTE degrades); `validated` |
+| `CONTROL`, `CONTROL_ASSET_MAPPING` | vendor, `control_type`/subtype, `settings`, `mapping_type` |
+| `CHAT_SESSION`/`CHAT_MESSAGE`/`CHAT_ACTION` | messages partitioned yearly; `token_count` for billing; `hitl_status` |
+| `USER_PREFERENCE` + `PREFERENCE_SCOPE` + `PREFERENCE_APPLICATION` | natural-language query, parsed scope, action, confidence, expiry |
+| `ASSESSMENT_STATE_TRANSITION` | `from_status`, `to_status`, `actor_id` |
+| `WEBHOOK_CONFIG` + `WEBHOOK_DEAD_LETTER` | `secret_ref` (Vault); DLQ payload and `attempt_count` |
+| `MITIGATION_STEP`, `OWNERSHIP_EVIDENCE` | Gate-2 entities |
 | `AUDIT_EVENT` | hash chain, monotonic `chain_seq` per tenant, genesis row `prev_hash = 'GENESIS'`; `chain_key` in Vault, rotated quarterly |
 | `LLM_USAGE_EVENT` | enforces the $25/hour per-tenant cap |
 | `CALIBRATION_RECORD` (global) | `platt_params`, `brier_score`, `ece` |

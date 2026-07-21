@@ -140,15 +140,24 @@ On request to keep reverifying, a fourth lens was applied: every backtick-wrappe
 | Auth hardening findings (refresh-token-family reuse detection, the pre-auth brute-force rate-limit backstop, the JWT force-revocation denylist) were absent from [[Multi-Tenancy]] | Medium | New "Auth hardening" subsection added |
 | The consolidated Prometheus metrics list backing the cost/safety dashboard was never assembled in one place in [[Observability & SLO]] | Low-medium | Added |
 
-**Diminishing returns became visible partway through this pass.** The first 5 files checked (the corpus's largest/densest, and where every prior gap had also been found) yielded 6 real gaps; the 6th file checked (`incident-runbooks.md`, 39 misses) yielded none — every miss there was an internal alert name or verification snippet whose substance was already correctly captured in prose. That is the expected shape of a lens reaching its detection ceiling, not proof the remaining 7 planned files are clean; they were not exhaustively checked this round.
+**Diminishing returns became visible partway through this pass.** The first 5 files checked (the corpus's largest/densest, and where every prior gap had also been found) yielded 6 real gaps; the 6th file checked (`incident-runbooks.md`, 39 misses) yielded none — every miss there was an internal alert name or verification snippet whose substance was already correctly captured in prose.
 
-**Running total after four passes: 17 real content gaps found, all fixed.**
+**Extension of the same pass (on request to keep verifying):** 6 more files were checked with the same backtick lens — `data-model.md`, `public-data-api.md`, `kill-switch-hitl.md`, `runbooks.md`, `architecture-overview.md`, `traceability-matrix.md` — completing all 12 files originally scoped for this lens. **2 more real gaps found:**
+
+| Gap | Materiality | Resolution |
+|---|---|---|
+| [[Data Model]]'s "Core entities" table covered roughly half the ERD's entities and was honestly labeled "(selected)" — the same self-disclosed-but-real gap pattern as the earlier TR-NFR table | Medium-high — 10+ entities (`VULNERABILITY_INSTANCE`, `CHAT_SESSION`/`MESSAGE`/`ACTION`, `USER_PREFERENCE` + 2 related tables, `ATTACK_PATH`, `CONTROL`, `WEBHOOK_DEAD_LETTER`, etc.) entirely absent | Table expanded to the full entity list |
+| An entire runbook (NVD sync stale, `NVD_SYNC_WARN`/`NVD_SYNC_STALE` triggers) was missing from [[Seed Operational Runbooks]] | Medium | Runbook added |
+
+The other 4 files checked in this extension (`public-data-api.md`, `kill-switch-hitl.md`, `architecture-overview.md`, `traceability-matrix.md`) came back clean — every flagged span was DTO field syntax, internal class names, or file-path references already covered conceptually. **All 12 of the originally-planned highest-risk files are now checked with this lens; 8 of 12 yielded at least one real fix.**
+
+**Running total after four passes: 19 real content gaps found, all fixed.**
 
 ## 10. Status
 
 - **Source files accounted for: 68/68 (100%)**
 - **Notes with no matching source file:** none — every new note in this ingest carries a non-empty `sources:` field or is explicitly a cross-cutting hub/canonical page with no single source (declared as such)
-- **Reconciliation gaps found across four passes: 17 material, all fixed** — see §6-§9 for the full list and materiality reasoning
+- **Reconciliation gaps found across four passes: 19 material, all fixed** — see §6-§9 for the full list and materiality reasoning
 - **Hundreds of additional "missing" flags** (IDs, dollar/percentage values, and backtick-wrapped code spans) were individually triaged and closed as non-issues — citation-only, intentional register-compression, superseded historical figures, or legitimate documentation-level paraphrase of implementation syntax. See [[validation-checklist]] for the file-by-file reasoning; not asserted in aggregate.
 - **Each of the four verification methods used caught gaps the previous methods missed, and the backtick pass showed its own detection ceiling within the same session (6 gaps in 5 files, then 0 in the 6th).** This is evidence of convergence, not proof of exhaustion — a corpus this size cannot be certified gap-free by sampling-based methods, only checked with progressively diminishing returns. No further claim of "zero gaps" is made anywhere in this document.
 - **Flagged (not fabricated) data gaps:** activation-experiment log (growth), support-ticket-category volumes (customer success), RICE scoring (product roadmap) — none exist in the source corpus; each is explicitly marked "source data needed" in its note rather than invented
