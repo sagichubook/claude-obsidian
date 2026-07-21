@@ -35,7 +35,7 @@ Every one of the 68 mirrored source files is cited in the `sources:` frontmatter
 
 | Domain | Files | Notes created | Coverage |
 |---|---|---|---|
-| `00-meta/` | 5 | [[Dux Decisions Log]], [[Dux Traceability Matrix]], [[Open Items Register]], [[Quick Reference Card]], + `vision-reference.md` via [[Dux, Inc.]]/[[Dux Agent]] | 5/5 |
+| `00-meta/` | 5 | [[Dux Decisions Log]], [[Dux Traceability Matrix]], [[Open Items Register]], [[Quick Reference Card]], + `vision-reference.md` via [[Dux, Inc.]] (verified: the note's legal-entity-name and hero-copy content matches the source archive) | 5/5 |
 | `10-product/` | 14 | [[Dux Product Overview]], [[Dux Taxonomy and Controlled Vocabulary]], [[Dux Catalogs — Registries of Record]], 11 feature notes | 14/14 |
 | `20-architecture/` | 6 | [[Architecture Overview]], [[Data Model]], [[Workflows & Agent Orchestration]], [[Multi-Tenancy]], [[Dux Architecture Decision Records]] (adr-index.md), architecture-diagrams.md distributed across 6 notes | 6/6 |
 | `30-api/` | 5 | [[API Overview]], [[Application API]], [[Public Data API]], [[Events & Webhooks]] (openapi.yaml folded into API Overview) | 5/5 |
