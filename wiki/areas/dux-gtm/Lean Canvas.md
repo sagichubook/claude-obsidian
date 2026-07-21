@@ -24,7 +24,7 @@ No new claims originate in this document — every box links out to the spec tha
 
 | Box | Tag | Content |
 |---|---|---|
-| Problem | [V]/[H] | Security teams drown in vulnerability noise (N=3 design-partner data); triage-vs-remediation time split is a hypothesis pending N>=5 validation |
+| Problem | [V]/[H] | Security teams drown in vulnerability noise (N=3 design-partner data); exploitation windows are collapsing — Mandiant M-Trends 2026 reports mean time-to-exploit at roughly -1 day (2024) worsening to roughly -7 days (2025), i.e. exploitation increasingly precedes patch availability. (A separate "32-day" CyberMindr figure sometimes paired with this stat is a different, non-Mandiant metric and is deliberately not conflated with it.) Triage-vs-remediation time split is a hypothesis pending N>=5 validation |
 | Customer segments | [V] | Primary user: security engineer. Buyer: CISO. Also AI Safety Lead (halt authority), DevOps/SRE (remediation owner) |
 | Unique value proposition | [V] | "Safety at Machine Speed" — evidence-backed action groups with a defensible reasoning chain, write path unattended by default |
 | Solution | [V] | Analyze -> Mitigate -> Remediate, live end to end at Gate 1, unattended by default; agents write and execute investigation code in microVM sandboxes |

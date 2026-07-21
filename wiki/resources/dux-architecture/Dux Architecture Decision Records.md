@@ -35,6 +35,8 @@ Twenty-one ADRs, five of them (ADR-006, 007, 010, 015, 017) revised three or mor
 | ADR-012 R3 | Vendor-action write path, **unattended by default at Gate 1** | Accepted (R3) |
 | ADR-015 R4 | **Self-hosted Firecracker on K8s is the Gate-1 default**; E2B retired | Accepted (R4) |
 | ADR-017 R3 | Multi-provider Claude inference: Bedrock → direct Anthropic → local vLLM | Accepted (R3) |
+| ADR-018 | Frontend design system: headless components (React Aria + Radix/shadcn) on a design-token source of truth | Accepted |
+| ADR-019 | Data visualization: headless charts (Visx) plus SVG, same token/accessibility discipline | Accepted |
 | ADR-020 R2 | Agentic RAG enabled: pgvector + Apache AGE, constrained decoding | Accepted (R2) |
 | ADR-021 | Remove Mastra and LangGraph.js; Temporal calls Bedrock Converse API directly | Accepted |
 
@@ -53,6 +55,10 @@ Full 21-ADR table: `.raw/dux/20-architecture/adr-index.md`.
 **ADR-020 R2 — Agentic RAG and graph retrieval.** Reverses ADR-020 R1/D-31's own rejection ("RAG hallucinates; security cannot") by removing the objection via **constrained decoding**: every retrieve/reason/decide step forced through schema-validated tool-use (Bedrock Converse API `toolConfig` pinned to a specific tool) — no free-text output anywhere in the loop. Vector store: Postgres pgvector+pgvectorscale until ~100M vectors. Graph store: Apache AGE, same CloudNativePG instance — a poisoned edge gates an unattended write (GraphRAG poisoning: >93% success at <0.05% corpus edit is the threat model being defended against).
 
 **ADR-021 — Remove Mastra and LangGraph.js.** Both are abstraction layers over capabilities the stack already owns outright (Temporal for durable execution, Bedrock Converse for tool use/structured output/streaming). `ExploitabilityAssessmentWorkflow` is a Temporal TypeScript workflow calling Bedrock Converse directly, S-LLM via `outputConfig.textFormat`, P-LLM via `toolConfig`. Message history lives in Postgres, never Temporal workflow state.
+
+**ADR-018 — Frontend design system (D-29).** Adopt a headless component layer on the existing design-token source of truth (stage-pill colors, risk-group/exposure-state icons, accessibility rules), and own the styling rather than adopting a full component library. **React Aria Components** for the data-dense surfaces (asset tables, up to 5,000-row instance lists, the queue) where WCAG 2.2 AA at 0 axe-core violations (TR-NFR-010) is a hard gate; **Radix/shadcn** elsewhere. The amber token is fixed at the token layer, since the taxonomy audit fails it at a 2.4:1 contrast ratio. Color-and-shape and SVG-not-emoji are enforced as CI lints; `aria-live` is required on the SSE streaming surfaces (H10). Rationale: headless owns the visual identity and gives the deepest available accessibility for the grid-heavy surfaces, where the 0-axe-core gate is at most risk — a full component library would trade the bespoke system for speed.
+
+**ADR-019 — Data visualization (D-30).** Headless charts plus SVG: **Visx** for the donut/trend/distribution charts; custom SVG for the single-hop attack path today; **Cytoscape.js or Sigma+graphology** once multi-hop attack-path traversal ships. A contrast-validated categorical palette encodes by color **and** a second channel — matching the eye/umbrella/tree risk-icon pattern already in use — plus a table/ARIA fallback per chart. Rationale: keeps charts on the same token system and accessibility discipline as the rest of the UI; a high-level charting library would impose a house style that fights the bespoke design system and the icon/shape accessibility rules from ADR-018.
 
 ## Diagram
 

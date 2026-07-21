@@ -77,11 +77,29 @@ Cross-checked a sample of high-stakes facts between source and note to confirm n
 
 No dropped metrics, decisions, names, or dates were found in this sample.
 
-## 6. Status
+## 6. Deeper verification pass (2026-07-21, post-report)
+
+The status below was originally reported as "0 reconciliation gaps" based on citation coverage (every source file appears in some note's `sources:` field) plus a 6-fact spot-check. When asked to confirm that claim rigorously, a stronger check was run: every enumerable ID in the two densest source files was extracted and grepped against the whole vault — 57 decision IDs (`decisions-log.md`) and 21 ADR IDs (`adr-index.md`), then extended to 31 FR IDs and 28 US IDs (`traceability-matrix.md`).
+
+**This found real gaps that citation coverage had missed** — decisions and features whose source file was correctly cited somewhere, but whose specific content never made it into synthesized prose:
+
+| Gap | Materiality | Resolution |
+|---|---|---|
+| ADR-018 (frontend design system: React Aria/Radix/shadcn) | High — a full architectural decision, absent everywhere | Added to [[Dux Architecture Decision Records]] and [[Architecture Overview]] |
+| ADR-019 (data visualization: Visx, Cytoscape.js/Sigma) | High — same | Added to [[Dux Architecture Decision Records]] and [[Architecture Overview]] |
+| Mandiant mean-time-to-exploit figures (M-Trends 2026: ~-1 day 2024, ~-7 days 2025) | Medium — existence was mentioned, specific numbers were dropped | Added to [[Lean Canvas]] Problem row |
+| US-025 Outcome Learning / FR-027 (deferred, post-Gate-3 candidate) | Low-medium — a draft, flagged feature | Added to [[Dux Portfolio]] |
+| US-027 Proactive Tool Discovery / FR-029 (Gate-2 candidate, 44h costed) | Low-medium — a real, costed, near-term feature | Added to [[Dux Portfolio]] |
+
+A further set of "uncited" IDs (D-27, D-37, D-41, D-46, D-52, D-53, ADR-014, FR-007/015/017/021/022/023/024/028/031) were checked individually and found to be **citation-only gaps** — their substance is already present in the relevant note's prose, just not tagged with the specific ID, or the decision is superseded/absorbed by a later decision that is covered in depth (e.g. D-27's LiteLLM bake-off question is moot once D-33/D-34's LiteLLM removal is covered).
+
+**Lesson for future ingests in this vault:** citation-field coverage proves every source file was touched; it does not prove every fact inside a large, multi-decision source file survived synthesis. For files with a dense enumerable ID space (a decisions log, an ADR index, a traceability matrix), an ID-cross-reference check like this one is a stronger integrity test and should be run before declaring zero gaps, not just spot-checked.
+
+## 7. Status
 
 - **Source files accounted for: 68/68 (100%)**
 - **Notes with no matching source file:** none — every new note in this ingest carries a non-empty `sources:` field or is explicitly a cross-cutting hub/canonical page with no single source (declared as such)
-- **Reconciliation gaps found: 0**
+- **Reconciliation gaps found: 5 material, all fixed** (§6) — 2 ADRs, 1 statistic, 2 deferred features. Found by an ID-level cross-reference check run after an initial citation-only pass had reported 0. The citation-only method is retained above (§3) as a first-pass sanity check but is not, by itself, sufficient evidence of zero data loss for dense multi-decision source files.
 - **Flagged (not fabricated) data gaps:** activation-experiment log (growth), support-ticket-category volumes (customer success), RICE scoring (product roadmap) — none exist in the source corpus; each is explicitly marked "source data needed" in its note rather than invented
 
 ## Sources

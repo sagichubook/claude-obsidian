@@ -60,6 +60,8 @@ Capacity: 5 engineers (3 TypeScript, 2 Python). Definition of Done: every merge 
 
 **EP-09/EP-10 (0h, deferred).** EP-09 (acknowledgment lifecycle) deferred via the D-19 capacity fallback lever when the backlog first ran 73h over the original 2,000h envelope. EP-10 (preference learning) is deliberately not promoted — it needs behavioral-data volume that doesn't exist pre-launch.
 
+**Deferred/draft sub-features embedded within Defined epics (no dedicated line in the hour rollup, easy to miss).** Two features carry zero hours and are gated behind flags, folded inside otherwise-active epics: **US-025 Outcome Learning** (EP-03-F03, `outcome_learning` flag, FR-027) — deferred to a post-Gate-3 candidate pending sufficient remediation-outcome data volume, added 2026-07-11 per competitor-scan disposition CS-01. **US-027 Proactive Tool Discovery** (EP-02-F05, FR-029, 8 points, a Gate-2 candidate) — detects cloud resources tagged or configured in a way that indicates an already-installed-but-unconfigured security tool, and surfaces a "you already own this" suggestion card on Connector Hub rather than prompting a redundant purchase; costed at 44h within EP-02's total (tool-signature detection rules, a read-only `GET /connectors/discovered` endpoint, and the suggestion-card UI).
+
 ### Documented deviations (D-EX-1 to D-EX-7)
 
 The framework is broken on purpose in seven named ways, all justified by preserving corpus authority over hitting a template quota — e.g., D-EX-1: some Features carry only 1-2 stories rather than the "3-12" rule, because inventing stories to fit the template would fabricate scope; D-EX-6: deferred/draft features carry no acceptance criteria or SLA, because specifying precision for unscheduled work would fake commitment.
