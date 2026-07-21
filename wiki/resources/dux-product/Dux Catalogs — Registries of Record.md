@@ -23,7 +23,17 @@ Nine registries, one 8-part extensibility contract governing all of them (stable
 
 ### Integration catalog (§1)
 
-**≥3 live connectors ship at Gate 1**: CrowdStrike, Wiz, ServiceNow **or** Entra (ADR-011 R2). W1/Gate 1 set: `aws`, `nvd`, `cisa-kev`, `epss`, `csv-fallback`, `crowdstrike` (ingest+action), `wiz`, `servicenow` (ingest+action), `entra-id`, `splunk`. W2/Gate 3: `intune`, `qualys`. Roadmap (33 vendors, all assigned a real `role` in D-54, 2026-07-21): 11 `asset_discovery` · 5 `identity` · 6 `scanner` · 3 `ticketing` · 3 `threat_intel` · 4 `network_context` (first real use of this role) · 1 `validation` (Horizon3 NodeZero, first real use).
+**≥3 live connectors ship at Gate 1**: CrowdStrike, Wiz, ServiceNow **or** Entra (ADR-011 R2). W1/Gate 1 set: `aws`, `nvd`, `cisa-kev`, `epss`, `csv-fallback`, `crowdstrike` (ingest+action), `wiz`, `servicenow` (ingest+action), `entra-id`, `splunk`. W2/Gate 3: `intune`, `qualys`. Roadmap (33 vendors, all assigned a real `role` in D-54, 2026-07-21):
+
+| Role | Vendors |
+|---|---|
+| `asset_discovery` (11) | `jamf`, `kandji`, `workspaceone`, `apple_business_manager`, `microsoft_defender`, `trellix`, `tanium`, `azure_app`, `azure_cloud`, `gcp`, `kace` — MDM/UEM, EDR/XDR, and cloud-platform asset inventory |
+| `identity` (5) | `jumpcloud`, `okta`, `onelogin`, `google_workspace`, `google_cloud_identity` |
+| `scanner` (6) | `rapid7_insightvm`, `tenable_vm`, `tenable_sc`, `nessus`, `orca`, `upwind` — vulnerability/CNAPP posture scanners |
+| `ticketing` (3) | `jira`, `freshservice`, `servicedesk_plus` |
+| `threat_intel` (3) | `exploitdb`, `vulncheck`, `first` (FIRST.org exploit-maturity/CVSS data) |
+| `network_context` (4, first real use of this ADR-011 R2 role) | `netskope`, `perimeter81`, `prisma_browser`, `island` |
+| `validation` (1, first real use of this role) | `horizon3_nodezero` — autonomous pentest/BAS |
 
 **The `Sources` OpenAPI enum (42 values) is not the connector list** — it's a scanner/ingest **provenance attribution tag** set. CI asserts no enum value lacks a taxonomy row. **NVD enrichment fallback:** NVD enrichment collapsed 2026-04-15 (~29,000 pre-March-2026 CVEs stuck `Not Scheduled`); the pipeline falls back to `cisa-kev` + `epss`, which caps confidence at `likely` — never `exploitable` — until NVD resolves for that CVE.
 

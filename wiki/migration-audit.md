@@ -123,15 +123,34 @@ The 22 files from the earlier, un-audited product-domain session were also perso
 
 Also fixed as part of this pass: a missing "Prioritization layers (CVSS+EPSS)" competitor row (low materiality, added alongside the Armis row); 4 diagram-citation gaps where the note's own diagram already covered the source diagram's content but never cited it ([[CaMeL]] diagram 4, [[Governance Kernel]] diagram 5, [[Application API]] diagram 7, [[Observability & SLO]] diagram 11) — now cited. Two flagged dollar/percentage values were confirmed as pre-superseded historical figures the source itself marks non-authoritative (`$0.28–0.32`, `$0.45`, `$0.50` cost-model drafts explicitly superseded by the current $0.55/$0.75 gates) — correctly left out, not a gap.
 
-**Running total across all three passes: 11 real content gaps found, all fixed.**
+**Running total after three passes: 11 real content gaps found, all fixed.**
 
-## 9. Status
+## 9. Backtick/inline-code span pass (2026-07-21, complete)
+
+On request to keep reverifying, a fourth lens was applied: every backtick-wrapped inline-code span (endpoint paths, table/column names, function signatures, config keys, alert names, CLI commands) across all 68 files was extracted and cross-referenced against the vault — several thousand spans, with the baseline "miss rate" running 30-60% per file, since most spans are implementation syntax a documentation-level note legitimately paraphrases rather than reproduces verbatim (SQL snippets, class names, file paths, git hashes). Each file's miss list was read in full and triaged by hand; exhaustive automated triage was not possible at this volume.
+
+**6 more real gaps found in the 5 highest-value files checked this way, all fixed:**
+
+| Gap | Materiality | Resolution |
+|---|---|---|
+| **D-32**, an entire decision (external "TDD" review rejected on every axis — no AWS AgentCore, no Kafka, no Airbyte, no Pinecone/Neo4j-first, no composite `DUX_SCORE`), was referenced only inside an ID range in one note, never explained | **High** — a full decision with real architectural reasoning, invisible | New "External review disposition" section added to [[Dux Decisions Log]], plus D-31's superseded reranker decision for context |
+| The 33-vendor roadmap catalog in [[Dux Catalogs — Registries of Record]] gave only role counts, never named a single vendor | **High** for a note whose stated purpose is to be the registry of record | Full role-grouped 33-vendor table added |
+| MCP's 7-tool **read-only** catalog (rate limits, integration IDs, per-tool threat stories) was entirely absent from [[MCP Security]] — only the write-tool catalog was covered | **Medium-high** | Full read-only tool catalog table added |
+| The Gate-2 triage model path (`amazon.titan-text-lite-v2`, retiring an earlier self-hosted vLLM+Phi-4 option) was missing from [[Architecture Overview]] | Medium | Added alongside the existing Gate-1 S-LLM/P-LLM detail |
+| Auth hardening findings (refresh-token-family reuse detection, the pre-auth brute-force rate-limit backstop, the JWT force-revocation denylist) were absent from [[Multi-Tenancy]] | Medium | New "Auth hardening" subsection added |
+| The consolidated Prometheus metrics list backing the cost/safety dashboard was never assembled in one place in [[Observability & SLO]] | Low-medium | Added |
+
+**Diminishing returns became visible partway through this pass.** The first 5 files checked (the corpus's largest/densest, and where every prior gap had also been found) yielded 6 real gaps; the 6th file checked (`incident-runbooks.md`, 39 misses) yielded none — every miss there was an internal alert name or verification snippet whose substance was already correctly captured in prose. That is the expected shape of a lens reaching its detection ceiling, not proof the remaining 7 planned files are clean; they were not exhaustively checked this round.
+
+**Running total after four passes: 17 real content gaps found, all fixed.**
+
+## 10. Status
 
 - **Source files accounted for: 68/68 (100%)**
 - **Notes with no matching source file:** none — every new note in this ingest carries a non-empty `sources:` field or is explicitly a cross-cutting hub/canonical page with no single source (declared as such)
-- **Reconciliation gaps found across three passes: 11 material, all fixed** — ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027 (§6); Governance Kernel gate detail and the TR-NFR table (§7); the Armis/Averlon/RunSybil/IONIX competitor row, the CaMeL benchmark evaluation, the agent baseline table's dropped columns, and the R3 fallback-model latency figure (§8)
-- **~140 additional "missing ID" flags and several numeric near-misses were individually triaged and closed as non-issues** (citation-only, intentional register-compression, or superseded historical figures the source itself marks non-authoritative) — see [[validation-checklist]] for the file-by-file reasoning, not asserted in aggregate
-- **Each of the three verification methods used (ID cross-reference, full-corpus ID cross-reference, numeric/diagram cross-reference) caught gaps the previous method missed.** No claim is made that a fourth method would find nothing — see the "Lesson" note in §6
+- **Reconciliation gaps found across four passes: 17 material, all fixed** — see §6-§9 for the full list and materiality reasoning
+- **Hundreds of additional "missing" flags** (IDs, dollar/percentage values, and backtick-wrapped code spans) were individually triaged and closed as non-issues — citation-only, intentional register-compression, superseded historical figures, or legitimate documentation-level paraphrase of implementation syntax. See [[validation-checklist]] for the file-by-file reasoning; not asserted in aggregate.
+- **Each of the four verification methods used caught gaps the previous methods missed, and the backtick pass showed its own detection ceiling within the same session (6 gaps in 5 files, then 0 in the 6th).** This is evidence of convergence, not proof of exhaustion — a corpus this size cannot be certified gap-free by sampling-based methods, only checked with progressively diminishing returns. No further claim of "zero gaps" is made anywhere in this document.
 - **Flagged (not fabricated) data gaps:** activation-experiment log (growth), support-ticket-category volumes (customer success), RICE scoring (product roadmap) — none exist in the source corpus; each is explicitly marked "source data needed" in its note rather than invented
 
 ## Sources

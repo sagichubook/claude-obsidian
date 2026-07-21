@@ -143,11 +143,12 @@ This is the per-file validation record referenced in [[migration-audit]] §6. Me
 ## Summary
 
 - **68/68 files checked** at the ID level; the 22 files from the earlier, un-audited session were additionally re-read personally against their notes this pass.
-- **11 real gaps found across three verification passes, all fixed**: ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027, GOV-002/005/006/008/009/010/011/012/013 governance-gate detail, the full TR-NFR-005–015 table, the Armis/Averlon/RunSybil/IONIX competitor row (with a $7.75B acquisition and a $40M raise), the CaMeL AgentDojo benchmark evaluation, the agent baseline table's tool-distribution/cache-hit columns, and the R3 fallback-model latency figure.
-- **~140 "missing ID" flags investigated and closed as non-issues** — either the fact is present without its specific ID tag (🔵, the large majority), or the note deliberately mirrors the source's own register-compression pattern for closed/historical items (⚪).
-- **A separate numeric-value (dollar/percentage) and diagram-coverage pass** — run because ID cross-referencing cannot catch a fact with no ID attached — found 4 of the 11 gaps above. Two flagged dollar figures (`$0.28–0.32`, `$0.45`/`$0.50` cost-model drafts) were confirmed as historical figures the source itself marks superseded, not gaps.
+- **17 real gaps found across four verification passes, all fixed** — see [[migration-audit]] §6-§9 for the full list, materiality, and resolution of each.
+- **Four distinct detection lenses applied**, each catching what the others missed: (1) ID cross-reference on the 2 densest files, (2) the same extended to all 68 files across every ID family the corpus uses, (3) dollar-figure/percentage extraction plus diagram-atlas coverage, (4) backtick/inline-code span extraction (endpoint paths, function signatures, alert names, config keys).
+- **Hundreds of "missing" flags across all four lenses were individually triaged and closed as non-issues** — the fact is present without its specific ID/figure/code-span tag (the large majority), the note mirrors the source's own register-compression pattern for closed/historical items, or the flagged value is a pre-superseded historical figure the source itself marks non-authoritative.
 - **3 extraction false positives identified and dismissed**: `D-429` (substring of "NVD-429-backoff"), `D-001` (substring of `PS-ONBOARD-001`), `ADR-034` (the source explains this as legacy numbering for ADR-003, not a new ADR).
-- **Diagram coverage**: all 11 diagrams in `architecture-diagrams.md` are now represented and cited somewhere in the vault (4 were content-covered but citation-missing; now cited).
+- **Diagram coverage**: all 11 diagrams in `architecture-diagrams.md` are now represented and cited somewhere in the vault.
+- **The backtick lens showed its own detection ceiling within a single pass** (6 real gaps in the first 5 files checked, 0 in the 6th) — evidence the corpus is converging toward complete coverage under repeated, varied scrutiny, not proof that zero gaps remain. The remaining 7 of the 12 planned highest-risk files were not exhaustively re-checked with this lens; see [[migration-audit]] §9 for the explicit reasoning against claiming exhaustion.
 
 ## Sources
 

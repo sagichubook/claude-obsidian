@@ -34,6 +34,10 @@ Dux uses shared database, shared schema with PostgreSQL RLS (FORCE), not databas
 | Exceptions | none, without a new ADR |
 | Overhead budget | ~5-15% RLS cost, owned explicitly |
 
+### Auth hardening (ADR-001, security-review findings)
+
+Access JWTs carry `sub`/`email`/`tenant_id`/`role`/`jti`/`aud`/`exp`; a wrong `aud` is a 401. Refresh tokens use rotating families with reuse detection — `REFRESH_TOKEN_REUSE_DETECTED` invalidates the entire token family, not just the reused token. Because a live access JWT has no forced-invalidation path before its 60-minute natural expiry otherwise, a short-TTL Upstash denylist (`revoked_jti:{jti}`) is checked on every request and populated on password change, admin-forced logout, SCIM deprovisioning, and kill-switch activation (see [[Kill Switch]]). Pre-auth endpoints (`login`, `signup`, `password-reset`, `mfa-verify`) have no `tenant_id` yet, so they sit outside the per-tenant throttler; they get their own IP-and-account-based backstop instead — max 5 failed logins per account per 15 min with progressive backoff, max 20 per IP per 15 min, layered behind Cloudflare's coarser edge limits.
+
 ### Context propagation rules (OWASP-validated, all seven mandatory)
 
 1. Tenant context comes from the authenticated JWT claim only.

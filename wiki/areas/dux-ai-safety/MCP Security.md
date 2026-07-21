@@ -33,6 +33,20 @@ Every MCP tool is registered in the AIBOM and the gateway with SHA-256 schema pi
 | L5 Observability | hashed I/O, SIEM 730-day retention | PS-007 |
 | L6 Multi-server isolation | per-server security domain | PS-002, PS-006 |
 
+### Read-only tool catalog
+
+The only tools with defined PS rows today besides the write catalog below. Gateway enforces `min(tenant_limit, session_remaining)`; all tools are hash-pinned with a <2ms p99 cache-backed check.
+
+| Tool | Integration | Rate (tenant/session) | Attack story |
+|---|---|---|---|
+| `search_nvd(cve_id)` | nvd | 200/50 rpm | hijack via malicious CVE text |
+| `search_github(cve_id)` | github-research | 30/15 rpm | SSRF via repo URL |
+| `search_exploitdb(cve_id)` | metasploit-index | 30/15 rpm | poisoned module metadata |
+| `search_threat_intel(cve_id)` | medium-rss | 20/10 rpm | malicious blog redirect |
+| `search_msrc(cve_id)` | microsoft-msrc | 30/15 rpm | spoofed advisory content |
+| `query_assets(filters)` | aws | 100/50 rpm, max 50 rows/call, overflow to `summarizeContext` | filter injection |
+| `query_controls(asset_id)` | aws | 100/50 rpm | cross-asset enumeration |
+
 ### Write-tool catalog
 
 | PS ID | Tool | Connector | Rate (tenant/session) | HITL posture |

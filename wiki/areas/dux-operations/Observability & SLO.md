@@ -50,6 +50,8 @@ Required OTel GenAI attributes: `gen_ai.provider.name`, `gen_ai.request.model`, 
 
 `DuxTenantCostCapApproach` fires when hourly spend exceeds `monthly_cap / 720 x 14.4`, or raw rate exceeds $25/hour.
 
+**Prometheus metrics backing the dashboard:** `dux_cost_llm_cents`, `dux_cost_workflow_actions`, `dux_cost_infrastructure_cents`, `kill_switch_propagation_seconds`, `dux_cost_llm_cents_per_tenant{tenant_id}`, `dux_cost_sandbox_seconds_per_tenant` (Gate 2+), `dux_cost_temporal_cents`, `dux_llm_bedrock_latency_p95`, `dux_llm_anthropic_baseline_p95`, `dux_valkey_hit_rate`, `dux_nats_consumer_lag`.
+
 ### MTTP — time to protection (H9)
 
 | Leg | Metric | Correlation |
