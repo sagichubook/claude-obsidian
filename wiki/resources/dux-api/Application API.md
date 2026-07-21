@@ -5,7 +5,7 @@ topic: "dux/api"
 created: 2026-07-21
 updated: 2026-07-21
 tags: [resource, dux, dux/api]
-sources: [".raw/dux/30-api/application-api.md"]
+sources: [".raw/dux/30-api/application-api.md", ".raw/dux/20-architecture/architecture-diagrams.md"]
 related: ["[[API Overview]]", "[[Dux Agent]]", "[[Kill Switch]]"]
 ---
 
@@ -88,3 +88,4 @@ sequenceDiagram
 ## Sources
 
 - `.raw/dux/30-api/application-api.md`
+- `.raw/dux/20-architecture/architecture-diagrams.md` (diagram 7)

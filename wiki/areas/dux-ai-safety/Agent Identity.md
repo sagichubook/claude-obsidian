@@ -63,10 +63,10 @@ DaemonSet `dux-resident-agent`; heartbeat via mTLS (preferred) or a signed JWT w
 
 Daily job compares declared agents against observed MCP `agent_id` headers and `agent.session.started` audit records. Undeclared drift triggers P0-B containment plus a registry update (1h investigate / 4h contain SLA).
 
-| `agent_type` | req/min | Output tokens p50/p95 | Cost p50/p95 | Fallback rate |
-|---|---|---|---|---|
-| `assessment` | 2-8 | 800/2,400 | $0.08/$0.25 | <5% |
-| `physical_resident` (Gate 5) | 0.5-2 | 200/600 | $0.02/$0.06 | <2% |
+| `agent_type` | req/min | Tool distribution | Output tokens p50/p95 | Cost p50/p95 | Cache hit | Fallback rate |
+|---|---|---|---|---|---|---|
+| `assessment` | 2-8 | `query_assets` 60%, `run_assessment` 30%, other 10% | 800/2,400 | $0.08/$0.25 | 80-95% | <5% |
+| `physical_resident` (Gate 5) | 0.5-2 | heartbeat 80%, sync 20% | 200/600 | $0.02/$0.06 | 70-90% | <2% |
 
 `pnpm admin:agent-baseline-diff` raises `DuxAgentBehaviorAnomaly` on a 2-sigma breach.
 

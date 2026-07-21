@@ -143,9 +143,11 @@ This is the per-file validation record referenced in [[migration-audit]] §6. Me
 ## Summary
 
 - **68/68 files checked** at the ID level; the 22 files from the earlier, un-audited session were additionally re-read personally against their notes this pass.
-- **7 real gaps found across the full corpus, all fixed**: ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027 (found in the previous round), plus **GOV-002/005/006/008/009/010/011/012/013 governance-gate detail** and the **full TR-NFR-005–015 table** (found this round).
+- **11 real gaps found across three verification passes, all fixed**: ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027, GOV-002/005/006/008/009/010/011/012/013 governance-gate detail, the full TR-NFR-005–015 table, the Armis/Averlon/RunSybil/IONIX competitor row (with a $7.75B acquisition and a $40M raise), the CaMeL AgentDojo benchmark evaluation, the agent baseline table's tool-distribution/cache-hit columns, and the R3 fallback-model latency figure.
 - **~140 "missing ID" flags investigated and closed as non-issues** — either the fact is present without its specific ID tag (🔵, the large majority), or the note deliberately mirrors the source's own register-compression pattern for closed/historical items (⚪).
-- **2 extraction false positives identified and dismissed**: `D-429` (substring of "NVD-429-backoff"), `D-001` (substring of `PS-ONBOARD-001`), `ADR-034` (the source explains this as legacy numbering for ADR-003, not a new ADR).
+- **A separate numeric-value (dollar/percentage) and diagram-coverage pass** — run because ID cross-referencing cannot catch a fact with no ID attached — found 4 of the 11 gaps above. Two flagged dollar figures (`$0.28–0.32`, `$0.45`/`$0.50` cost-model drafts) were confirmed as historical figures the source itself marks superseded, not gaps.
+- **3 extraction false positives identified and dismissed**: `D-429` (substring of "NVD-429-backoff"), `D-001` (substring of `PS-ONBOARD-001`), `ADR-034` (the source explains this as legacy numbering for ADR-003, not a new ADR).
+- **Diagram coverage**: all 11 diagrams in `architecture-diagrams.md` are now represented and cited somewhere in the vault (4 were content-covered but citation-missing; now cited).
 
 ## Sources
 

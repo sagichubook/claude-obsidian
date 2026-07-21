@@ -6,7 +6,7 @@ created: 2026-07-21
 updated: 2026-07-21
 tags: [area, dux, dux/ai-safety]
 related_projects: []
-related: ["[[AI Safety Overview]]", "[[Kill Switch]]", "[[Support Playbook]]"]
+related: ["[[AI Safety Overview]]", "[[Kill Switch]]", "[[Dux Support Playbook]]"]
 sources: [".raw/dux/40-ai-safety/incident-runbooks.md"]
 ---
 
@@ -14,7 +14,7 @@ sources: [".raw/dux/40-ai-safety/incident-runbooks.md"]
 
 ## Summary
 
-The twelve canonical agentic failure modes and the procedure for each — the source of truth these procedures; [[Support Playbook]] adds stage deltas only, never duplicates the step tables. Owner: Security. Status: canonical. Gate: 1. Decisions: D-3.
+The twelve canonical agentic failure modes and the procedure for each — the source of truth these procedures; [[Dux Support Playbook]] adds stage deltas only, never duplicates the step tables. Owner: Security. Status: canonical. Gate: 1. Decisions: D-3.
 
 ## Executive Summary
 
@@ -32,7 +32,7 @@ Trigger, Service catalog, Business impact (MRR-at-risk formula), User impact, Sy
 |---|---|---|---|---|
 | R1 | Cross-tenant context leak | P0-C | `foreign_tenant_refs > 0` + isolation SLO burn >=5%/1h | `admin:platform-contain` (L4), agent halt <=60s, counsel if PII (72h) |
 | R2 | Token cost runaway | P0-C/P1 | spend >3x 7-day baseline, or >$25/hr/tenant | `admin:cost-cap enforce`, L2 kill switch, halt top-spend agent |
-| R3 | Model provider outage | P1 | provider status non-operational | `admin:model-route --fallback on` (<=60s), golden-set spot check, halt if regression >5% |
+| R3 | Model provider outage | P1 | provider status non-operational | `admin:model-route --fallback on` (<=60s) to `claude-sonnet-4-6` (+28% latency vs. primary), golden-set spot check, halt if regression >5% |
 | R4 | MCP dependency failure | P2 | MCP errors >50%/5min | `admin:mcp-circuit-breaker --open`, verify no hallucinated success |
 | R5 | Rate limit cascade | P2 | dual 429 (model + customer) | jitter backoff, halt runaway agent, escalate provider quota |
 | R6 | Context window exhaustion | P2 | 128K ceiling hit | checkpoint at 80%, abandon at 100%, halt retry loop |
@@ -88,7 +88,7 @@ flowchart TD
 
 - [[Kill Switch]] — L1-L4 levels invoked across every runbook
 - [[AI Safety Overview]] — the spine these runbooks protect
-- [[Support Playbook]] — seed-stage deltas (PagerDuty IDs, admin CLI, agent-quota mode)
+- [[Dux Support Playbook]] — seed-stage deltas (PagerDuty IDs, admin CLI, agent-quota mode)
 
 ## Related
 

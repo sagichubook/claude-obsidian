@@ -9,7 +9,7 @@ updated: 2026-07-21
 tags: [concept, dux, dux/ai-safety]
 status: current
 related: ["[[Dux Agent]]", "[[Kill Switch]]", "[[CaMeL]]"]
-sources: [".raw/dux/40-ai-safety/governance-kernel.md", ".raw/dux/20-architecture/adr-index.md", ".raw/dux/00-meta/decisions-log.md"]
+sources: [".raw/dux/40-ai-safety/governance-kernel.md", ".raw/dux/20-architecture/adr-index.md", ".raw/dux/00-meta/decisions-log.md", ".raw/dux/20-architecture/architecture-diagrams.md"]
 ---
 
 # Governance Kernel
@@ -82,3 +82,4 @@ The write path shipped unattended-by-default at Gate 1 (D-17: 3 of 5 canonical a
 - `.raw/dux/40-ai-safety/governance-kernel.md`
 - `.raw/dux/20-architecture/adr-index.md` (ADR-012 R3)
 - `.raw/dux/00-meta/decisions-log.md` (D-14, D-15, D-17)
+- `.raw/dux/20-architecture/architecture-diagrams.md` (diagram 5)

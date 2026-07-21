@@ -7,7 +7,7 @@ updated: 2026-07-21
 tags: [area, dux, dux/operations]
 related_projects: []
 related: ["[[Operations Overview]]", "[[Multi-Tenancy]]", "[[CI-CD & Testing|CI/CD & Testing]]"]
-sources: [".raw/dux/60-operations/observability-slo.md"]
+sources: [".raw/dux/60-operations/observability-slo.md", ".raw/dux/20-architecture/architecture-diagrams.md"]
 ---
 
 # Observability & SLO
@@ -130,3 +130,4 @@ flowchart LR
 ## Sources
 
 - `.raw/dux/60-operations/observability-slo.md`
+- `.raw/dux/20-architecture/architecture-diagrams.md` (diagram 11)

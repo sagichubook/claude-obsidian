@@ -108,12 +108,30 @@ A further set of "uncited" IDs (D-27, D-37, D-41, D-46, D-52, D-53, ADR-014, FR-
 
 The 22 files from the earlier, un-audited product-domain session were also personally re-read against their notes as part of this pass (previously verified only by citation).
 
-## 8. Status
+## 8. Numeric-value and diagram-coverage pass (2026-07-21, complete)
+
+§7's ID cross-reference cannot catch a fact that carries no ID — a dropped dollar figure, percentage, or benchmark number. On request to re-verify end to end, a second, independent check extracted every dollar amount and percentage in all 68 source files and cross-referenced them against the vault the same way, then separately verified that all 11 diagrams in `architecture-diagrams.md` (the corpus's single end-to-end diagram set) are represented somewhere.
+
+**This pass found 4 more real gaps, distinct in kind from the ID-based findings — all fixed:**
+
+| Gap | Materiality | Resolution |
+|---|---|---|
+| An entire competitor row (Armis/Averlon/RunSybil/IONIX) — including ServiceNow's $7.75B acquisition of Armis, RunSybil's $40M Khosla-led round, and an investor-conflict disclosure | **High** — real, current market intelligence dropped entirely from a competitive-landscape resource | Row and a full "2026 developments" paragraph added to [[Competitive Positioning & POC]] |
+| CaMeL benchmark evaluation (CaMeL+ paper 67% vs. Dux CI ~77% defended/~84% undefended, measured via AgentDojo v1.2) | Medium-high — a safety-boundary's own evaluation numbers, absent everywhere | New "Evaluation" section added to [[CaMeL]] |
+| Agent behavioral-baseline table missing its Tool-distribution and Cache-hit columns | Medium | Restored in [[Agent Identity]] |
+| Fallback-model latency figure (+28% for `claude-sonnet-4-6`) dropped from the R3 runbook row | Low-medium | Added to [[AI Safety Incident Runbooks]] |
+
+Also fixed as part of this pass: a missing "Prioritization layers (CVSS+EPSS)" competitor row (low materiality, added alongside the Armis row); 4 diagram-citation gaps where the note's own diagram already covered the source diagram's content but never cited it ([[CaMeL]] diagram 4, [[Governance Kernel]] diagram 5, [[Application API]] diagram 7, [[Observability & SLO]] diagram 11) — now cited. Two flagged dollar/percentage values were confirmed as pre-superseded historical figures the source itself marks non-authoritative (`$0.28–0.32`, `$0.45`, `$0.50` cost-model drafts explicitly superseded by the current $0.55/$0.75 gates) — correctly left out, not a gap.
+
+**Running total across all three passes: 11 real content gaps found, all fixed.**
+
+## 9. Status
 
 - **Source files accounted for: 68/68 (100%)**
 - **Notes with no matching source file:** none — every new note in this ingest carries a non-empty `sources:` field or is explicitly a cross-cutting hub/canonical page with no single source (declared as such)
-- **Reconciliation gaps found across both passes: 7 material, all fixed** — ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027 (§6); Governance Kernel gate detail and the TR-NFR table (§7)
-- **~140 additional "missing ID" flags from the full-corpus pass were individually triaged and closed as non-issues** (citation-only or intentional register-compression) — see [[validation-checklist]] for the file-by-file reasoning, not asserted in aggregate
+- **Reconciliation gaps found across three passes: 11 material, all fixed** — ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027 (§6); Governance Kernel gate detail and the TR-NFR table (§7); the Armis/Averlon/RunSybil/IONIX competitor row, the CaMeL benchmark evaluation, the agent baseline table's dropped columns, and the R3 fallback-model latency figure (§8)
+- **~140 additional "missing ID" flags and several numeric near-misses were individually triaged and closed as non-issues** (citation-only, intentional register-compression, or superseded historical figures the source itself marks non-authoritative) — see [[validation-checklist]] for the file-by-file reasoning, not asserted in aggregate
+- **Each of the three verification methods used (ID cross-reference, full-corpus ID cross-reference, numeric/diagram cross-reference) caught gaps the previous method missed.** No claim is made that a fourth method would find nothing — see the "Lesson" note in §6
 - **Flagged (not fabricated) data gaps:** activation-experiment log (growth), support-ticket-category volumes (customer success), RICE scoring (product roadmap) — none exist in the source corpus; each is explicitly marked "source data needed" in its note rather than invented
 
 ## Sources

@@ -55,8 +55,12 @@ The analyst anchor, feature-availability matrix, competitor counters, press erra
 | Tenable Hexa AI (GA May 2026, 40K customers) | agentic orchestration across Tenable One | prerequisite decomposition, per-source citations, executed-code traces |
 | Wiz (Google Cloud, acquired Mar 2026) | risk graphs, exposure scores | environmental exploitability and control-aware paths over a posture score |
 | Qualys Agent Val (GA Mar 2026) | agentic validation layer on scanner data | Dux **enriches** scanner findings (ingests Qualys/Wiz as input) rather than competing on scan breadth |
+| Armis / Averlon / RunSybil / IONIX | AI validation with PoC evidence | Dux counters on a unified integration layer, preference learning, a CaMeL security boundary, and inspectable reasoning |
+| Prioritization layers (CVSS + EPSS) | rank the backlog | per-environment exploitability reasoning, plus lightweight mitigation paths |
 
 Honest competitive gaps stated plainly: broad scanner replacement (out of scope), PTaaS (rejected, defensive only), OT/IoT (Phase 2+), on-prem/air-gapped (Gate 5), financial-impact quantification (Phase 3), native mobile (Series A).
+
+**2026 developments in the Armis/Averlon/RunSybil/IONIX category** (disclosed for transparency: an Armis executive is also a Dux angel investor, per the BusinessWire launch PR — the positioning here is independent of that relationship). ServiceNow agreed in December 2025 to acquire Armis for **$7.75B cash** (Armis ARR $340M, +50% YoY), expected to close H2 2026 — Armis may reposition as a ServiceNow-platform capability rather than a standalone vendor going forward. Averlon shipped "Precog" (May 2026, pre-production/CI-integrated exploitability evaluation ahead of merge) and joined Anthropic's Cyber Verification Program (June 2026). RunSybil raised a **$40M round** (March 2026, led by Khosla Ventures, including Anthropic/Menlo's Anthology Fund); valuation undisclosed. Konvu (a separate row above) has not raised since its $5M seed (June 2024) despite rising visibility (RSAC 2026 Launch Pad finalist; won Infosecurity Europe's inaugural Cyber Startup competition, June 2026).
 
 ### Proof of concept (14 days)
 
