@@ -95,13 +95,27 @@ A further set of "uncited" IDs (D-27, D-37, D-41, D-46, D-52, D-53, ADR-014, FR-
 
 **Lesson for future ingests in this vault:** citation-field coverage proves every source file was touched; it does not prove every fact inside a large, multi-decision source file survived synthesis. For files with a dense enumerable ID space (a decisions log, an ADR index, a traceability matrix), an ID-cross-reference check like this one is a stronger integrity test and should be run before declaring zero gaps, not just spot-checked.
 
-## 7. Status
+## 7. Full per-file validation pass (2026-07-21, complete)
+
+§6 checked only the 2 densest files. On request, the same ID cross-reference was extended to **all 68 source files**, across every ID family the corpus uses (D-##, ADR-##, FR-##, US-##, BR-##, EP-##, GOV-##/GOV-TOOL-##, KS-##, PS-##, ISO-##, OI-##, NFR-##/TR-NFR-##, MC-##, CS-##, AI-##) — roughly 900 IDs checked. The full per-file record, with each finding individually triaged into real-gap / citation-only / intentional-compression, lives at **[[validation-checklist]]**.
+
+**This pass found 2 more real, material gaps that the 2-file check had not covered:**
+
+| Gap | Materiality | Resolution |
+|---|---|---|
+| Governance Kernel: GOV-002/005/006/008/009/010/011/012/013 and the full `GOV-TOOL-*` risk matrix | **High** — the safety spine's individual gate thresholds (cost caps, iteration limits, DLP rules, blast-radius tiers) were absent; only the chain shape and GOV-014 were covered | Added the full 13-gate table, cost-threshold order, and latency budget to [[Governance Kernel]] |
+| TR-NFR-005 through TR-NFR-015 (10 of 15 target rows) | Medium — the table was explicitly labeled "(selected)," a self-disclosed but real gap | Completed to the full 15-row table in [[Observability & SLO]] |
+
+The 22 files from the earlier, un-audited product-domain session were also personally re-read against their notes as part of this pass (previously verified only by citation).
+
+## 8. Status
 
 - **Source files accounted for: 68/68 (100%)**
 - **Notes with no matching source file:** none — every new note in this ingest carries a non-empty `sources:` field or is explicitly a cross-cutting hub/canonical page with no single source (declared as such)
-- **Reconciliation gaps found: 5 material, all fixed** (§6) — 2 ADRs, 1 statistic, 2 deferred features. Found by an ID-level cross-reference check run after an initial citation-only pass had reported 0. The citation-only method is retained above (§3) as a first-pass sanity check but is not, by itself, sufficient evidence of zero data loss for dense multi-decision source files.
+- **Reconciliation gaps found across both passes: 7 material, all fixed** — ADR-018, ADR-019, Mandiant M-Trends figures, US-025, US-027 (§6); Governance Kernel gate detail and the TR-NFR table (§7)
+- **~140 additional "missing ID" flags from the full-corpus pass were individually triaged and closed as non-issues** (citation-only or intentional register-compression) — see [[validation-checklist]] for the file-by-file reasoning, not asserted in aggregate
 - **Flagged (not fabricated) data gaps:** activation-experiment log (growth), support-ticket-category volumes (customer success), RICE scoring (product roadmap) — none exist in the source corpus; each is explicitly marked "source data needed" in its note rather than invented
 
 ## Sources
 
-This report synthesizes across the full `.raw/dux/` mirror; see [[Dux Overview]] for the domain map.
+This report synthesizes across the full `.raw/dux/` mirror; see [[Dux Overview]] for the domain map and [[validation-checklist]] for the per-file record.

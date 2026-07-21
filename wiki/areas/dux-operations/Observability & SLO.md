@@ -69,15 +69,27 @@ Required OTel GenAI attributes: `gen_ai.provider.name`, `gen_ai.request.model`, 
 | `Dux3HopCteLatencyFastBurn` | 3-hop CTE p95 <200ms above 2K assets | 1h+5m, routes to Neo4j-fallback runbook |
 | `DuxTenantCostCapApproach` | per-tenant spend | above 80% of daily cap |
 
-### TR-NFR targets (selected)
+### TR-NFR targets (full table)
 
 | ID | Requirement | Target |
 |---|---|---|
-| TR-NFR-001 | API availability | 99.5% monthly |
+| TR-NFR-001 | API availability (excluding LLM) | 99.5% monthly |
 | TR-NFR-002 | tenant isolation | zero cross-tenant reads |
 | TR-NFR-003 | kill switch | <5s p99 |
-| TR-NFR-004 | API p95 | <300ms |
+| TR-NFR-004 | API p95 latency | <300ms |
+| TR-NFR-005 | assessment start p95 | <2s |
+| TR-NFR-006 | 3-hop CTE p95 | <200ms above 2K assets |
+| TR-NFR-007 | golden-set regression | <2% |
+| TR-NFR-008 | feature-flag evaluation | SDK p99 <20ms; API 99.9% |
+| TR-NFR-009 | GDPR export and delete | <24h |
+| TR-NFR-010 | WCAG 2.2 AA | 0 axe-core violations |
+| TR-NFR-011 | code-backed audit retention | trace + code, plus execution results at Gate 1 |
+| TR-NFR-012 | max agent context | 128K; checkpoint at 80% |
+| TR-NFR-013 | per-tenant LLM cost cap | enforced before intervention |
 | TR-NFR-014 | OTel GenAI instrumentation | 100% of LLM paths |
+| TR-NFR-015 | exposure drill-down p95 | <500ms at 1K assets |
+
+TR-NFR-004, 005, 006, and 015 (the four latency p95 targets) page through the burn-rate alerts above, using the same MWMBR windows as the availability alerts (resolves OI-07).
 
 ### SLA ladder
 
