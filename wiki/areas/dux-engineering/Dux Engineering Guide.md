@@ -175,6 +175,12 @@ flowchart TD
 
 Isolation tests (`ISO-001` through `ISO-010`) enforce that a cross-tenant lookup returns a 404, not a 403 (masking existence, not just denying access) and that isolation fails closed, including against a SQL-injection attempt trying to bypass RLS directly. Tenant-ID fuzzing makes any cross-tenant read or write a merge block, full stop. Kill-switch tests require L2 through L4 to propagate in under 5 seconds at p99, and L1 within 30 seconds. Prompt-injection testing runs a custom corpus on every single PR (blocking), a broader tool on any PR touching an agent or LLM path (blocking on critical/high findings), and a nightly adversarial scan that tolerates zero critical findings and at most 2 new high-severity ones.
 
+Two more suites carry their own five-test blocking gates. Auth (`AUTH-001` through `AUTH-005`) checks an invalid or expired JWT, a missing tenant claim, role enforcement, and API-key 401 handling. MCP (`MCP-001` through `MCP-005`) checks that an unregistered server is denied, schema drift is blocked, PII is redacted, the egress allowlist is enforced, and a cross-tenant JWT is rejected.
+
+### Accessibility on a streaming UI
+
+Automated scanning has a real blind spot here worth naming precisely: axe-core reporting zero violations does not validate a WCAG 2.2 AA claim on a streaming UI, because it covers static contrast but has no way to see an ARIA live-region announcement storm, and a screen reader narrating every streaming token and status change is unusable even with a spotless axe-core report. The streaming-heavy surfaces (`REASONING`, `TOOL_CALLING`, `EVALUATING`, plus every live exposure-state change) are held to three requirements axe-core can't check on its own: `aria-live="polite"` with debounced status announcements rather than token-by-token narration, a single "reasoning complete" summary in place of that narration, and manual screen-reader testing as part of the Gate-1 accessibility check itself.
+
 ### Shipping a new model version safely
 
 A candidate model version first runs in shadow mode: in parallel on sampled production traffic, scored against the golden set, but never actually delivered to a tenant. Promotion requires matching or beating the currently-pinned version's accuracy at the same stratification granularity described above, not just in aggregate. Once shadow-cleared, traffic ramps 5% → 25% → 100% over 7 days with monitoring at every step; any regression during the ramp halts it and rolls back immediately: the ramp never auto-advances through a bad signal.
