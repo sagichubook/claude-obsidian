@@ -189,6 +189,8 @@ Every tool is rate-limited per tenant and per session and hash-pinned with a sub
 | `patch.deploy_special_devices` | none pinned | Mandatory human approval: firmware-only devices have no API-level rollback |
 | `ticket.create_remediation` | ServiceNow | Unattended, the lowest blast-radius tier, no confidence floor at all |
 
+The source material itself is not unanimous on that last row: the write-tool catalog states no confidence floor applies, while the governance kernel's own GOV-TOOL-05 entry lists a `≥0.60` floor with "below floor: n/a, T1 always executes unattended." The operative behavior is identical either way (this action always executes unattended), so the discrepancy doesn't change what happens: it's flagged here as an unresolved inconsistency between two source documents, not resolved by picking one silently.
+
 Beyond the write path, a smaller read-only research catalog covers the evidence-gathering side of an investigation, each tool with its own integration ID, its own rate limit, and a documented attack story it defends against:
 
 | Tool | Integration ID | Rate (tenant / session) | Attack story |
