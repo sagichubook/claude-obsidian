@@ -61,6 +61,17 @@ ISO 27001 scope covers the SaaS platform itself: multi-tenant isolation, the age
 
 Both SOC 2 and ISO 27001 include the Mitigate and Remediate write surfaces from day one of the program, because those surfaces are already live at Gate 1: only the closed-loop validation surface waits, because it doesn't ship until Gate 3.
 
+ISO 27001's risk treatment maps each major risk straight to a specific Annex A control, not just to an internal ID:
+
+| Risk | Treatment | ISO/IEC 27001:2022 Annex A |
+|---|---|---|
+| Cross-tenant leak | Row-level security; internal controls ISO-001 through ISO-010 | A.8.3 (information access restriction), A.8.16 (monitoring activities) |
+| Agent incident | Kill switch; MCP controls | A.5.24 (incident management planning), A.8.16 (monitoring activities) |
+| Supply chain | Model pins; DPAs | A.5.19 (supplier relationships), A.5.20 (addressing security in supplier agreements) |
+| Admin access | MFA; break-glass | A.5.15 (access control), A.8.5 (secure authentication) |
+
+Those Annex A codes are cited at the internal-control-ID level, not per sub-clause: the full clause-by-clause Statement of Applicability is a separate ISO 42001 deliverable due months 3 through 6, not this summary table.
+
 ### EU AI Act: where Dux actually stands
 
 Dux's working position (stated as a position, not a settled legal conclusion) is that it does **not** trigger Annex III high-risk classification. The reasoning: it's a security tool acting on posture (endpoints, network policy, tickets), not a tool controlling critical-infrastructure operational-technology loops, and its two highest-blast-radius write actions require mandatory human approval on every single call regardless of confidence. That position has a real, independent near-term obligation sitting in front of it regardless of how the classification question ultimately resolves: **Article 50 transparency**, which took effect August 2026. The Annex III question itself, if it does apply, has a much longer runway: December 2027, per the EU's Digital Omnibus on AI that entered force in mid-2026.
