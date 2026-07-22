@@ -31,7 +31,7 @@ Every agent surface in the product inherits all six of these, with no exceptions
 | RLS-forced tenant isolation | No cross-tenant read or write is reachable, even by a fully compromised agent |
 | CaMeL dual-LLM boundary | Untrusted content never reaches a tool-calling context |
 | MCP gateway | Deny-by-default tool access |
-| Kill switch (KS-L1 – KS-L4) | Halt propagates in under 5 seconds, tenant-scoped |
+| Kill switch (KS-L1 – KS-L4) | KS-L2 through KS-L4 propagate in under 5 seconds over NATS; KS-L1 propagates within 30 seconds over a separate Unleash path, tenant-scoped |
 | Hash-chained audit | Every action is recorded and tamper-evident |
 | AI-BOM in CI | Supply chain stays pinned; drift is blocked at merge |
 
