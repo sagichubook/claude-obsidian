@@ -176,7 +176,7 @@ Past Gate 2, the roadmap is triggered by events, not quarters:
 
 Series B is further out and explicitly a backlog shell, not a commitment: multi-region active-active DR with a sub-1-hour recovery target, outcome-based Enterprise pricing by default, and ERM/TPRM maturation. See [[Dux Governance & Compliance Guide]] for the maturity table those items sit in.
 
-Every gate-timeline and capacity number in this roadmap traces to a dated decision: most notably the three capacity re-baselines (2,000h → 2,080h → 2,160h → today's 2,040h-against-2,080h) and the three-pivot infrastructure sequence that reshaped the Gate-1 build without ever moving the Week-12 or Week-16 dates. Full history in [[Dux Decisions & Traceability Reference]].
+Every gate-timeline and capacity number in this roadmap traces to a dated decision: most notably the three capacity re-baselines (2,000h → 2,080h → 2,160h, landing at today's 2,118h-against-2,160h) and the three-pivot infrastructure sequence that reshaped the Gate-1 build without ever moving the Week-12 or Week-16 dates. Full history in [[Dux Decisions & Traceability Reference]].
 
 ```mermaid
 gantt
