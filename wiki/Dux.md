@@ -22,7 +22,9 @@ This page is the single front door into the full knowledge base below: what the 
 
 ## About the company
 
-Dux is built by **Dux, Inc.**, dual-headquartered in Tel Aviv (R&D) and New York (go-to-market), founded in 2024. The company closed a $9M seed round in December 2025 with a three-way co-lead, and sells specifically into finance and healthcare: a buyer profile that drove several of the platform's more expensive architecture decisions (self-hosted infrastructure, multi-cloud portability) over a faster, cheaper, single-vendor path. Headcount sits at 24 as of the most recent corpus review.
+Dux is built by **Dux, Inc.**, dual-headquartered in Tel Aviv (R&D) and New York (go-to-market), founded in 2024. The company closed a $9M seed round in December 2025, co-led by Redpoint, TLV Partners, and Maple Capital, with individual angel investors from CrowdStrike, Okta, and Armis also participating. Dux sells specifically into finance and healthcare: a buyer profile that drove several of the platform's more expensive architecture decisions (self-hosted infrastructure, multi-cloud portability) over a faster, cheaper, single-vendor path. Headcount sits at 24 as of the most recent corpus review.
+
+The three founders are Or Latovitz (CEO), Amit Nir (CPO), and Nadav Geva (CTO): Talpiot alumni from a cohort adjacent to Wiz's and Cyera's founders, and, per Hebrew-language press, recipients of the Israel Security Prize and the Prime Minister's Prize for prior cyber and AI work at the Prime Minister's Office and Unit 8200. Eden Amitai joined post-launch as Head of Growth and Alliances, the only confirmed post-launch leadership hire as of the most recent press review.
 
 The founder, **Sagi**, is the sole named decision-maker across the entire body of documentation this knowledge base is built from: every non-mechanical judgment call traces to a dated, attributed decision in [[Dux Decisions & Traceability Reference]], never to silent prose edits. That single-threaded decision authority is also why the documentation itself follows one hard rule throughout: specs describe current truth in the present tense, and all change history lives in exactly one place.
 
