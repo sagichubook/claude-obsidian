@@ -59,7 +59,7 @@ Dux deliberately does not compute a single composite "DuxScore." Confidence is i
 | Semantic entropy across meaning-clustered completions | 0.35 | Always |
 | Verbalized confidence (structured output) | 0.25 | Always |
 
-Without logprobs, the remaining two signals renormalize to 0.54/0.46. The blended score feeds Platt scaling to produce the final calibrated `confidence_score`. The rule that matters most in practice: **evidence freshness caps confidence.** Evidence older than a connector's freshness SLO sets a degraded-evidence flag, and degraded evidence simply cannot support a high-confidence band: an `exploitable`/`likely` verdict gets downgraded, or falls all the way to `insufficient_data`, rather than being reported at face value. Full methodology in [[Dux AI Safety Guide]].
+Without logprobs, the remaining two signals renormalize to 0.54/0.46. The blended score feeds Platt scaling to produce the final calibrated `confidence_score`, tracked in a global `CalibrationRecord` (the `CALIBRATION_RECORD` entity in [[Dux Architecture Guide]]) carrying `model_version`, `platt_params`, `brier_score`, and `ece`. The rule that matters most in practice: **evidence freshness caps confidence.** Evidence older than a connector's freshness SLO sets a degraded-evidence flag, and degraded evidence simply cannot support a high-confidence band: an `exploitable`/`likely` verdict gets downgraded, or falls all the way to `insufficient_data`, rather than being reported at face value. Full methodology in [[Dux AI Safety Guide]].
 
 ## Reachable vs. breachable
 
