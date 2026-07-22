@@ -181,6 +181,8 @@ Ten attributed quotes back the launch narrative, approved for sales collateral a
 | Rinki Sethi, CSO at Upwind, ex-BILL | "The biggest gap in exposure management today isn't a lack of data, it's the inability to determine what actually matters amidst constant change." |
 | Karl Mattson, Squared Circle, ex-PennyMac | "The reality today is that attackers move faster than traditional security workflows. Dux changes that dynamic by helping teams reason about exposure and respond at the pace modern threats demand." |
 | Or Latovitz (Redpoint YouTube, 2026) | "Dux agents act like an autonomous researcher inside each customer's environment: breaking vulnerabilities into real-world exploitation requisites, gathering runtime, identity, network, and controls evidence, and backing every investigation with agent-written code." |
+| Erica Brescia (Redpoint YouTube, 2026) | "We chat with a lot of CISOs at Redpoint, and every single one bemoans the millions of vulnerabilities across their tooling. Most aren't actually exploitable: teams waste time on low-priority noise." |
+| Or Latovitz (Redpoint YouTube, 2026) | "Up until now, vulnerability management teams mainly had one 1000 lb hammer: patching. For the first time, we're expanding that arsenal so VM teams can close the loop and fix problems themselves, not only orchestrate remediation with IT." |
 
 ```mermaid
 flowchart LR
