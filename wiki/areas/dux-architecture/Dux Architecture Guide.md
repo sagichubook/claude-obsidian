@@ -124,7 +124,7 @@ The single most consequential architecture decision in the whole product is what
 |---|---|---|
 | Outer orchestration | `ExploitabilityAssessmentWorkflow` (Temporal) | lifecycle, CVE trigger, state machine, one child workflow per tenant |
 | Activity facade | `AssessmentActivity` | thin entrypoint, no inline business logic |
-| Prerequisite subagent | `PrerequisiteExtractor` | S-LLM only, schema-validated output |
+| Prerequisite subagent | `PrerequisiteExtractor` | S-LLM only (`claude-haiku-4-5`, structured-JSON output, no tool access), schema-validated output |
 | Asset-context subagent | `AssetContextWorker` | scoped asset/runtime evidence |
 | Control-mapping subagent | `ControlMappingWorker` | vendor control panels, attack-path evidence |
 | Reasoning loop | `ReasoningLoop` | direct Bedrock Converse tool calls, no framework, enforces the action budget |
