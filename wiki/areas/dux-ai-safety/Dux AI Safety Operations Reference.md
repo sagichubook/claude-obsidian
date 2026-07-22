@@ -126,14 +126,15 @@ flowchart LR
     Block -->|no| Fail
 ```
 
-### MCP-specific risks (selected)
+### OWASP MCP Top 10 crosswalk
 
-| Risk | Maturity (pre-seed) |
-|---|---|
-| Tool poisoning | Implemented |
-| SSRF / egress | Implemented |
-| Confused deputy | Partial |
-| Supply chain | Partial |
+| Risk | Policy IDs | Maturity (pre-seed) | Seed Gate-2 exit |
+|---|---|---|---|
+| Tool poisoning | PS-006, PS-003, `mcp-scan` CI | Implemented | (already implemented) |
+| Confused deputy | PS-005, PS-011 | Partial | `test:mcp-security --case MCP-011` (OAuth 2.1 resource binding) |
+| SSRF / egress | PS-004, PS-003 | Implemented | (already implemented) |
+| Supply chain | PS-006, ASI04 | Partial | PS-009 ECDSA verify plus a green `mcp-scan` |
+| Session / auth | PS-005, PS-011 | Partial | `MCP-005` cross-tenant reject plus PS-010 seccomp |
 
 ### The remediation calendar
 
