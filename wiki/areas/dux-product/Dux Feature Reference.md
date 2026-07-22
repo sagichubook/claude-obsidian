@@ -91,6 +91,8 @@ Factor cards live at Gate 1: `aws_sg_blocks_port` (live), `product_not_affected`
 
 One documentation note worth repeating precisely: the reference-UI demo numbers baked into the original Figma spec (8,341 researched, a 74.3/15.6/10.1% split, 78% certainty) are illustrative placeholders, not measured product metrics. Don't cite them as real.
 
+Measured by: the assessment confidence distribution, factor-card coverage, attack-path query latency, the drill-down-to-trace open rate, and golden-set exploitability accuracy.
+
 ## Investigation: Assessment Trace (US-017)
 
 Arguably Dux's single biggest competitive asset: a JSON bundle proving *why* a verdict was reached, opened as a panel from US-001 or US-011 rather than living as its own nav icon. The differentiating claim ("investigation backed by code: consistent, inspectable, repeatable") depends entirely on `execution_results` actually being populated, which it is at Gate 1 via a self-hosted Firecracker microVM sandbox; the only time it's null is when the sandbox has been disabled through the emergency kill path.
