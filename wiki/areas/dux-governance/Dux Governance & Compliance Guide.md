@@ -78,6 +78,32 @@ Dux's working position (stated as a position, not a settled legal conclusion) is
 
 One live discrepancy is worth flagging plainly rather than quietly fixing out of scope: the public marketing site currently displays "ISO 27001 Certified" and SOC marks that this compliance program does not yet back: a confirmed unearned claim that needs a live-site correction, tracked as work outside this documentation repository itself.
 
+### Framework crosswalks
+
+Three additional frameworks get mapped against Dux's existing controls, all published on the same month-4-through-6 cadence and gated on the same federal-RFP trigger as FedRAMP itself:
+
+The **NIST AI RMF crosswalk** covers the four AI-specific functions (Govern, Map, Measure, Manage) against Dux's own AI-governance mechanisms.
+
+The **NIST CSF 2.0 crosswalk** is a distinct, broader framework, not a duplicate of the AI RMF: where AI RMF scopes AI-system risk specifically, CSF 2.0 scopes organizational cybersecurity risk as a whole, and adds Govern as its sixth function:
+
+| CSF 2.0 function | Dux control or mechanism |
+|---|---|
+| Identify | The asset and connector catalog; the World Model asset inventory |
+| Protect | Row-level-security tenant isolation; the kill switch; the NHI lifecycle below |
+| Detect | Governance-kernel anomaly triggers (the confidence-abstention band, sandbox timeout and out-of-memory signals, statistical outlier detection); AI-BOM drift monitoring |
+| Respond | The incident runbooks; the operational runbook bridge |
+| Recover | Disaster recovery: a 4-hour RTO and 1-hour RPO platform baseline |
+| Govern | This governance program itself: its triggers, policies, and evidence framework |
+
+The **CIS Controls v8 crosswalk** exists because Dux ingests CIS-aligned CSPM findings (via the Wiz connector's scanner role), so that ingested data needs a stated correspondence to Dux's own findings taxonomy:
+
+| Dux findings category | CIS Controls v8 |
+|---|---|
+| Asset and connector inventory | Control 1: Inventory and Control of Enterprise Assets |
+| CSPM misconfiguration findings | Control 4: Secure Configuration of Enterprise Assets and Software |
+| Vulnerability findings (NVD, CISA-KEV, EPSS ingestion) | Control 7: Continuous Vulnerability Management |
+| The hash-chained audit trail | Control 8: Audit Log Management |
+
 ### Policy highlights
 
 Access to the `platform_admin` role requires dual approval, and break-glass emergency access is two-person, capped at 4 hours, and reviewed quarterly. Standard change requests need one approval; security-sensitive changes need two; a genuine emergency change can go out with verbal approval and a retroactive request-for-change filed within 24 hours. One rule carries real teeth: **a model-pin change requires a full security review, an updated AI-BOM, a golden-set run, a prompt-safety scan, and 48 hours of monitoring: skipping any of that is treated as a P1 and a control weakness under SOX IT general controls**, not a process nicety.
