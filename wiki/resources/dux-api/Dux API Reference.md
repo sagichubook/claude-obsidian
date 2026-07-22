@@ -60,7 +60,7 @@ In short: `member` covers everything a day-to-day analyst needs including read/w
 | Professional | 5,000 req/min | 300 req/min |
 | Enterprise | 10,000 req/min | Negotiated |
 
-Every response carries standard rate-limit headers; a 429 additionally carries `Retry-After`. Coarse flood control sits at the Cloudflare edge; identity-aware limiting is enforced post-auth. Concurrent SSE streams are capped at 5 per user.
+Every response carries the standard IETF `RateLimit-*` headers (`RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`); a 429 additionally carries `Retry-After`. Coarse flood control sits at the Cloudflare edge; identity-aware limiting is enforced post-auth. Concurrent SSE streams are capped at 5 per user.
 
 ### Domains
 
