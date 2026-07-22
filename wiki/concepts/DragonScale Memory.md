@@ -18,10 +18,7 @@ tags:
   - fractal
 status: proposed
 related:
-  - "[[LLM Wiki Pattern]]"
-  - "[[Compounding Knowledge]]"
-  - "[[Hot Cache]]"
-  - "[[concepts/_index]]"
+  - "[[hot]]"
 sources:
 ---
 
@@ -289,7 +286,5 @@ Verified against primary sources on 2026-04-23. **Scope of tagging**: the specif
 
 ## Connections
 
-See [[LLM Wiki Pattern]] for the broader pattern this extends.
-See [[Compounding Knowledge]] for why persistent state is the precondition for DragonScale.
-See [[Hot Cache]] for the existing 500-word session context, which is a level-0 manual fold.
-See [[Andrej Karpathy]] for the intellectual lineage.
+This extends [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (see [ATTRIBUTION.md](../../ATTRIBUTION.md)) — persistent, compounding wiki state is the precondition for DragonScale's memory-layer mechanisms.
+See `wiki/hot.md` for the existing ~500-word session context, which is a level-0 manual fold.

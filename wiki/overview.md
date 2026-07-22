@@ -31,23 +31,23 @@ Run `/wiki` to scaffold this vault for your own domain and replace this overview
 
 ## Current Content
 
-**Product areas:**
-- [[Dux Overview]] — what Dux is and does
-- [[Exposure Analysis]] — exploitability reasoning
-- [[Security Stepper]] — mitigation workflow
-- [[Research Dashboard & Vulnerability Reduction]] — vulnerability management
+**Start here:**
+- [[Dux]] — the front door: what Dux is and does, the company, and the full domain map
+
+**Product:**
+- [[Dux Product Guide]] — thesis, pillars, write-action autonomy, personas, roadmap
+- [[Dux Feature Reference]] — exploitability reasoning, mitigation workflow, vulnerability management, every other feature surface
 
 **Resources:**
-- [[Dux Agent]] — the customer-facing AI agent
-- [[Dux, Inc.]] — company entity
-- [[Governance Kernel]] — safety architecture
+- [[Dux Product Guide]] — the Dux Agent persona, the customer-facing AI agent
+- [[Dux AI Safety Guide]] — the governance kernel and the rest of the safety architecture
 
 ---
 
 ## Current State
 
-- Wiki pages: Dux product, architecture, governance, and operations areas
-- Last activity: Dux Security knowledge base
+- Wiki pages: 15 consolidated guides across product, architecture, AI safety, engineering, operations, governance, GTM, and API domains, plus the execution backlog
+- Last activity: consolidated the 74-note Dux reference wiki into 15 publication-ready guides (2026-07-22)
 
 ---
 

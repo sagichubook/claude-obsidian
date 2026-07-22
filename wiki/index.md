@@ -19,133 +19,62 @@ Navigation: [[overview]] | [[log]] | [[hot]] | [[dashboard]] | [[getting-started
 
 ---
 
-## Cross-cutting hubs
+## Dux knowledge base
 
-- [[Welcome]]
-- [[Product Hub]]
-- [[Engineering Hub]]
-- [[Growth Hub]]
-- [[Customer Success Hub]]
-- [[Legal-Finance Hub]]
+- [[Dux]]: single front door: what Dux is, the company, and the full domain map below
 
 ---
 
 ## Projects
 
-- [[Dux Portfolio]] — 10-epic execution backlog, 2,118h against a 2,160h envelope
+- [[Dux Portfolio]]: 10-epic execution backlog, 2,118h against a 2,160h envelope
 
 ---
 
-## Product Areas
+## Product
 
-- [[Dux Overview]]
-- [[Dux Product Area]]
-- [[Dux Product Overview]]
-- [[Dux Roadmap]]
-- [[Exposure Analysis]]
-- [[Security Stepper]]
-- [[Research Dashboard & Vulnerability Reduction]]
-- [[Predictive Risk Forecasting]]
-- [[Mitigation & Remediation Write Path]]
-- [[Connector Hub]]
-- [[Dashboard Home & Audit]]
-- [[Continuous Re-Assessment]]
-- [[Chat Guidance]]
-- [[Tenant Settings, Help & Custom Metrics]]
-- [[Assessment Trace]]
+- [[Dux Product Guide]]: thesis, pillars, write-action autonomy, personas, gate model, roadmap
+- [[Dux Feature Reference]]: every screen and API surface behind the sidebar and chat
+- [[Dux Taxonomy & Catalogs]]: controlled vocabulary, confidence model, the nine extension registries
 
-## Architecture Area
+## Architecture
 
-- [[Dux Architecture Area]]
-- [[Architecture Overview]]
-- [[Data Model]]
-- [[Workflows & Agent Orchestration]]
-- [[Multi-Tenancy]]
+- [[Dux Architecture Guide]]: system context, stack, orchestration, data model, tenant isolation, key decisions
 
-## AI Safety Area
+## AI Safety
 
-- [[Dux AI Safety Area]]
-- [[AI Safety Overview]]
-- [[Agent Identity]]
-- [[Confidence Calibration]]
-- [[Sandbox Execution]]
-- [[MCP Security]]
-- [[OWASP Assessments]]
-- [[AI Safety Incident Runbooks]]
+- [[Dux AI Safety Guide]]: governance kernel, kill switch, CaMeL boundary, sandbox, MCP security
+- [[Dux AI Safety Operations Reference]]: agent identity, confidence calibration, OWASP ratings, incident runbooks
 
-## Engineering Area
+## Engineering
 
-- [[Dux Engineering Area]]
-- [[Engineering Standards]]
-- [[CI-CD & Testing|CI/CD & Testing]]
-- [[Local Development]]
+- [[Dux Engineering Guide]]: local setup, coding standards, code review, CI/CD, the golden set
 
-## Operations Area
+## Operations
 
-- [[Dux Operations Area]]
-- [[Operations Overview]]
-- [[Observability & SLO]]
-- [[Seed Operational Runbooks]]
-- [[DR-BCP]]
-- [[Customer Lifecycle & Comms]]
-- [[Dux Onboarding & Activation]]
-- [[Dux Support Playbook]]
-- [[Customer Success Hub]]
+- [[Dux Operations Guide]]: seed activation, observability/SLOs, deploy/rollback, disaster recovery
+- [[Dux Customer Success Guide]]: onboarding, support tiers, incident comms, tenant health
 
-## Governance Area
+## Governance
 
-- [[Dux Governance Area]]
-- [[Open Items Register]]
-- [[Quick Reference Card]]
-- [[Compliance Program]]
-- [[Series B Scale Programs]]
-- [[Legal-Finance Hub]]
+- [[Dux Governance & Compliance Guide]]: open items, SOC 2/ISO/EU AI Act, Series B governance roadmap
 
-## GTM Area
+## GTM
 
-- [[Dux GTM Area]]
-- [[Competitive Positioning & POC]]
-- [[Pricing & Packaging]]
-- [[GTM Guardrails]]
-- [[Lean Canvas]]
-- [[External Corrections 2026-07]]
-- [[Growth Hub]]
+- [[Dux GTM Guide]]: claims firewall, business model, pricing, competitive positioning, live corrections
+
+## API
+
+- [[Dux API Reference]]: three REST planes, DTO contracts, DQL, events and webhooks
 
 ---
 
 ## Resources
 
-### People
-- [[Dux Agent]]
-- [[Dux, Inc.]]
-- [[Sagi]]
-
-### Concepts
-- [[Governance Kernel]]
-- [[Kill Switch]]
-- [[World Model]]
-- [[CaMeL]]
-
-### Architecture
-- [[Dux Architecture Decision Records]]
-
-### API
-- [[Dux API Resources]]
-- [[API Overview]]
-- [[Application API]]
-- [[Public Data API]]
-- [[Events & Webhooks]]
-
-### Meta
-- [[Dux Decisions Log]]
-- [[Dux Traceability Matrix]]
-
-### Product
-- [[Dux Taxonomy and Controlled Vocabulary]]
-- [[Dux Catalogs — Registries of Record]]
+- [[Dux Decisions & Traceability Reference]]: full decision history and the BR→Epic→US→verification join table
 
 ---
 
 ## Domains
 
-All ten Dux domain folders (`00-meta` through `90-execution`, 68 source files) are ingested as of 2026-07-21. See [[Dux Overview]] for the domain map and [[migration-audit|Migration Audit]] for the full source-to-note reconciliation.
+All ten Dux domain folders (`00-meta` through `90-execution`, 68 source files) were ingested 2026-07-21 and consolidated into the 15-file structure above on 2026-07-22. See [[Dux]] for the domain map and reading paths by role, and [[migration-audit|Migration Audit]] for the original source-to-note reconciliation (historical record, pre-consolidation).
