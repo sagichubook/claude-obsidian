@@ -203,6 +203,11 @@ The event-driven surface behind both REST planes: what fires, how it's delivered
 | `finding.*` | A scanner row is created, updated, or deleted during World Model ingest |
 | `vulnerability_instance.*` | The per-asset CVE projection changes: exploitability status, network exposure, acknowledgment state, or last-seen time |
 | `assessment.completed` | An application-layer assessment finishes |
+| `assessment.requeued` | Continuous re-assessment re-triggers an assessment |
+| `attack_path.validated` | An attack path is validated |
+| `ownership.inferred` | Asset ownership is inferred |
+| `control_asset_mapping.updated` | A control-to-asset mapping changes |
+| `custom_metric.updated` | A custom metric's definition or data changes (Seed onward) |
 
 Public API consumers should subscribe to `cve_research.completed` and `vulnerability_instance.*` rather than polling for changes.
 
