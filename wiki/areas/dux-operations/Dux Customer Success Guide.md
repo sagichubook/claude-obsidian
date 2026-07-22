@@ -83,12 +83,17 @@ A public status page returning a healthy check is treated as a hard launch block
 | Severity | What customers see |
 |---|---|
 | P0 platform outage | "Dux is experiencing a platform-wide issue affecting dashboard and API access." |
-| P0 AI safety (platform-wide kill switch) | "We detected a potential data isolation issue and paused AI analysis as a precaution." |
+| P0 AI safety (platform-wide kill switch, KS-L4) | "We detected a potential data isolation issue and paused AI analysis as a precaution." |
 | P1 tenant incident | "Some customers may experience delayed assessments. We are investigating." |
-| Tenant-scoped kill switch (read-only mode) | "Your organization's dashboard is in read-only mode while we review a billing or security matter." |
+| KS-L2 (tenant assessment paused) | "Agent features paused for your organization pending security review." |
+| KS-L3 (tenant platform, read-only mode) | "Your organization's dashboard is in read-only mode while we review a billing or security matter." |
 | Degraded AI (running on a fallback model) | "AI analysis is running in reduced-capability mode." |
 
-An interim exception exists for the earliest days: provisioning a design partner before the status/trust portals are actually live requires a signed risk acceptance from both the CEO and the Security Officer for that specific tenant: not a blanket policy, a per-tenant sign-off.
+An interim exception exists for the earliest days: provisioning a design partner before the status/trust portals are actually live requires a signed risk acceptance from both the CEO and the Security Officer for that specific tenant: not a blanket policy, a per-tenant sign-off. That gate itself has three tiers: P0 (both `status.dux.io` and `trust.dux.io` returning a healthy response) blocks onboarding the very first NDA design partner; P1 (the portal shell fully built out) is an engineering milestone rather than a hard blocker; and P2 (content-complete, with a SOC 2 summary, a penetration-test executive summary, and a security FAQ) blocks procurement, specifically the first $100K annual contract or any enterprise security questionnaire.
+
+## Billing metering
+
+Usage that feeds an invoice runs on Stripe meter events for tokens and agent runs, reconciled daily against the platform's own usage dashboard: invoice line items have to match what that dashboard shows. Overage alerts fire at three thresholds, 80%, 100%, and 120% of quota, and a reconciliation drift above 5% between Stripe and the platform's own ledger routes into the billing-reconciliation-drift runbook in [[Dux Operations Guide]].
 
 ## Offboarding
 
