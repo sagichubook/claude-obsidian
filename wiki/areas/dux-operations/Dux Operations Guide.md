@@ -157,9 +157,19 @@ An undeclared-agent signal is treated with real urgency: the CTO is paged within
 
 A warning fires past 2 hours of staleness, a hard alert past 4. The response (check the API key, read ingestion logs, verify backoff behavior, check the cache, and if needed enable the CISA KEV/EPSS fallback path) is entirely infrastructure work, which is exactly why the AI-safety check is deliberately skipped here: no agent is involved, and the actual risk is platform-trust erosion from stale data, not an agentic-safety concern. Customers are only notified if the outage runs past 24 hours.
 
+### SSO onboarding (seed trigger)
+
+OIDC is preferred, with PKCE mandatory (the implicit flow is disabled outright); SAML 2.0 is the fallback, with Okta and Entra as the primary providers. Just-in-time provisioning defaults new users to `viewer`, with group-to-role mapping layered on top; SCIM 2.0 is optional, with its tokens living in Vault, rotating every 90 days, and emitting an `sso.scim.token.rotated` audit record on every rotation. Session timeout is 8 hours. Rollback runs via `admin:sso-disable --tenant $ID`, completing in under 5 minutes and invalidating every active session for that tenant.
+
+### Secret rotation
+
+A 30/7/1-day notification sequence goes out by email and in-app banner ahead of any rotation, with a self-service rotation UI and full delivery tracking in the audit log. Secrets themselves live in HashiCorp Vault, including transit encryption for OAuth refresh tokens.
+
 ### Seed-stage extensions worth knowing
 
 Agent quota exhaustion hard-caps an agent one hour after it crosses 100% of its quota, with an L2 kill switch at 120%: the governance kernel's cost cap fails closed on its own, independent of whether Stripe's usage-metering system has caught up yet. A billing-reconciliation drift above 5% between Stripe and the platform's own ledger triggers a quota hold that needs three consecutive clean daily reconciliation runs to clear. And once a month, the first Friday is "Chaos Friday" in staging: a scheduled resilience exercise that gates that week's production deploy on passing.
+
+Two more seed-only extensions worth knowing about, both narrower in scope: a Neo4j reconciliation failure (graph divergence above 0.1% against the canonical CTE path) sets the `neo4j_graph` flag to 0% so all reads fall back to the CTE path in under 30 seconds, replays from the last good offset via `admin:neo4j-replay`, and holds a 7-day shadow period before retrying. And an assessment-deduplication failure, where `AssessmentDeduplicationService` misses a duplicate `assessment_id` within the same CVE-and-asset window, pages platform on-call directly; queue segmentation is what keeps one tenant's dedup storm from starving the shared worker pool.
 
 ```mermaid
 sequenceDiagram
