@@ -127,7 +127,7 @@ The single most consequential architecture decision in the whole product is what
 | Prerequisite subagent | `PrerequisiteExtractor` | S-LLM only (`claude-haiku-4-5`, structured-JSON output, no tool access), schema-validated output |
 | Asset-context subagent | `AssetContextWorker` | scoped asset/runtime evidence |
 | Control-mapping subagent | `ControlMappingWorker` | vendor control panels, attack-path evidence |
-| Reasoning loop | `ReasoningLoop` | direct Bedrock Converse tool calls, no framework, enforces the action budget |
+| Reasoning loop | `ReasoningLoop` | P-LLM (`claude-sonnet-4-6`, tool config enabled with the discovered MCP tool schemas), direct Bedrock Converse tool calls, no framework, enforces the action budget |
 | Trace recording | `TraceRecorder` | persists reasoning steps; makes no LLM calls itself |
 
 Each subagent gets a clean context window, a narrow tool allowlist, and a fixed output schema that doubles as the CaMeL security boundary (see [[Dux AI Safety Guide]]). A few hard rules keep this pattern from eroding over time: every tier gets its own distinct system prompt: never reuse the orchestrator's prompt for a subagent; a worker's first message is always a structured brief (objective, allowed tools, limits, output schema); there's exactly one child workflow per tenant, for blast-radius isolation; and Saga-style compensation persists partial state on failure ("analysis incomplete: asset context loaded, exploitability still pending") instead of silently discarding partial work.
