@@ -224,7 +224,7 @@ Measured by re-assessment volume, the outcome-change rate on re-run, and cost pe
 
 The prerequisite gate for nearly everything above: it feeds live AWS evidence into Exposure Analysis and is the deep-link target from every degraded empty state in the stepper. Its most consequential rule is integrity over coverage: a vendor connector never shows a false "Connected" state (it reads "Coming soon" until both credential validation and a first successful sync succeed), and a bad CSV upload produces typed errors rather than a partial, poisoned ingest.
 
-`POST /connectors/aws/sync` and `POST /connectors/csv/upload` (limits: 50K rows, UTF-8, unique tenant+hostname pairs) are the two Gate-1 ingestion paths. AWS auth uses a cross-account IAM role with an External ID; credentials never appear in agent traces.
+`POST /connectors/aws/sync` and `POST /connectors/csv/upload` (limits: 50K rows, UTF-8, unique tenant+hostname pairs) are the two Gate-1 ingestion paths. AWS auth uses a cross-account IAM role with an External ID; credentials never appear in agent traces. A Phase-1 constraint worth knowing before a customer asks: one AWS account per tenant, enforced in `AwsDiscoveryService`; multi-account delegated admin is deferred to Gate 2.
 
 The MVP connector table is the single authoritative source for rate limits and sync intervals: it deliberately supersedes an older, coarser cadence table that disagreed with it by up to 288x on four overlapping connectors:
 
