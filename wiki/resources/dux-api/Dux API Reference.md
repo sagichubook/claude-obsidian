@@ -84,6 +84,7 @@ This plane is deliberately CVE-lookup-and-assessment-centric (`GET /cves/{id}/de
 | `GET /controls/refinements` | Control refinements | Backs the control-refinement recommendations surface |
 | `POST /research/schedule`, `GET /research/schedule` | Continuous re-assessment | Sets or reads a scheduled research sweep; defaults to a 24-hour cadence |
 | `POST /mitigations`, `POST /fast-actions`, `POST /remediation-tickets` | Write actions | All unattended by default; all require a client-supplied `Idempotency-Key` |
+| `POST /vulnerability-instances/{id}/acknowledgments` (+ `DELETE .../{ack_id}`) | Acknowledge Vulnerability Instance | Create: `{reason, expires_at?}` returns `{acknowledgment_id, is_acknowledged: true, expires_at?}`. `DELETE` revokes |
 | `POST /webhooks/configure` | Webhook configuration | Registers a tenant's webhook endpoint |
 | `GET /webhooks/deliveries` (+ `POST .../{id}/replay`) | Webhook delivery visibility | Filterable by status or event type; replay is scoped to the tenant's own dead-letter records |
 | `POST /v1/admin/kill-switch` (+ `DELETE .../{id}`) | Kill switch | Management plane only. Activation body: `{level: L1\|L2\|L3\|L4, tenant_id?, session_id?, reason}`; `DELETE` deactivates |
