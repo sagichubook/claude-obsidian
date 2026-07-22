@@ -189,15 +189,50 @@ One operational fallback worth knowing: NVD enrichment collapsed on 2026-04-15, 
 
 ### 3. Model provider catalog
 
-Pins dated 2026-06, reviewed quarterly. OpenAI is primary (`gpt-5.4`, `gpt-5.4-mini`); Anthropic is fallback (`claude-sonnet-4-6`, `claude-haiku-4-5`, `claude-sonnet-5` is queued for evaluation at the next refresh); `azure-openai-eu` handles EU residency requirements. Zero Data Retention is a Gate-1 legal task: neither provider trains on API data by default, but abuse-monitoring logs are still retained (roughly 30 days at OpenAI, 7 days at Anthropic by default since September 2025): negotiated ZDR with both is a precondition of subprocessor listing, and **until that's in place, the CaMeL S-LLM must not receive customer-identifying context.**
+Pins dated 2026-06, reviewed quarterly. OpenAI is primary (`gpt-5.4`, `gpt-5.4-mini`); Anthropic is fallback (`claude-sonnet-4-6`, `claude-haiku-4-5`, `claude-sonnet-5` is queued for evaluation at the next refresh); `azure-openai-eu` handles EU residency requirements. Enterprise tenants on critical CVEs can escalate further still, to `openai/gpt-5.5`, behind the `reasoning_model_tier` Unleash flag. Zero Data Retention is a Gate-1 legal task: neither provider trains on API data by default, but abuse-monitoring logs are still retained (roughly 30 days at OpenAI, 7 days at Anthropic by default since September 2025): negotiated ZDR with both is a precondition of subprocessor listing, and **until that's in place, the CaMeL S-LLM must not receive customer-identifying context.**
 
 ### 4. Event catalog
 
-The source of truth for webhooks, SSE, and audit events (full spec: [[Dux API Reference]]). Gate-1 events include `assessment.completed`/`state_changed`, `finding.created`/`updated`/`deleted`, `mitigation.executed`/`blocked`, `remediation.ticket_created`, and `kill_switch.activated`. `hitl_request` fires over SSE, on anomaly escalation only.
+The source of truth for webhooks, SSE, and audit events (full spec: [[Dux API Reference]]):
+
+| Event(s) | Class | Gate | Producer |
+|---|---|---|---|
+| `assessment.completed`, `assessment.state_changed` | Webhook | Gate 1 | Assessment workflow |
+| `assessment.requeued` | Webhook | Gate 1 | The continuous-reassessment scheduler |
+| `finding.created` / `updated` / `deleted` | Webhook | Gate 1 | World Model ingest |
+| `vulnerability_instance.updated` | Webhook | Seed | Instance projection |
+| `vulnerability_instance.acknowledged`, `.acknowledgment_expired` | Webhook | Gate 1 | Acknowledgment service |
+| `attack_path.validated` | Webhook | Gate 1 | Graph projection |
+| `ownership.inferred` | Webhook | Gate 1 | Ownership inference |
+| `preference.applied` / `.rejected` | Webhook | Gate 2c | Preference learning |
+| `control_asset_mapping.updated` | Webhook | Gate 1 | Control-to-asset sync |
+| `mitigation.executed` / `.blocked` | Webhook | Gate 1, unattended | The governance kernel |
+| `remediation.ticket_created`, `ticket.created` / `.updated` / `.resolved` / `.reopened` | Webhook | Gate 1, create plus route, unattended | ServiceNow adapter |
+| `cve_research.backlog` / `.completed`, `custom_metric.updated` | Webhook | Seed | Research queue / metric admin |
+| `connector.sync_failed`, `kill_switch.activated` | Webhook | Gate 1 | Connector / kill switch |
+| `hitl_request` | SSE | Gate 1, anomaly escalation only | Chat guidance SSE |
+| `governance.kill_switch_short_circuit`, `agent.created`, `admin.impersonate` | Audit | Gate 1 | Governance kernel / provisioning |
+| `tenant.provisioned` | Audit | Seed | Provisioning |
 
 ### 5. Feature-flag catalog
 
-Distinct from the kill switch on purpose: a flag is a *release* control, the kill switch is a *safety* control: never conflate the two. `mitigation_stage`/`remediation_stage` are on by default at Gate 1. `rag_enabled` has been on since 2026-07-19 (Agentic RAG plus constrained decoding). `hitl_ui` and `chat_write_tools` stay off until their respective approval surfaces ship (Week 12 and Week 14).
+Distinct from the kill switch on purpose: a flag is a *release* control, the kill switch is a *safety* control: never conflate the two.
+
+| Flag(s) | Gate | Default | Kill-switch relation |
+|---|---|---|---|
+| `chat_interface`, `trace_viewer` | Gate 1 | On | - |
+| `camel_plane` | Gate 1 | On | - |
+| `api_webhooks` | Gate 1 | Off until configured | - |
+| `ownership_inference` | Gate 1 | On | - |
+| `hitl_ui` | Week 12 (minimal approve/deny UI) | Off | HITL required |
+| `chat_write_tools` | Week 14 (full chat HITL UI) | Off | HITL required |
+| `mitigation_stage`, `remediation_stage` | Gate 1, unattended by default for 3 of 5 write actions | On | L2 tenant scope |
+| `closed_loop_validation` | Gate 3 | Off | - |
+| `optional_physical_residency` | Gate 5 | Off | - |
+| `reasoning_model_tier` | Enterprise | Off | Cost cap |
+| `platt_scaling` | Gate 2+ | Off | Requires a calibration record |
+| `risk_trend_forecasting` | Gate 2 | Off | - |
+| `rag_enabled` | Seed, reassessed | On since 2026-07-19 (Agentic RAG with constrained decoding) | - |
 
 ### 6. Vendor action catalog
 
