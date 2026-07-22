@@ -85,10 +85,15 @@ One easy-to-miss detail worth getting right if you're ever doing the math yourse
 | Feature-flag evaluation | SDK p99 under 20ms; API 99.9% available |
 | GDPR export and delete | Under 24 hours |
 | Accessibility | WCAG 2.2 AA, zero automated-scan violations |
+| Code-backed audit retention | Trace plus code, plus execution results, at Gate 1 |
 | Max agent context | 128K tokens, checkpointed at 80% |
+| Per-tenant LLM cost cap | Enforced before intervention is needed |
 | OTel instrumentation coverage | 100% of LLM call paths |
+| Exposure drill-down p95 | Under 500ms at 1,000 assets |
 
-The four latency targets in that table page through the same fast-burn-rate alerting windows as the availability SLO itself, rather than through separate bespoke thresholds: one alerting mechanism, several things it watches.
+The four latency targets in that table (API p95, assessment-start p95, 3-hop graph query p95, and exposure drill-down p95) page through the same fast-burn-rate alerting windows as the availability SLO itself, rather than through separate bespoke thresholds: one alerting mechanism, several things it watches.
+
+The Prometheus metrics feeding the cost-and-safety dashboard, consolidated in one place: `dux_cost_llm_cents`, `dux_cost_workflow_actions`, `dux_cost_infrastructure_cents`, `kill_switch_propagation_seconds`, `dux_cost_llm_cents_per_tenant` (labeled by `tenant_id`), `dux_cost_sandbox_seconds_per_tenant` (Gate 2+), `dux_cost_temporal_cents`, `dux_llm_bedrock_latency_p95`, `dux_llm_anthropic_baseline_p95`, `dux_valkey_hit_rate`, and `dux_nats_consumer_lag`.
 
 ### The SLA ladder
 
