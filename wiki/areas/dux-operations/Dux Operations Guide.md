@@ -191,7 +191,7 @@ sequenceDiagram
 
 ## Disaster recovery and business continuity
 
-Two sets of recovery numbers exist side by side and are deliberately not the same, and that's not a contradiction: the **platform baseline** (4-hour recovery time, 1-hour recovery point) assumes a genuinely hard failure (a whole node pool or region lost) while the tighter **per-component numbers** (CloudNativePG under 15 minutes, NATS under 5, Valkey and MinIO under 30) describe each component's own high-availability mechanism absorbing a narrower failure on its own.
+Two sets of recovery numbers exist side by side and are deliberately not the same, and that's not a contradiction: the **platform baseline** (4-hour recovery time, 1-hour recovery point) assumes a genuinely hard failure (a whole node pool or region lost) while the tighter **per-component numbers** describe each component's own high-availability mechanism absorbing a narrower failure on its own: CloudNativePG at under 5 minutes RPO and under 15 minutes RTO (streaming replication plus S3-compatible WAL archives to MinIO), NATS JetStream at under 1 minute RPO and under 5 minutes RTO (multi-replica streams), and Valkey and MinIO both at under 1 hour RPO and under 30 minutes RTO (RDB-plus-AOF snapshots for Valkey, erasure coding plus site replication for MinIO).
 
 | Target | Value | How it's achieved |
 |---|---|---|
