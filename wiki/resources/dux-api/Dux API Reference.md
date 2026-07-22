@@ -135,11 +135,15 @@ Ships at the Seed trigger, not in Phase 1. Every endpoint is a `GET` except one 
 
 | Endpoint | Notes |
 |---|---|
-| `GET /v1/custom-metrics` | Paginated (`page`, `size` 1–200, default 10); filterable by entity type, active status, dashboard, or search |
+| `GET /v1/custom-metrics` | Paginated (`page`, `size` 1–200, default 10); filterable by entity type, active status, dashboard, or search; sortable via a `sort` parameter (column list, `-` prefix for descending, validated against `CustomMetricItem`'s own field list, with an unresolvable column returning the same 422 shape as an unresolvable DQL field) |
 | `GET /v1/custom-metrics/{id}` | Single metric detail |
 | `GET /v1/custom-metrics/{id}/data` | Time-range-bounded, cursor-paginated data points |
 | `GET /v1/vulnerability-instances/{cve_id}` | Cursor pagination, `limit` 1–5000 (default 3000), `expand=asset` |
 | `POST /v1/cve-research` | Batch of 1–50 CVE IDs; returns 202 with a per-item `backlog`/`completed` status array; deduplicated per CVE ID, not per batch |
+
+`CustomMetricItem`'s required fields: `id`, `display_name`, `description`, `entity_type`, `dql_filter`, `group_by`, `is_active`, `dashboard_id`, `ordinal`, `created_by`, `created_at`, `updated_at`, plus the optional `dashboard_ids[]`.
+
+`VulnerabilityInstanceV1Response` carries two more fields worth knowing: `external_uids` (required) and `remediations` (optional, a nullable `string[]`). Its `network_exposure` field is an optional, nullable verdict with four possible values: `internet`, `external`, `internal`, `unreachable`.
 
 ### DQL: the query language behind custom metrics
 
