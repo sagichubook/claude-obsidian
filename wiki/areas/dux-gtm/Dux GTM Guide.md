@@ -163,6 +163,25 @@ A one-to-two-page security excerpt (tenant isolation, kill switch, a data-flow d
 
 **One retraction worth knowing about, because it shows the discipline working as intended:** a previously cited analyst quote was formally retracted from active use after a verification pass couldn't independently confirm its wording, date, or attribution against any public source: superseding an earlier internal call that had marked it "confirmed." The broader positioning point the quote supported doesn't depend on it and remains valid; only the specific quote itself is off-limits until independently re-verified, and even if it later is, it would still need a reprint license before external use.
 
+Two more category-sizing figures, kept separate from that retracted quote because they're independently sourced: testing exploitability reduces false urgency by up to 84%, per Picus Security's own reported figure (not independent research), and CybersecTools sizes the exposure-management category at 85 tools against a broader 459-tool attack-surface category. A "Missing Blocklist"/"Protected By Policy" example count of 307 and 1,030 respectively rounds out that same category-sizing picture.
+
+### Market validation, verbatim
+
+Ten attributed quotes back the launch narrative, approved for sales collateral and RFP attachments through 2026-09-30 and due for a quarterly refresh against dux.io and primary press sources:
+
+| Speaker | Quote |
+|---|---|
+| Or Latovitz, co-founder and CEO | "These attacks don't wait for patch cycles. Defenders need rapid insight into what's actually exploitable and the means to reduce those exposures effectively, at the pace modern attacks demand." |
+| Erica Brescia, Managing Director, Redpoint | "Attackers are moving faster than ever, and defenders need a platform built for that pace. Dux puts vulnerabilities in the context of their actual threat to a business, and then uses AI agents exactly where speed and precision matter most to resolve them." |
+| Rona Segev, co-founder and managing partner, TLV Partners | "Most security tools show you what's vulnerable. Dux shows you what attackers can actually use, and that's a game changer." |
+| Amit Nir, co-founder and CPO | "Most scanner findings aren't exploitable once you account for real context. Agentic AI lets teams apply that level of reasoning across every vulnerability and asset, every time." |
+| Nadav Geva, co-founder and CTO | "Every time a zero-day drops or a critical vulnerability hits the news, teams need answers fast. Our customers spin up AI-workers to investigate those vulnerabilities across their environment within minutes." |
+| Andrew Wilder, CSO at Vetcor, ex-Nestlé | "CISOs will not turn over a rock to find another risk unless they have a solution for it. Dux solves the tale as old as time: too many vulns, not enough resources." |
+| Mille Gandelsman, CPO at Opti, ex-VP at Tenable | "After nearly a decade in exposure management, determining true exploitability always felt like the holy grail, but out of reach. Dux is the first approach I've seen that uses modern AI to actually make it practical in real environments." |
+| Rinki Sethi, CSO at Upwind, ex-BILL | "The biggest gap in exposure management today isn't a lack of data, it's the inability to determine what actually matters amidst constant change." |
+| Karl Mattson, Squared Circle, ex-PennyMac | "The reality today is that attackers move faster than traditional security workflows. Dux changes that dynamic by helping teams reason about exposure and respond at the pace modern threats demand." |
+| Or Latovitz (Redpoint YouTube, 2026) | "Dux agents act like an autonomous researcher inside each customer's environment: breaking vulnerabilities into real-world exploitation requisites, gathering runtime, identity, network, and controls evidence, and backing every investigation with agent-written code." |
+
 ```mermaid
 flowchart LR
     Scoping[Scoping] --> Discovery[Discovery]
