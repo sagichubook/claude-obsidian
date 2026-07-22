@@ -272,6 +272,8 @@ Tenant context always originates from the authenticated JWT claim (never a heade
 
 Access tokens carry the standard claims plus `tenant_id` and a JWT ID; a mismatched audience is an automatic 401. Refresh tokens use rotating families with reuse detection: if a refresh token gets reused, the entire token family is invalidated, not just that one token. Because a live access token has no forced-invalidation path before its natural 60-minute expiry, a short-TTL denylist is checked on every request and populated on password change, admin-forced logout, SCIM deprovisioning, or a kill-switch activation. Pre-authentication endpoints (login, signup, password reset, MFA) don't have a tenant ID yet, so they get their own backstop instead of the per-tenant throttler: 5 failed logins per account per 15 minutes with progressive backoff, 20 per IP per 15 minutes, sitting behind Cloudflare's coarser edge limits.
 
+Tokens themselves are signed with RS256, not a shared symmetric secret: a compromised API instance can verify a token but never mint one, and the signing key rotates quarterly via AWS SSM. Dashboard session cookies carry the full hardened attribute set: `Secure`, `HttpOnly`, `SameSite=Strict`, and the `__Host-` prefix.
+
 ### Tenant lifecycle
 
 **Provisioning:** create the tenant and default roles (first user becomes admin) → validate the AWS role ARN and external ID → run isolation tests plus `check-rls.sh`, blocking activation on any failure → run the first connector sync → write a `tenant.provisioned` audit record.
