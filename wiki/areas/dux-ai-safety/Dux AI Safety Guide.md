@@ -125,6 +125,8 @@ The kill switch is the primary compensating control for the unattended-by-defaul
 
 **CaMeL** (never "camel-plane" outside internal docs) is the answer to a specific, unavoidable problem: an agent that reads adversary-controlled CVE text and also holds tool access to a customer's environment is a textbook prompt-injection target. CaMeL's dual-LLM split makes injected instructions structurally unable to reach a tool-calling context, rather than relying on a classifier to catch them after the fact.
 
+That said, the split isn't a claimed cure-all, and the one named exception is worth stating plainly rather than glossing over: **Branch Steering**, a data-flow attack that redundancy defenses can't fully block even under strict dual-LLM isolation, per the same published research that names architectural isolation the only known robust defense against prompt injection generally. This is an accepted residual risk, not a gap awaiting a fix; the critic cross-check described below is a partial mitigation against it, not a closure.
+
 ```mermaid
 flowchart LR
     CVE["Untrusted input\n(public CVE text, threat intel)"] --> S["S-LLM (Suspicious)\nno tools, structured extraction only"]
