@@ -69,6 +69,8 @@ Routes remediation to the right team with a certainty percentage and ITSM/identi
 
 Lets a CISO teach risk appetite in natural language so future assessments respect scope. Held back from Gate 1 for a data reason, not a build reason: `PreferenceEngine` needs tenant assessment history that simply doesn't exist yet. The Gate-1 interim is session routing preferences (24-hour TTL, in Chat Guidance) plus per-instance acknowledgment (US-023). `POST /preferences` / `GET /preferences`; writes require tenant-admin or CISO role, and ambiguous natural language always raises a clarification prompt rather than silently guessing.
 
+**What the stepper is measured against**, feature by feature: completion rate and time-to-first-card p95 for the stepper overall (with at least 4 prerequisite source slots, NVD mandatory, backing US-001); trace export count, steps-per-assessment distribution, `execution_results` population rate, and the competitive-evaluation win rate when a trace is shared, for US-017's trace panel; and golden-set exploitability accuracy as the standing quality bar across the whole investigation flow.
+
 ```mermaid
 flowchart LR
     S1["1. Prerequisites\n(US-001)"] --> S2["2. Asset Context\n(US-002)"]
