@@ -20,6 +20,14 @@ This guide is scoped deliberately narrow: team practice and pipeline mechanics o
 
 The canonical repository is `github.com/duxsecurity/dux.git`: a private monorepo. One naming trap worth flagging before anything else: `github.com/duxsec` is a different, unrelated GitHub account, and using it by mistake is an easy, embarrassing error the team has explicitly called out to avoid.
 
+| Tool | Version | Purpose |
+|---|---|---|
+| Node.js | 22 LTS | API, web, and workflow workers (pinned via `.nvmrc` and `engines`) |
+| pnpm | 9+ | `corepack enable && corepack prepare pnpm@9.15.0 --activate` |
+| Docker Desktop | Latest | The full infrastructure stack |
+| Python | 3.11+ | Optional before Week 2; after Week 2, the `python-eval` container is the only sanctioned path |
+| Git | 2.40+ | Source control |
+
 ```bash
 git clone git@github.com:duxsecurity/dux.git dux
 cd dux && pnpm install
