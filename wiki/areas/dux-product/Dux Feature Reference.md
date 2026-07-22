@@ -131,6 +131,8 @@ The one write-surface rule worth internalizing: **any write action initiated fro
 
 Reconnection replays the last hour of events via `Last-Event-ID`; beyond that window it falls back to a state snapshot. Limits: 5 concurrent SSE streams per user, over HTTP/2. `POST /research/queue` is aliased as "Request Research" from chat.
 
+Tracked here: the C1 through C5 chat-spike metrics, SSE latency p95, Request Research conversion originating from chat, the prioritization-card selection rate, and chat's own LLM cost per session measured against its budget.
+
 ## Mitigation and remediation: the write surfaces (US-004, US-016, US-018, US-019)
 
 This is the canonical spec for everything Dux is allowed to *do* in a customer's environment, not just observe. Every write, regardless of which of the five actions it is, flows through the same governance chain (`IntentGate → BudgetGate → EffectGate → VendorActionGate → HITLGate`) and every write requires a `rollbackProcedure` URL in its audit/HITL payload before it can execute unattended. Full governance mechanics live in [[Dux AI Safety Guide]]; this section is the product-facing spec.
