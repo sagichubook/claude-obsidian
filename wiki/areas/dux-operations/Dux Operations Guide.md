@@ -27,13 +27,17 @@ Seed-stage operations (on-call, production monitoring, disaster recovery) activa
 
 A short founder-facing checklist keeps this concrete. Before the first paying customer: PagerDuty on-call plus an incidents channel live, all twelve-plus incident runbooks tested in staging, the shadow-AI detection runbook meeting its 5-minute SLA, and the platform cost cap and quota system dry-run tested. Before the first enterprise RFP: SOC 2 Type I evidence collection automated, a public status page live, the agent registry fully reconciled (zero undeclared agents), and a penetration test either completed or scheduled within 30 days.
 
-Three incident roles anchor everything below, and one separation is structural rather than a preference: the **AI Safety Lead** holds 60-second agent-halt authority and can never also be the **Incident Commander** for the same incident: a deliberate separation of powers, not a staffing convenience.
+Five incident roles anchor everything below, and one separation is structural rather than a preference: the **AI Safety Lead** holds 60-second agent-halt authority and can never also be the **Incident Commander** for the same incident: a deliberate separation of powers, not a staffing convenience.
 
 | Role | Responsibility | Default assignee |
 |---|---|---|
-| Incident Commander | Owns the timeline and severity call | Platform on-call |
+| Incident Commander | Owns the timeline and severity call | Platform on-call (primary) |
+| Technical Lead | Mitigation and rollback | On-call secondary |
 | AI Safety Lead | Halts agent activity within 60 seconds; cannot be the same person as the IC | AI-safety on-call |
 | Comms Lead | Status page and customer email | Founder/PM pre-Gate 2, product on-call after |
+| Scribe | Timeline and evidence capture | A rotating engineer |
+
+Closure standard, applied without exception: any P0 or P1 incident logs all five DORA MTTR phases in PagerDuty before it's allowed to close.
 
 ## Observability: what gets watched, and how
 
