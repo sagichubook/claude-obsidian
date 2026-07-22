@@ -25,6 +25,19 @@ Seed-stage operations (on-call, production monitoring, disaster recovery) activa
 | PLG-only | Gate 2b self-serve provisioning | No: blocks public signup only, not seed itself |
 | Connectors | Gate 2c | No |
 
+The six services carrying this operational load, and where each one's PagerDuty routing and recovery targets land:
+
+| Service | PagerDuty service | On-call | RTO | RPO |
+|---|---|---|---|---|
+| `dux-api` | `dux-platform` | Platform on-call | 4h | 1h |
+| `dux-connector-sync` / `dux-workflow` | `dux-platform` | Platform on-call | 4h | 1h |
+| `dux-web` | `dux-platform` | Platform on-call | 4h | 4h |
+| `dux-notifications` | `dux-platform` | Platform on-call | 8h | 4h |
+| `dux-agent` | `dux-ai` | AI-safety on-call | 8h | 4h |
+| `dux-sandbox` | `dux-ai` | AI-safety on-call | 8h | 4h |
+
+Service names follow the same Kubernetes/EKS deployment topology used everywhere else in this corpus. Gate 2 activation requires a verified PagerDuty service-directory URL for every row above, plus SRE and CTO sign-off before any enterprise RFP.
+
 A short founder-facing checklist keeps this concrete. Before the first paying customer: PagerDuty on-call plus an incidents channel live, all twelve-plus incident runbooks tested in staging, the shadow-AI detection runbook meeting its 5-minute SLA, and the platform cost cap and quota system dry-run tested. Before the first enterprise RFP: SOC 2 Type I evidence collection automated, a public status page live, the agent registry fully reconciled (zero undeclared agents), and a penetration test either completed or scheduled within 30 days.
 
 Five incident roles anchor everything below, and one separation is structural rather than a preference: the **AI Safety Lead** holds 60-second agent-halt authority and can never also be the **Incident Commander** for the same incident: a deliberate separation of powers, not a staffing convenience.
