@@ -24,7 +24,7 @@ Entry format: `## [YYYY-MM-DD] operation | Title`
 
 <!-- Add new log entries below this line -->
 
-## [2026-07-22] verify | Independent 8-domain re-audit of the 15 consolidated Dux guides against source, 84 real gaps found and fixed
+## [2026-07-22] verify | Independent 8-domain re-audit of the 15 consolidated Dux guides against source, 76 real gaps found and fixed
 
 The prior consolidation session (below) verified the 15 guides only "as each file was written," a weaker check than the original ingest's 4-pass rigor. On explicit request to hold the consolidation to the same zero-data-loss bar as the original ingest, 8 parallel read-only audits were dispatched, one per source domain group, each cross-checking every ID, figure, decision, and diagram in its `.raw/dux/` source files against the specific consolidated guide(s) that domain feeds (not just the guide named in that domain's own frontmatter, so content correctly filed in a sibling guide wasn't misreported as lost).
 
