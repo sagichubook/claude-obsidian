@@ -73,14 +73,14 @@ The two actions held to mandatory review aren't held back arbitrarily: `endpoint
 
 The agent persona is **Dux Agent**: see below for what backs that name. On the human side:
 
-| Persona | Goal | What they'd read first |
-|---|---|---|
-| Security engineer (primary user) | Cut the queue from thousands of findings to tens | Research Dashboard, Security Stepper |
-| CISO / security leader (buyer) | Board-ready, validated risk reduction | Dashboard Home & Audit |
-| AI Safety Lead | Halt authority: agent kill switch in under 5 seconds | Kill Switch, Governance Kernel |
-| DevOps / SRE | Fix things without breaking deploys | Connector Hub, Mitigation & Remediation Write Path |
-| Tenant admin | Users, connectors, agent policy, data export | Tenant Settings |
-| API consumer | Assessments and webhooks over JWT; public data API at Seed | API Overview |
+| Persona | Goal | What they'd read first | Degraded path without connectors |
+|---|---|---|---|
+| Security engineer (primary user) | Cut the queue from thousands of findings to tens | Research Dashboard, Security Stepper | AWS and NVD live; vendor panels show connector-degraded empty states |
+| CISO / security leader (buyer) | Board-ready, validated risk reduction | Dashboard Home & Audit | Donut and delta metrics only |
+| AI Safety Lead | Halt authority: agent kill switch in under 5 seconds | Kill Switch, Governance Kernel | - |
+| DevOps / SRE | Fix things without breaking deploys | Connector Hub, Mitigation & Remediation Write Path | Webhooks delayed |
+| Tenant admin | Users, connectors, agent policy, data export | Tenant Settings | AWS wizard plus CSV fallback; an SSO deferral note |
+| API consumer | Assessments and webhooks over JWT; public data API at Seed | API Overview | Poll `GET /v1/vulnerability-instances` once the Seed API is live |
 
 ## The Dux Agent
 
