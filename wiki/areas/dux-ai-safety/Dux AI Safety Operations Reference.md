@@ -156,7 +156,7 @@ One structural rule sits above all twelve runbooks: **the AI Safety Lead holds 6
 |---|---|---|---|---|
 | R1 | Cross-tenant context leak | P0-C | Any foreign-tenant reference detected, plus isolation SLO burn ≥5%/hour | Platform-wide containment, 60-second agent halt, counsel engaged if PII involved |
 | R2 | Token cost runaway | P0-C/P1 | Spend over 3x the 7-day baseline, or over $25/hr/tenant | Cost-cap enforcement, L2 kill switch, halt the top-spending agent |
-| R3 | Model provider outage | P1 | Provider status goes non-operational | Fallback route (under 60s) to the backup model, golden-set spot check, halt if regression exceeds 5% |
+| R3 | Model provider outage | P1 | Provider status goes non-operational | Fallback route (under 60s) to the backup model `claude-sonnet-4-6` (+28% latency), golden-set spot check, halt if regression exceeds 5%. Low-traffic guard: HITL is forced on every T3 fallback verdict until a spot check of 5 or more assessments per 15 minutes passes |
 | R4 | MCP dependency failure | P2 | MCP tool errors above 50% in 5 minutes | Open the circuit breaker, verify no hallucinated "success" results |
 | R5 | Rate-limit cascade | P2 | Simultaneous 429s from both model and customer side | Jittered backoff, halt the runaway agent, escalate the provider quota |
 | R6 | Context window exhaustion | P2 | Hits the 128K token ceiling | Checkpoint at 80%, abandon at 100%, halt any retry loop |
