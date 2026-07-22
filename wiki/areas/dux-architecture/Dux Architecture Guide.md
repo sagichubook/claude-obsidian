@@ -204,10 +204,14 @@ The composite key rule (`(tenant_id, id)`, never `id` alone) is what actually pr
 | `AUDIT_EVENT` | the hash chain: see below |
 | `LLM_USAGE_EVENT` | enforces the $25/hour per-tenant spend cap |
 | `WORLD_MODEL_VERSION` | tenant-scoped by design, per the blast-radius reasoning above |
+| `USER_PREFERENCE`, `PREFERENCE_SCOPE`, `PREFERENCE_APPLICATION` | a natural-language preference query, its parsed scope, action, confidence, and expiry |
+| `ASSET_RELATIONSHIP` | `source_asset_id`, `target_asset_id`, `relationship_type`; unique on `(tenant_id, source, target, type)` |
+| `ASSESSMENT_STATE_TRANSITION` | `from_status`, `to_status`, `actor_id`: the audit trail behind an assessment's own state machine |
+| `MITIGATION_STEP`, `OWNERSHIP_EVIDENCE` | Gate-2 entities, dotted in the ERD rather than solid: not yet load-bearing at Gate 1 |
 
 ### Referential integrity and the purge order
 
-Tenant deletion cascades from `tenants`; `findings` restrict deletion of `exploitability_assessments`; `assets` restrict deletion of `findings` via a composite FK; deleting a `webhook_config` sets its dead-letters' foreign key to null rather than cascading, so the dead-letter queue survives for investigation.
+Tenant deletion cascades from `tenants`; `findings` restrict deletion of `exploitability_assessments`; `assets` restrict deletion of `findings` via a composite FK; deleting a `webhook_config` sets its dead-letters' foreign key to null rather than cascading, so the dead-letter queue survives for investigation. `exploitability_assessments` and `attack_paths` both cascade to `assessment_state_transitions`; `user_preferences` cascades to `preference_scopes` and `preference_applications`.
 
 **The tenant purge order must never be reordered:** halt workflows and trip the kill switch → delete the MinIO prefix → `DELETE FROM tenants` (cascade handles the rest) → revoke Vault secrets → write the `tenant.purged` audit record.
 
