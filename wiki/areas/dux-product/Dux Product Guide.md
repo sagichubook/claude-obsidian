@@ -45,7 +45,7 @@ The product's operating principle (GCIS v2.2) is to close every gap between what
 | 1 | AI-driven exploitability analysis | Full: prerequisite analysis, environmental evidence, executed investigation code in traces | - |
 | 2 | Vulnerability → asset → control mapping | Attack paths + AWS security groups + vendor control panels (CrowdStrike live; Intune at Gate 3/W2) | - |
 | 3 | Lightweight mitigation | Unattended-by-default action cards | - |
-| 4 | Config-change recommendations vs. patching | Control refinements live | Closed-loop validation → Gate 3 |
+| 4 | Config-change recommendations vs. patching | Control refinements live for query and display; the specific "refinement recommendation" backlog item itself is deferred to Gate 2 as a Gate-1 capacity fallback | Closed-loop validation → Gate 3 |
 | 5 | Remediation acceleration | Ticket create + route, unattended | Closed-loop automation → Gate 3 |
 | 6 | Automated asset tagging/ownership | Ownership inference live (ServiceNow, Entra) | Preference-driven refinement → Gate 2c |
 | 7 | Multi-source data aggregation | AWS + NVD/KEV/EPSS + CSV + 3+ vendor connectors | Full 42-source taxonomy → waves W2/W3 |
