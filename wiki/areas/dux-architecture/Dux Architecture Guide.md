@@ -112,7 +112,7 @@ Dependency direction is enforced in CI (turbo + ESLint): `core` may depend on da
 | `SandboxPort` | Self-hosted Firecracker on Kubernetes | firecracker-containerd/Kata bridge; a `NoOpSandboxAdapter` emergency kill path |
 | `WorldModelQueryPort` | Postgres-backed adapter (agentic RAG over graph + vector + threat intel) | a hybrid graph adapter (Neo4j trigger) |
 | `VendorConnector` | AWS plus 3+ live connectors at Gate 1 | Intune/Qualys at W2, long tail at W3 |
-| `NotificationPort` | NATS JetStream adapter | a dedicated queue service if JetStream becomes a bottleneck |
+| `NotificationPort` | NATS JetStream adapter, fanning out to four durable queues: email (SES), Slack, PDF generation (Gotenberg), and webhooks | a dedicated queue service if JetStream becomes a bottleneck |
 
 ## How an assessment actually runs
 
