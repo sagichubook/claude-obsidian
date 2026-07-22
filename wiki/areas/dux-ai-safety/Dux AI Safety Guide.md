@@ -189,7 +189,19 @@ Every tool is rate-limited per tenant and per session and hash-pinned with a sub
 | `patch.deploy_special_devices` | none pinned | Mandatory human approval: firmware-only devices have no API-level rollback |
 | `ticket.create_remediation` | ServiceNow | Unattended, the lowest blast-radius tier, no confidence floor at all |
 
-Beyond the write path, a smaller read-only research catalog (NVD search, GitHub search, ExploitDB search, threat-intel search, Microsoft Security Response Center search, plus asset/control queries) covers the evidence-gathering side of an investigation: each with its own rate limits and a documented attack story it defends against, from CVE-text hijacking to SSRF via a repository URL. Two tool-risk classes stay fully prohibited in Phase 1 regardless of use case: arbitrary external/code-execution tools, and anything touching financial systems.
+Beyond the write path, a smaller read-only research catalog covers the evidence-gathering side of an investigation, each tool with its own integration ID, its own rate limit, and a documented attack story it defends against:
+
+| Tool | Integration ID | Rate (tenant / session) | Attack story |
+|---|---|---|---|
+| `search_nvd(cve_id)` | `nvd` | 200 / 50 rpm | Hijack via malicious CVE text |
+| `search_github(cve_id)` | `github-research` | 30 / 15 rpm | SSRF via a repository URL |
+| `search_exploitdb(cve_id)` | `metasploit-index` | 30 / 15 rpm | Poisoned module metadata |
+| `search_threat_intel(cve_id)` | `medium-rss` | 20 / 10 rpm | Malicious blog redirect |
+| `search_msrc(cve_id)` | `microsoft-msrc` | 30 / 15 rpm | Spoofed advisory content |
+| `query_assets(filters)` | `aws` | 100 / 50 rpm (max 50 rows/call; overflow routes to `summarizeContext`) | Filter injection |
+| `query_controls(asset_id)` | `aws` | 100 / 50 rpm | Cross-asset enumeration |
+
+The gateway enforces whichever of the tenant limit or the session-remaining budget is tighter. Two tool-risk classes stay fully prohibited in Phase 1 regardless of use case: arbitrary external/code-execution tools, and anything touching financial systems.
 
 ## Where to go next
 
