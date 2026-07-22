@@ -123,6 +123,12 @@ Non-human-identity governance (service accounts, API keys, agent credentials) re
 | NHI9 Overprivileged Agents | A `supervised` agent requires a delegation token | Agent config audit |
 | NHI10 Human Use of NHI | A service account cannot impersonate a user | Access-review export |
 
+The inventory export itself (`pnpm admin:nhi-inventory --env production`, run quarterly against ECS/SSM, Vault, GitHub, and the MCP registry) pages Security the moment its `undeclared_count` exceeds zero, not just when the inventory review happens to run.
+
+### AI-BOM governance
+
+A separate mechanism from the merge-blocking AI-BOM check in CI, this one governs the artifact itself over its lifetime. A signed GPG-attested JSON manifest, carrying an `agent_registry_hash`, is generated monthly and stored in S3, tracking `models.json`, `mcp-registry.json`, the `prompts/` directory, and every agent config as its components. Drift monitoring runs weekly output sampling, and a 10% stratified structural drift beyond 2 standard deviations from baseline carries a 24-hour Security SLA. If a rollback is needed, the sequence is fixed: disable the flag, revert the agent config, roll back the MCP pin, then customer comms.
+
 GDPR Article 17 erasure follows the same tenant-purge order used everywhere else in this corpus: halt workflows and trip the kill switch, delete the storage prefix, cascade-delete the database rows, revoke secrets, write the audit record: completed within 24 hours end to end.
 
 ### Evidence, and how much of it collects itself
