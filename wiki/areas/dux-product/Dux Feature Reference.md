@@ -216,6 +216,8 @@ The burst-tier degradation model bounds a platform-wide feed storm (say, a daily
 
 Marketing guardrail: keep "continuous" (data sync) distinct from "re-assessment" (this feature). Both genuinely ship at Gate 1, so the combined claim is safe: but don't let it drift into implying Gate 3's closed-loop validation is already live.
 
+Measured by re-assessment volume, the outcome-change rate on re-run, and cost per scheduled assessment.
+
 ## Platform: Connector Hub (US-013, US-020)
 
 The prerequisite gate for nearly everything above: it feeds live AWS evidence into Exposure Analysis and is the deep-link target from every degraded empty state in the stepper. Its most consequential rule is integrity over coverage: a vendor connector never shows a false "Connected" state (it reads "Coming soon" until both credential validation and a first successful sync succeed), and a bad CSV upload produces typed errors rather than a partial, poisoned ingest.
