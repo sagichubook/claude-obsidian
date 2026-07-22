@@ -18,7 +18,7 @@ Navigation: [[index]] | [[log]] | [[overview]]
 
 ## Last Updated
 
-**2026-07-22**: Independently re-verified all 15 consolidated Dux guides against the 68-file source corpus, using 8 parallel domain-scoped audits with the same rigor as the original ingest's 4-pass verification (the consolidation itself had only been spot-checked as it was written, a weaker bar). Found and fixed **84 real gaps**, plus disclosed 2 source-internal contradictions rather than silently resolving them. Full account: the `[2026-07-22] verify` entry in [[log]]. A control diff (`.raw/dux/` vs. the source path) confirmed the corpus itself hadn't drifted, so this was a rewrite audit, not a re-ingest.
+**2026-07-22**: Independently re-verified all 15 consolidated Dux guides against the 68-file source corpus, using 8 parallel domain-scoped audits with the same rigor as the original ingest's 4-pass verification (the consolidation itself had only been spot-checked as it was written, a weaker bar). Found and fixed **76 real gaps**, plus disclosed 2 source-internal contradictions rather than silently resolving them. A reconciliation pass afterward, walking every individual finding back against the actual edit, caught 2 items the first pass missed (the Gate-2 triage model path, and 2 further occurrences of a kill-switch SLO conflation beyond the first one fixed) — worth remembering for any future pass: fix inline as findings arrive, then always reconcile against the full finding list before calling it done. Full account: the `[2026-07-22] verify` entry in [[log]]. A control diff (`.raw/dux/` vs. the source path) confirmed the corpus itself hadn't drifted, so this was a rewrite audit, not a re-ingest.
 
 ## Key Recent Facts
 
