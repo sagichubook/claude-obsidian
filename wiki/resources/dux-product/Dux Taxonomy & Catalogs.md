@@ -91,7 +91,7 @@ Roughly half of every cross-file terminology bug found during the corpus's own r
 
 | Canonical term | Deprecated / internal-only alias | The rule |
 |---|---|---|
-| **Dux Agent** | Dux AI, AI-workers | The only customer-facing agent name |
+| **Dux Agent** | Dux AI, AI-workers, Mitigation/Remediation agent | The only customer-facing agent name (code ID `dux-agent`) |
 | **Mitigation nav** | - | The Analyze-stage research queue (visibility only) |
 | **Mitigate stage** | - | Write-action automation: **not the same as Mitigation nav** |
 | **kill switch** (noun) | kill-switch (adjective only) | Levels KS-L1 through KS-L4 |
