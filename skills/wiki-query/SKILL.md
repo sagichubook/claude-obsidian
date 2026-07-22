@@ -1,7 +1,7 @@
 ---
 name: wiki-query
 description: "Answer questions using the Obsidian wiki vault. Reads hot cache first, then index, then relevant pages. Synthesizes answers with citations. Files good answers back as wiki pages. Supports quick, standard, and deep modes. Triggers on: what do you know about, query:, what is, explain, summarize, find in wiki, search the wiki, based on the wiki, wiki query quick, wiki query deep."
-allowed-tools: Read Glob Grep
+allowed-tools: Read Glob Grep mcp__obsidian-vault__obsidian_get_file_contents mcp__obsidian-vault__obsidian_batch_get_file_contents mcp__obsidian-vault__obsidian_simple_search mcp__obsidian-vault__obsidian_complex_search
 ---
 
 # wiki-query: Query the Wiki
@@ -15,7 +15,7 @@ The wiki has already done the synthesis work. Read strategically, answer precise
 Reads should prefer the same transport the rest of the plugin uses. Consult `.vault-meta/transport.json` (auto-created by `bash scripts/detect-transport.sh`) and use the `preferred` entry:
 
 - **cli** — `obsidian-cli read "$VAULT" "$NOTE"` and `obsidian-cli search "$VAULT" "<query>"` (Obsidian-native ranking); see [`skills/wiki-cli/SKILL.md`](../wiki-cli/SKILL.md)
-- **mcp-obsidian** / **mcpvault** — `mcp__obsidian-vault__read_note`, `search_notes`; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
+- **mcp-obsidian** / **mcpvault** — `obsidian_get_file_contents` (single note), `obsidian_batch_get_file_contents` (several at once), `obsidian_simple_search`/`obsidian_complex_search`; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
 - **filesystem** — Claude's `Read` and `Glob`/`Grep` tools (final floor; always works)
 
 Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Quick mode (hot.md only) is transport-agnostic — always uses `Read`.

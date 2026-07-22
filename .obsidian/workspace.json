@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "477f1cf965ca606e",
+        "id": "ccbae4fc1cd04c53",
         "type": "tabs",
         "children": [
           {
-            "id": "a31de1b302cdc5cf",
+            "id": "a787eb0da4607a9e",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "wiki/areas/dux-architecture/Workflows & Agent Orchestration.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Workflows & Agent Orchestration"
             }
           }
         ]
@@ -74,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 568.5
   },
   "right": {
     "id": "7092b65be1e76349",
@@ -183,9 +187,62 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "a31de1b302cdc5cf",
-  "lastOpenFiles": []
+  "active": "a787eb0da4607a9e",
+  "lastOpenFiles": [
+    "scripts/__pycache__/contextual-prefix.cpython-314.pyc",
+    "scripts/__pycache__/contextual-prefix.cpython-314.pyc.131707836171728",
+    "scripts/__pycache__/wiki-mode.cpython-314.pyc",
+    "scripts/__pycache__/wiki-mode.cpython-314.pyc.137687969673776",
+    "scripts/__pycache__/rerank.cpython-314.pyc",
+    "scripts/__pycache__/rerank.cpython-314.pyc.139585415729072",
+    "scripts/__pycache__/retrieve.cpython-314.pyc",
+    "scripts/__pycache__/retrieve.cpython-314.pyc.139585415728432",
+    "scripts/__pycache__/bm25-index.cpython-314.pyc",
+    "scripts/__pycache__/bm25-index.cpython-314.pyc.130111640083104",
+    "scripts/__pycache__/boundary-score.cpython-314.pyc",
+    "assets/diagrams/hybrid-retrieval.svg",
+    "wiki/meta/retrieval-benchmark-v1.7.md",
+    "assets/social-preview.png",
+    "assets/diagrams/vault-flow.svg",
+    "assets/diagrams/multi-writer-locking.svg",
+    "wiki/meta/workflow-loop.gif",
+    "wiki/meta/wiki-graph-grow.gif",
+    "wiki/meta/welcome-canvas.gif",
+    "wiki/meta/image-example-wiki-map-view.png",
+    "wiki/meta/image-example-graph-view.png",
+    "wiki/meta/claude-obsidian-gif-cover-16x9.gif",
+    "AGENTS.md",
+    "wiki/meta/dashboard.md",
+    "wiki/areas/dux-gtm/External Corrections 2026-07.md",
+    "wiki/concepts/DragonScale Memory.md",
+    "wiki/areas/dux-gtm/Dux GTM Area.md",
+    "wiki/areas/dux-gtm/Competitive Positioning & POC.md",
+    "docs/dragonscale-guide.md",
+    "wiki/references/transport-fallback.md",
+    "wiki/references/methodology-modes.md",
+    "docs/methodology-modes-guide.md",
+    "wiki/index.md",
+    "wiki/hot.md",
+    "wiki/areas/dux-product/Assessment Trace.md",
+    "wiki/areas/dux-product/Dux Product Overview.md",
+    "wiki/areas/dux-product/Product Hub.md",
+    "wiki/areas/dux-product/Security Stepper.md",
+    "wiki/areas/dux-product/Tenant Settings, Help & Custom Metrics.md",
+    "wiki/areas/dux-product/Connector Hub.md",
+    "wiki/areas/dux-product/Chat Guidance.md",
+    "wiki/areas/dux-product/Continuous Re-Assessment.md",
+    "wiki/validation-checklist.md",
+    "wiki/areas/dux-gtm/Pricing & Packaging.md",
+    "wiki/areas/dux-gtm/Lean Canvas.md",
+    "wiki/areas/dux-gtm/GTM Guardrails.md",
+    "wiki/Wiki Map.canvas",
+    "wiki/canvases/youtube-explainer.canvas",
+    "wiki/canvases/welcome.canvas",
+    "wiki/canvases/main.canvas",
+    "wiki/canvases/claude-obsidian-presentation.canvas"
+  ]
 }

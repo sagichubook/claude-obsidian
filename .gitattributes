@@ -1,0 +1,27 @@
+# Normalize line endings to LF for all text files. This repo lives under
+# /mnt/c (Windows filesystem via WSL2), where Windows-side tools (editors,
+# sync clients, Obsidian itself) can silently re-save files with CRLF,
+# which breaks bash scripts executed from WSL/Linux (`$'\r': command not
+# found`, `set: pipefail: invalid option name`).
+* text=auto eol=lf
+
+*.md    text eol=lf
+*.json  text eol=lf
+*.py    text eol=lf
+*.sh    text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.txt   text eol=lf
+*.mdc   text eol=lf
+*.base  text eol=lf
+*.cff   text eol=lf
+Makefile   text eol=lf
+LICENSE    text eol=lf
+CODEOWNERS text eol=lf
+
+*.png binary
+*.gif binary
+*.svg binary
+*.pdf binary

@@ -113,7 +113,9 @@ NOTE="$VAULT/wiki/daily/$(date +%Y-%m-%d).md"
 # CLI
 obsidian-cli property:set "$VAULT" "$NOTE" status "evergreen"
 
-# Fallback: read frontmatter, parse, mutate, rewrite (use mcp__obsidian-vault__update_frontmatter if MCP is configured)
+# Fallback: read frontmatter, parse, mutate, rewrite (use obsidian_patch_content
+# with target_type="frontmatter", operation="replace", target="<field name>"
+# if MCP is configured)
 ```
 
 ### List backlinks for a page

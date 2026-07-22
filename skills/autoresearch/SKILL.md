@@ -8,7 +8,7 @@ description: >
   Triggers on: "/autoresearch", "autoresearch", "research [topic]", "deep dive into [topic]",
   "investigate [topic]", "find everything about [topic]", "research and file",
   "go research", "build a wiki on".
-allowed-tools: Read Write Edit Glob Grep WebFetch WebSearch
+allowed-tools: Read Write Edit Glob Grep WebFetch WebSearch mcp__obsidian-vault__obsidian_get_file_contents mcp__obsidian-vault__obsidian_append_content mcp__obsidian-vault__obsidian_patch_content
 ---
 
 # autoresearch: Autonomous Research Loop
@@ -24,7 +24,7 @@ This is based on Karpathy's autoresearch pattern: a configurable program defines
 The research loop writes a lot — source pages, concept pages, entity pages, manifest updates. All writes follow the standard transport policy. Read `.vault-meta/transport.json` (auto-created by `bash scripts/detect-transport.sh`):
 
 - **cli** — `obsidian-cli write "$VAULT" "$NOTE" < content.md`; see [`skills/wiki-cli/SKILL.md`](../wiki-cli/SKILL.md)
-- **mcp-obsidian** / **mcpvault** — `mcp__obsidian-vault__write_note`
+- **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create each page (also works on new files), `obsidian_patch_content` to edit an existing section precisely
 - **filesystem** — Claude's `Write` tool with absolute path
 
 Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Web fetches (`WebFetch`/`WebSearch`) are transport-agnostic.
@@ -99,7 +99,7 @@ Three paths to a topic:
 When the user says `/autoresearch [topic]` or "research X", use the given topic verbatim and skip the sections below.
 
 ### B. Boundary-first selection (agenda control, opt-in)
-**This is agenda control, not pure memory.** DragonScale Memory.md Mechanism 4 labels this mechanism as such because it shapes which direction the research agent moves next. Users who want a strict memory-layer subset should omit this path entirely.
+**This is agenda control, not pure memory.** [DragonScale Memory](../../docs/dragonscale-guide.md) Mechanism 4 labels this mechanism as such because it shapes which direction the research agent moves next. Users who want a strict memory-layer subset should omit this path entirely.
 
 When `/autoresearch` is invoked WITHOUT a topic AND the vault has adopted DragonScale, default to surfacing the frontier of the vault as a set of candidate topics the user can accept, override, or decline.
 

@@ -7,7 +7,7 @@ description: >
   Triggers on: "save this", "save that answer", "/save", "file this",
   "save to wiki", "save this session", "file this conversation", "keep this",
   "save this analysis", "add this to the wiki".
-allowed-tools: Read Write Edit Glob Grep
+allowed-tools: Read Write Edit Glob Grep mcp__obsidian-vault__obsidian_get_file_contents mcp__obsidian-vault__obsidian_append_content mcp__obsidian-vault__obsidian_patch_content
 ---
 
 # save: File Conversations Into the Wiki
@@ -23,7 +23,7 @@ The wiki compounds. Save often.
 The session-note write itself follows the standard transport policy. Read `.vault-meta/transport.json` (auto-created by `bash scripts/detect-transport.sh`):
 
 - **cli** — `obsidian-cli write "$VAULT" "$NOTE" < session.md`; see [`skills/wiki-cli/SKILL.md`](../wiki-cli/SKILL.md)
-- **mcp-obsidian** / **mcpvault** — `mcp__obsidian-vault__write_note`
+- **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create the note (also works on new files), `obsidian_patch_content` to edit an existing section precisely
 - **filesystem** — Claude's `Write` tool with absolute path
 
 Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Index/log/hot updates use the same transport.

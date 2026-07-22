@@ -145,11 +145,36 @@ if [ -z "$CLI_VERSION" ]; then
 fi
 
 # ── 2. Obsidian app running? (informational only; CLI works either way) ──────
+# Under WSL2, Linux and Windows processes live in separate kernel namespaces:
+# `pgrep` here can never see a Windows-side Obsidian.exe. Shell out to the
+# Windows side instead when running under WSL. On native Linux/macOS, exclude
+# our own mcp-obsidian MCP server subprocess, whose command line matches a
+# plain 'obsidian' substring search and would otherwise false-positive.
 OBSIDIAN_RUNNING=false
-if command -v pgrep >/dev/null 2>&1; then
-  if pgrep -if 'obsidian' >/dev/null 2>&1; then
-    OBSIDIAN_RUNNING=true
+IS_WSL=false
+if [ -n "${WSL_DISTRO_NAME:-}" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+  IS_WSL=true
+fi
+
+if $IS_WSL; then
+  if command -v powershell.exe >/dev/null 2>&1; then
+    if powershell.exe -NoProfile -NonInteractive -Command \
+         "if (Get-Process Obsidian -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }" \
+         >/dev/null 2>&1; then
+      OBSIDIAN_RUNNING=true
+    fi
+  elif command -v tasklist.exe >/dev/null 2>&1; then
+    if tasklist.exe /FI "IMAGENAME eq Obsidian.exe" 2>/dev/null | grep -qi obsidian; then
+      OBSIDIAN_RUNNING=true
+    fi
   fi
+elif command -v pgrep >/dev/null 2>&1; then
+  for pid in $(pgrep -if 'obsidian' 2>/dev/null || true); do
+    if ! ps -p "$pid" -o args= 2>/dev/null | grep -qi 'mcp-obsidian\|mcp_obsidian'; then
+      OBSIDIAN_RUNNING=true
+      break
+    fi
+  done
 fi
 
 # ── 3. Compute preferred + fallback chain ────────────────────────────────────

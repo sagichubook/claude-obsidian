@@ -129,7 +129,7 @@ Same as add image. Obsidian renders PDFs natively as file nodes.
 {
   "id": "note-[timestamp]",
   "type": "file",
-  "file": "wiki/concepts/LLM Wiki Pattern.md",
+  "file": "wiki/areas/example-note.md",
   "x": [auto], "y": [auto],
   "width": 300, "height": 100
 }

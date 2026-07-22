@@ -16,7 +16,7 @@ Read the source. Write the wiki. Cross-reference everything. A single source typ
 Before mutating any vault file, consult `.vault-meta/transport.json` (auto-created by `bash scripts/detect-transport.sh`). Use the `preferred` transport per the fallback chain:
 
 - **cli** — `obsidian-cli write "$VAULT" "$NOTE" < content.md` (or `append`, `property:set`); see [`skills/wiki-cli/SKILL.md`](../wiki-cli/SKILL.md)
-- **mcp-obsidian** / **mcpvault** — `mcp__obsidian-vault__write_note` and friends; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
+- **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create pages (also works on new files), `obsidian_patch_content` to edit an existing section precisely, `obsidian_get_file_contents`/`obsidian_batch_get_file_contents` for reads; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
 - **filesystem** — Claude's `Write`/`Edit` tools with absolute vault-rooted paths (final floor; always works)
 
 Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md).

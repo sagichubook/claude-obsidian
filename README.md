@@ -486,11 +486,9 @@ claude-obsidian/
 ├── tests/                        # 9 hermetic test suites (~1240 assertions, make test)
 ├── bin/                          # 5 setup scripts (setup-vault, setup-retrieve, setup-mode, etc.)
 ├── _templates/                   # Obsidian Templater templates
-├── wiki/                         # seeded vault content (demo)
-│   ├── canvases/                # welcome.canvas + main.canvas
-│   ├── concepts/                # seeded: LLM Wiki Pattern, Hot Cache, Compounding Knowledge
-│   ├── entities/                # seeded: Andrej Karpathy
-│   ├── sources/                 # populated by your first ingest
+├── wiki/                         # your vault content (scaffolded by /wiki)
+│   ├── canvases/                # main.canvas, created on first /canvas use
+│   ├── areas/, projects/, resources/, archives/  # PARA buckets (or concepts/, entities/, sources/ in Generic mode)
 │   └── meta/
 │       ├── dashboard.base       # Bases dashboard (primary)
 │       └── dashboard.md         # Legacy Dataview dashboard (optional)
@@ -519,15 +517,9 @@ The default program works for general research. Override it for your domain. A m
 
 ## Seed Vault
 
-This repo ships with a seeded vault. Open it in Obsidian and you will see:
+A fresh clone starts empty — `/wiki` scaffolds the folder structure (PARA, LYT, Zettelkasten, or Generic, your choice), then every `ingest [source]` you run adds 8-15 cross-referenced pages under `wiki/`. `wiki/meta/dashboard.base` (Bases, works in any Obsidian v1.9.10+) and `wiki/meta/dashboard.md` (legacy Dataview fallback) ship ready to use from the first ingest onward.
 
-- `wiki/concepts/`: LLM Wiki Pattern, Hot Cache, Compounding Knowledge
-- `wiki/entities/`: Andrej Karpathy
-- `wiki/sources/`: empty until your first ingest
-- `wiki/meta/dashboard.base`: Bases dashboard (works in any Obsidian v1.9.10+)
-- `wiki/meta/dashboard.md`: Legacy Dataview dashboard (optional fallback)
-
-The graph view will show a connected cluster of 5 pages. This is what the wiki looks like after one ingest. Add more sources and it grows from there.
+The graph view fills in as you go — a handful of connected pages after your first ingest, a dense cross-referenced web after a dozen.
 
 <p align="center">
   <img src="wiki/meta/wiki-graph-grow.gif" alt="Animated GIF: claude-obsidian knowledge graph growing from a few seeded pages to a dense web of cross-referenced concepts after multiple ingests" width="48%" />
