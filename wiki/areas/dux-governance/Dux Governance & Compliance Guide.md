@@ -108,7 +108,22 @@ The **CIS Controls v8 crosswalk** exists because Dux ingests CIS-aligned CSPM fi
 
 Access to the `platform_admin` role requires dual approval, and break-glass emergency access is two-person, capped at 4 hours, and reviewed quarterly. Standard change requests need one approval; security-sensitive changes need two; a genuine emergency change can go out with verbal approval and a retroactive request-for-change filed within 24 hours. One rule carries real teeth: **a model-pin change requires a full security review, an updated AI-BOM, a golden-set run, a prompt-safety scan, and 48 hours of monitoring: skipping any of that is treated as a P1 and a control weakness under SOX IT general controls**, not a process nicety.
 
-Non-human-identity governance (service accounts, API keys, agent credentials) requires an approval ticket at creation, rotates every 90 days for keys and agents (180 for CI/CD credentials), revokes within 24 hours of any relevant termination, and gets a quarterly full inventory. GDPR Article 17 erasure follows the same tenant-purge order used everywhere else in this corpus: halt workflows and trip the kill switch, delete the storage prefix, cascade-delete the database rows, revoke secrets, write the audit record: completed within 24 hours end to end.
+Non-human-identity governance (service accounts, API keys, agent credentials) requires an approval ticket at creation, rotates every 90 days for keys and agents (180 for CI/CD credentials), revokes within 24 hours of any relevant termination, and gets a quarterly full inventory. Once the NHI inventory passes 500, an annual OWASP NHI Top 10 (2025) attestation kicks in, owned by Security, mapping each control straight to that lifecycle:
+
+| NHI control | Lifecycle mapping | Evidence |
+|---|---|---|
+| NHI1 Improper Offboarding | Revocation within 24 hours of termination | IdP and Kubernetes audit logs, Falco alerts, Vault audit log |
+| NHI2 Weak Credentials | 90-day rotation; SSM/Vault only | Rotation calendar |
+| NHI3 Excessive Permissions | Least-privilege scope at creation | Ticket plus approval |
+| NHI4 Lack of Inventory | Quarterly inventory review | Inventory report in S3 |
+| NHI5 No Rotation | Keys every 90 days; CI/CD every 180 | Rotation attestations |
+| NHI6 Shared Credentials | Max 2 active credentials per agent during rotation | Agent credential table |
+| NHI7 Unmonitored NHI | Weekly shadow-AI reconcile | An `undeclared_count: 0` check |
+| NHI8 Insecure Storage | SSM/Vault only; Gitleaks on every PR | CI scan results |
+| NHI9 Overprivileged Agents | A `supervised` agent requires a delegation token | Agent config audit |
+| NHI10 Human Use of NHI | A service account cannot impersonate a user | Access-review export |
+
+GDPR Article 17 erasure follows the same tenant-purge order used everywhere else in this corpus: halt workflows and trip the kill switch, delete the storage prefix, cascade-delete the database rows, revoke secrets, write the audit record: completed within 24 hours end to end.
 
 ### Evidence, and how much of it collects itself
 
