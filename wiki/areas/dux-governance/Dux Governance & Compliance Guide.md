@@ -157,7 +157,9 @@ The one exception worth memorizing regardless of stage: the risk appetite for **
 | Tier 1 | Handles tenant or financial data | OpenAI, Stripe, Cloudflare, Anthropic (fallback path) |
 | Tier 2 | Critical-path infrastructure, reviewed quarterly | AWS (full-platform runtime via EKS) |
 
-Worth noting explicitly: the observability vendors referenced elsewhere in this corpus (Grafana, Langfuse) are **not** subprocessors at all: both run fully self-hosted in-cluster, with no external data flow, so they don't enter the third-party risk register in the first place.
+Worth noting explicitly: the observability vendors referenced elsewhere in this corpus (Grafana, Langfuse) are **not** subprocessors at all: both run fully self-hosted in-cluster, with no external data flow, so they don't enter the third-party risk register in the first place. Unleash (feature flags) sits in the same category for the same reason, with one added licensing wrinkle worth tracking: it's AGPLv3-licensed, and calling it over the network without modifying its source doesn't trigger AGPL's network-copyleft obligation, but that determination is worth re-reviewing the moment the Unleash server itself is ever forked or patched. Unleash Edge, the separate proxy/cache layer, reaches end-of-life on 2026-12-31; Dux doesn't depend on it, so that date requires no migration.
+
+Coordinated vulnerability disclosure runs on an interim, pre-seed basis: reports to `security@dux.io` (PGP optional) get acknowledged within 3 business days and triaged with a severity assigned within 10. There's no bug bounty at the pre-seed stage.
 
 ### Data residency, region by region
 
