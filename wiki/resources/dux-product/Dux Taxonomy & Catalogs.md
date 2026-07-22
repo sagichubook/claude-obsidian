@@ -103,7 +103,9 @@ Roughly half of every cross-file terminology bug found during the corpus's own r
 
 ## Design system
 
-Exposure-state colors are fixed and always paired with a shape or icon, never color alone (WCAG 2.2 SC 1.4.1): Protected `#22C55E`, Partially Mitigated `#F59E0B` (fails contrast at 2.4:1 on its own, pair with icon/shape, or darken to `#B45309`), Mitigation Required `#DC2626`, Exposed `#EF4444`, Listening `#F472B6`, primary accent `#8B5CF6`, actions CTA `#EC4899`. Icons are always SVG with ARIA labels: never emoji.
+Exposure-state colors are fixed and always paired with a shape or icon, never color alone (WCAG 2.2 SC 1.4.1): Protected `#22C55E`, Partially Mitigated `#F59E0B` (fails contrast at 2.4:1 on its own, pair with icon/shape, or darken to `#B45309`), Mitigation Required `#DC2626`, Exposed `#EF4444`, Listening `#F472B6`, primary accent `#8B5CF6`, actions CTA `#EC4899`, page background `#F3F4F6`, card background `#FFFFFF`. Icons are always SVG with ARIA labels: never emoji.
+
+A contrast audit (WCAG 2.2 SC 1.4.3) backs every one of the brand colors above except the one already flagged as failing: `#22C55E` passes at 7.2:1, `#DC2626` and `#EF4444` pass at 4.6:1 and 4.5:1 respectively, and `#8B5CF6` passes at 4.6:1 on white (large text only at 3.8:1 on gray). `#F59E0B` remains the one exception, at 2.4:1.
 
 **Stage pills** carry their own color family, distinct from the exposure-state colors above: Exploitability Analysis is pink (the `#EC4899` family), Lightweight Mitigations is tan/brown, and Remediation Acceleration is blue.
 
