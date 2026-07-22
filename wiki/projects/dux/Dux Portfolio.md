@@ -91,7 +91,13 @@ The Epic/Feature/Story template is broken on purpose in seven named ways, and ev
 
 ### The rules every change has to satisfy
 
-No orphans: every Feature has a parent Epic, every Story a parent Feature, every Task a parent Story or Feature. No widows: every Epic has at least one Feature under it. IDs are unique across the entire portfolio. Every reference is checked for bidirectional traversal against the traceability matrix. And status cascades strictly upward: a parent is only marked done once every one of its children is.
+No orphans: every Feature has a parent Epic, every Story a parent Feature, every Task a parent Story or Feature. No widows: every Epic has at least one Feature under it. IDs are unique across the entire portfolio. Every reference is checked for bidirectional traversal against the traceability matrix. Status cascades strictly upward: a parent is only marked done once every one of its children is. And one last gate, easy to overlook precisely because it's administrative rather than structural: every task carries an assignee, an hour estimate, a discipline, a type, and a target week, checked at the tech-lead level before it's considered real.
+
+### What's tracked but deliberately excluded from the Gate-1 sum
+
+A small Gate-2/fast-follow register sits next to the Gate-1 backlog rather than inside it: a pre-approved-scope policy (roughly 12 hours), connector-freshness plus live contract tests (roughly 16 hours), and a full SBOM/SLSA pass (roughly 8 hours) are all costed and tracked, deliberately kept out of the Gate-1 total above. Two smaller items in the same register, a runbook update and an instrumentation pass, carry low engineering cost and aren't separately called out.
+
+The backlog's discipline load, for anyone staffing against it, runs roughly Backend 52%, Frontend 17%, QA 13%, DevOps 10%, and Security 8%. Two of those carry real concentration risk worth naming: the backend and Python engineering tracks are critical-path-loaded from Week 3 through Week 8, and Security is a single point of failure across the governance kernel, MCP, and identity work all at once.
 
 ## Sources
 
