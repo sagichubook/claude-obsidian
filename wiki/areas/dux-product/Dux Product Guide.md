@@ -138,7 +138,7 @@ Dux ships in gates, not sprints-with-a-deadline. Each gate is a bar to clear, no
 
 The 16-week Phase-1 calendar starts at Week 2 with the infrastructure skeleton and its isolation harness, then Week 4 adds a PgBouncer pooling fuzz test (`test:fuzz-tenant-id` becomes merge-blocking from that point on). It interlocks tightly with two external legal deadlines that don't move for anyone: an EU AI Act counsel opinion due around Week 6, ahead of the Article 50 transparency deadline, and a Langfuse DPA that has to land before production traces can flow, around Week 8. That same Week 8 also brings the first internal dogfood (2 tenants, an isolation pass), an internal `/api/docs` Redoc instance shared with NDA partners, and the HITL approval API. There's also a standing abort rule: if the golden set regresses by more than 2%, the inner reasoning framework gets switched, no negotiation.
 
-Capacity, as of the latest re-baseline, sits at roughly 98% of the envelope: about 2,040 hours of backlog against a 2,080-hour budget, a 40-hour buffer, with the same five-engineer team and no sixth hire. Neither the Week-12 review nor the Week-16 exit date has moved because of it.
+Capacity, as of the latest re-baseline, sits at roughly 98.1% of the envelope: 2,118 hours of backlog against a 2,160-hour budget, a 42-hour buffer, with the same five-engineer team and no sixth hire. Neither the Week-12 review nor the Week-16 exit date has moved because of it. See [[Dux Portfolio]] for the full hour rollup.
 
 ## Explicitly out of scope for Phase 1
 
