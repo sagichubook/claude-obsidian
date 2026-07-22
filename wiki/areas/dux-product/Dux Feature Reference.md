@@ -137,6 +137,8 @@ The one write-surface rule worth internalizing: **any write action initiated fro
 
 Reconnection replays the last hour of events via `Last-Event-ID`; beyond that window it falls back to a state snapshot. Limits: 5 concurrent SSE streams per user, over HTTP/2. `POST /research/queue` is aliased as "Request Research" from chat.
 
+For a broad ask like "what should I do about exploitable vulns on my Linux servers," chat can surface several competing remediation strategies side by side on the same `prioritization_cards` mechanism rather than a single answer: patching one shared component versus targeting the specific devices responsible for the largest share of actively-exploited CVEs, for instance. No new API surface backs this, just a defined card shape (a strategy label, an affected-asset list, and an `exploited_cve_coverage_pct` field), and each card is quantified by the share of exploited or actively-targeted CVEs it addresses, not by raw instance count.
+
 Tracked here: the C1 through C5 chat-spike metrics, SSE latency p95, Request Research conversion originating from chat, the prioritization-card selection rate, and chat's own LLM cost per session measured against its budget.
 
 ## Mitigation and remediation: the write surfaces (US-004, US-016, US-018, US-019)
