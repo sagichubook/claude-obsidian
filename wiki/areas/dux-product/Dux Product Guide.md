@@ -51,6 +51,8 @@ The product's operating principle (GCIS v2.2) is to close every gap between what
 | 7 | Multi-source data aggregation | AWS + NVD/KEV/EPSS + CSV + 3+ vendor connectors | Full 42-source taxonomy → waves W2/W3 |
 | 8 | Exploitability-based prioritization | Mitigation queue + exposure states | Preference learning → Gate 2c |
 
+Row 4 carries a genuine, disclosed discrepancy between two source documents rather than a settled fact: the capability spec calls control refinements "live" at Gate 1, but the execution backlog explicitly defers the US-005 implementation itself to the Gate-2 backlog as a capacity fallback, with zero Gate-1 tasks scheduled against it. The read/query surface and the stepper panel exist; whether the underlying recommendation logic is actually live at Gate 1 is the part that's unresolved between the two documents.
+
 The agent's operating loop, underneath all eight capabilities, is four steps: continuously analyze vulnerabilities across connected environments, check whether existing tooling or configuration already blocks the attack path, surface a lightweight mitigation faster than a full patch, and route focused remediation to the right stakeholders. Steps three and four execute unattended by default for the three actions that have earned that trust (see below); a human only gets pulled in when something looks anomalous.
 
 ## Write-action autonomy: the earned-trust model
