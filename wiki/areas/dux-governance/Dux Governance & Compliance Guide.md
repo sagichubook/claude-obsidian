@@ -76,6 +76,8 @@ Those Annex A codes are cited at the internal-control-ID level, not per sub-clau
 
 Dux's working position (stated as a position, not a settled legal conclusion) is that it does **not** trigger Annex III high-risk classification. The reasoning: it's a security tool acting on posture (endpoints, network policy, tickets), not a tool controlling critical-infrastructure operational-technology loops, and its two highest-blast-radius write actions require mandatory human approval on every single call regardless of confidence. That position has a real, independent near-term obligation sitting in front of it regardless of how the classification question ultimately resolves: **Article 50 transparency**, which took effect August 2026. The Annex III question itself, if it does apply, has a much longer runway: December 2027, per the EU's Digital Omnibus on AI that entered force in mid-2026.
 
+The AI impact assessment procedure is the operative gate behind all of this, not just a paper exercise: an intake form runs through a 5-business-day Legal SLA, and it blocks EU contracts outright until sign-off.
+
 One live discrepancy is worth flagging plainly rather than quietly fixing out of scope: the public marketing site currently displays "ISO 27001 Certified" and SOC marks that this compliance program does not yet back: a confirmed unearned claim that needs a live-site correction, tracked as work outside this documentation repository itself.
 
 ### Framework crosswalks
