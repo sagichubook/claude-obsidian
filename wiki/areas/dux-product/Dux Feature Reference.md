@@ -57,6 +57,8 @@ Journey summary only here: full canonical spec is in the [mitigation section](#m
 
 Surfaces the highest-impact estate-wide configuration changes (disabling NTLM, enabling IMDSv2) ranked by exposure reduction, via `ControlRefinementQuery` using the Specification pattern (`ByImpact`, `ByScanner`, `ByCVE`). Wiz ingest is live at Gate 1; Qualys is Gate 3/W2. Each result carries an `effort` field (S/M/L, sized by rollout scope, not build cost) as a secondary column: it never breaks ties in the ranking, which is exposure-reduction only. `GET /controls/refinements`.
 
+The recommendation logic itself is Gate 2, not Gate 1: deferred by D-19 as a capacity fallback, with zero Gate-1 tasks scheduled against it, and the deferral still stands as of the most recent capacity re-baseline. The endpoint and stepper panel exist at Gate 1; what actually populates them with ranked recommendations doesn't ship until Gate 2.
+
 ### Step 6: Audit & Exposure Delta (US-006)
 
 Journey summary only here: full spec is under [Dashboard Home & Audit](#visibility-dashboard-home-and-audit-us-012-us-006) below. A CISO-facing, board-ready exposure trend: delta cards plus a tamper-evident, hash-chained audit trail. No agent runs; it's a projection over assessment outcomes.
