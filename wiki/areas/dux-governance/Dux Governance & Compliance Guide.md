@@ -145,7 +145,7 @@ Worth noting explicitly: the observability vendors referenced elsewhere in this 
 | APAC | Deferred, Singapore/Australia targeted | Before the first APAC tenant |
 | LATAM | Deferred, Brazil shortlisted, an LGPD privacy impact assessment required | 30 days before any LATAM contract, with no contract clause finalized without Legal and Engineering pre-approval |
 
-Breach notification clocks vary by jurisdiction and are worth knowing cold: 72 hours for the EU/UK and for Singapore's PDPA, 72 hours for India's DPDP Act, and 30 days for Australia.
+Breach notification clocks vary by jurisdiction and are worth knowing cold: 72 hours for the EU/UK and for Singapore's PDPA, 72 hours for India's DPDP Act, 30 days for Australia, "per state" requirements in the US, and Brazil's LGPD, which only requires notification within a "reasonable" period rather than a fixed clock.
 
 ### Multi-region disaster recovery, as a target
 
