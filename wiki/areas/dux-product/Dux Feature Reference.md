@@ -55,7 +55,7 @@ Journey summary only here: full canonical spec is in the [mitigation section](#m
 
 ### Step 5: Control Refinements (US-005)
 
-Surfaces the highest-impact estate-wide configuration changes (disabling NTLM, enabling IMDSv2) ranked by exposure reduction, via `ControlRefinementQuery` using the Specification pattern (`ByImpact`, `ByScanner`, `ByCVE`). Wiz ingest is live at Gate 1; Qualys is Gate 3/W2. Each result carries an `effort` field (S/M/L, sized by rollout scope, not build cost) as a secondary column: it never breaks ties in the ranking, which is exposure-reduction only. `GET /controls/refinements`.
+Surfaces the highest-impact estate-wide configuration changes (disabling NTLM, enabling IMDSv2) ranked by exposure reduction, via `ControlRefinementQuery` using the Specification pattern (`ByImpact`, `ByScanner`, `ByCVE`). Wiz ingest is live at Gate 1; Qualys is Gate 3/W2. Each result carries an `effort` field (S/M/L, sized by rollout scope, not build cost) as a secondary column: it never breaks ties in the ranking, which is exposure-reduction only. Concretely: S is a single-toggle config change on one control, M is a staged change across a device or asset group, and L is an estate-wide policy rollout that needs change-management sign-off. `GET /controls/refinements`.
 
 The recommendation logic itself is Gate 2, not Gate 1: deferred by D-19 as a capacity fallback, with zero Gate-1 tasks scheduled against it, and the deferral still stands as of the most recent capacity re-baseline. The endpoint and stepper panel exist at Gate 1; what actually populates them with ranked recommendations doesn't ship until Gate 2.
 
