@@ -80,7 +80,12 @@ This plane is deliberately CVE-lookup-and-assessment-centric (`GET /cves/{id}/de
 | `GET /assessments/{id}` (+ `/trace`, `/replay`) | Assessment + trace | Trace returns reasoning steps, a code artifact, and execution results (populated at Gate 1, null only when the sandbox is kill-switched off); replay reconstructs the full span tree from a trace ID at read time |
 | `GET /cves/{id}/detail` | Exposure Analysis | `?projection=exposure\|protection\|action_cards` |
 | `GET /assets/{id}/context` | Asset Context | Endpoint/cloud/runtime/identity/policy blocks, each nullable and never fabricated when a source connector is stale or absent |
+| `GET /controls/refinements` | Control refinements | Backs the control-refinement recommendations surface |
+| `POST /research/schedule`, `GET /research/schedule` | Continuous re-assessment | Sets or reads a scheduled research sweep; defaults to a 24-hour cadence |
 | `POST /mitigations`, `POST /fast-actions`, `POST /remediation-tickets` | Write actions | All unattended by default; all require a client-supplied `Idempotency-Key` |
+| `POST /webhooks/configure` | Webhook configuration | Registers a tenant's webhook endpoint |
+| `GET /webhooks/deliveries` (+ `POST .../{id}/replay`) | Webhook delivery visibility | Filterable by status or event type; replay is scoped to the tenant's own dead-letter records |
+| `POST /v1/admin/kill-switch` (+ `DELETE .../{id}`) | Kill switch | Management plane only. Activation body: `{level: L1\|L2\|L3\|L4, tenant_id?, session_id?, reason}`; `DELETE` deactivates |
 | Chat SSE + `POST .../hitl-response` | Chat Guidance | Events: `query`, `response`, `citation`, `processing_step`, `prioritization_cards`, `request_research_ack`, `hitl_request` |
 
 ### CVE read projections
