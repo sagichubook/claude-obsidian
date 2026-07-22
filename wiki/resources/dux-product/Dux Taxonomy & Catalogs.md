@@ -36,7 +36,18 @@ Confidence bands map application labels to public projections:
 | 0.00–0.40 | `not_exploitable` | `not_exploitable` |
 | abstain | `insufficient_data` | `null` |
 
-The raw `confidence_score` itself is never exposed on the public v1 API. `insufficient_data_reason` (`asset_gap` / `intel_gap` / `context_limit`) stays application/UI-only.
+The raw `confidence_score` itself is never exposed on the public v1 API. `insufficient_data_reason` (`asset_gap` / `intel_gap` / `context_limit`) stays application/UI-only. The `network_exposure` verdict behind "reachable" (below) is itself a closed, nullable enum: `internet` / `external` / `internal` / `unreachable`.
+
+A handful of UI labels alias onto this model rather than adding new states: Figma's "Exploitable" label means the Mitigation Required subset (`potentially_exploitable`); "Not Exploitable" and "Unexploitable" both mean Protected (`not_exploitable`); "Unresearched" means `null`.
+
+### EntityType: the closed set behind DQL and custom metrics
+
+Eight entity types, gated in two waves:
+
+| Gate | Types |
+|---|---|
+| Gate 1 | `device`, `cloud_compute`, `finding`, `vulnerability_instance`, `cve` |
+| Gate 2c+ | `mitigation`, `label`, `user` |
 
 ## Confidence, calculated honestly
 
