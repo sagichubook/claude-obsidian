@@ -97,14 +97,37 @@ Roughly half of every cross-file terminology bug found during the corpus's own r
 | **kill switch** (noun) | kill-switch (adjective only) | Levels KS-L1 through KS-L4 |
 | **CaMeL** | camel-plane | The dual-LLM safety boundary |
 | **World Model** | world model | A versioned proper noun, not a generic phrase |
+| **tenant** | organization (UI only) | API and code always say `tenant_id` |
+| exploitability assessment | assessment (UI shorthand) | Formal docs and US-011 use the full term |
+| Exposure Analysis | Exposure drill-down | Nav label vs. page name |
 
 ## Design system
 
 Exposure-state colors are fixed and always paired with a shape or icon, never color alone (WCAG 2.2 SC 1.4.1): Protected `#22C55E`, Partially Mitigated `#F59E0B` (fails contrast at 2.4:1 on its own, pair with icon/shape, or darken to `#B45309`), Mitigation Required `#DC2626`, Exposed `#EF4444`, Listening `#F472B6`, primary accent `#8B5CF6`, actions CTA `#EC4899`. Icons are always SVG with ARIA labels: never emoji.
 
+**Stage pills** carry their own color family, distinct from the exposure-state colors above: Exploitability Analysis is pink (the `#EC4899` family), Lightweight Mitigations is tan/brown, and Remediation Acceleration is blue.
+
+**Iconography pairs a shape with every color, never color alone** (the same WCAG 2.2 SC 1.4.1 rule the exposure-state colors follow): a solid umbrella means Protected, an umbrella with rain means Partially Mitigated, a crossed circle means Mitigation Required, a pulsing crossed circle with an exclamation mark means Exposed, signal waves mean Listening, a brain or lightbulb marks AI reasoning, a lightning bolt marks a quick action, and a D-shield (pink when active, grey when inactive) marks the Dux Agent itself.
+
+**Typography** runs on Inter (or the system font as fallback): a headline is 24px at weight 700, a card title is 16px at weight 600, a metric is 32px at weight 700 rendered in its state color, and body text is 14px at weight 400. Spacing runs on a 4px base unit: 24px card padding, 16px gaps, 32px section spacing.
+
 ## Error taxonomy
 
 `AGENT_TIMEOUT` (504) · `CONTEXT_EXHAUSTED` (422) · `BUDGET_EXCEEDED` (429) · `GOVERNANCE_BLOCKED` (403) · `INSUFFICIENT_DATA` (422, with subtypes `asset_gap` / `intel_gap` / `context_limit`). A workflow abandons after 15 minutes; context checkpoints at 80%+ depth and is resumable via `POST /assessments/{id}/resume`.
+
+A parallel set of application-level error classes covers the same failures at the exception level rather than the wire level: `TenantIsolationError` (403), `ConnectorSyncError` (502), `AgentBudgetExceeded` (429), and `AssessmentDedupConflict` (409).
+
+### Platform edge cases
+
+| Scenario | Expected behavior |
+|---|---|
+| NVD unavailable more than 2 hours | Serve from the S3 cache; warn via `NVD_SYNC_WARN` past 2 hours, escalate to critical via `NVD_SYNC_STALE` past 4 hours |
+| AWS throttling | Exponential backoff plus jitter, max 5 retries, `AWS_SYNC_FAILURE` at P2 |
+| Workflow action storm | Continue-as-new at 35,000 events, max 2 retries |
+| Cross-tenant URL manipulation | 404, to mask existence. More than 20 masked 404s per IP per 5 minutes triggers a SIEM alert |
+| Webhook delivery failure | 5 attempts, then dead-letter; alert above 10 failures per tenant per hour |
+| Rate limit exceeded | 429 (RFC 6585) plus `Retry-After` (RFC 9110); admin notified if the queue stalls more than 5 minutes |
+| Context window exhaustion | Checkpoint into `assessment_checkpoints` (JSONB); resumable via the resume endpoint; abandons with `CONTEXT_EXHAUSTED` at 80%+ depth |
 
 ---
 
