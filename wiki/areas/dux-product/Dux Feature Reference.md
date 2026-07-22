@@ -241,6 +241,10 @@ The MVP connector table is the single authoritative source for rate limits and s
 
 A mid-assessment credential revocation is treated as a distinct, non-fatal failure mode: in-flight steps keep whatever evidence they'd already gathered, remaining dependent checks degrade to `INSUFFICIENT_DATA` rather than reusing stale evidence, and the connector status flips to `credential_revoked` (not a generic error) so the UI can prompt "Reconnect required" immediately rather than waiting for the next sync cycle. No partial-credential state is ever passed to a vendor mutation API.
 
+The specific AWS STS failure it can hit maps to a distinct, actionable banner rather than one generic "connection failed" message: `AccessDenied` surfaces a trust-policy fix message, `ExternalIdMismatch` surfaces an external-ID mismatch message, and `InvalidClientTokenId` surfaces an invalid-credentials message; all three persist to `aws_role_status` for later reference. Per-service AWS throttling limits are enforced separately from the connector-level rate-limit table above: EC2 at 100 requests/second, IAM at 20, S3 at 100, with CloudWatch's `AWSThrottledRequests` metric feeding the sync-health strip.
+
+Measured by sync success rate, asset-count growth, time to first sync, connector error mean-time-to-recovery, and CSV-fallback adoption.
+
 **US-020 Optional Physical Residency Admin (Gate 5, draft)** monitors an on-prem/air-gapped resident agent via heartbeat. The contract firewall here is explicit and sales-relevant: there is no in-VPC agent before Gate 5: for Phases 1 through 4, "lives inside your environment" means only *logical* residency through the integration layer, and sales copy must not imply otherwise.
 
 ## Platform: Tenant Settings, Help & Custom Metrics (US-014, US-015, US-022)
