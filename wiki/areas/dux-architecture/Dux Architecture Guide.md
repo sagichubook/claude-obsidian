@@ -303,7 +303,7 @@ Twenty-one ADRs govern this architecture, five of them revised three or more tim
 | ADR-002 R2 | Shared-schema RLS, forced, on CloudNativePG | Accepted |
 | ADR-006 R4 | Kubernetes (EKS) from Gate 1, Pulumi IaC, Vault, Cloudflare WAF, MinIO audit anchor | Accepted |
 | ADR-007 R3 | Self-hosted Temporal on Kubernetes as the canonical workflow port from Gate 1 | Accepted |
-| ADR-008 R2 | CaMeL-tiered LLM routing, ≤$0.75 SLO at 45% cache hit rate | Accepted |
+| ADR-008 R2 | CaMeL-tiered LLM routing, ≤$0.75 SLO at 45% cache hit rate; Gate-2 triage routes to the Bedrock Converse API's cheapest available model (`amazon.titan-text-lite-v2`), retiring an earlier self-hosted vLLM plus Phi-4 14B option | Accepted |
 | ADR-010 R5 | LiteLLM removed: direct Bedrock SDK behind `LLMProviderPort` | Accepted |
 | ADR-011 R2 | Vendor connector framework, 3+ live at Gate 1 | Accepted |
 | ADR-012 R3 | Vendor-action write path, unattended by default at Gate 1 | Accepted |
