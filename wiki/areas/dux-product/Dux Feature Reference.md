@@ -121,6 +121,8 @@ sequenceDiagram
 
 **US-024 Vulnerability Instances by CVE.** Lists every instance of a CVE across assets with exploitability, reachability, and acknowledgment state. `GET /v1/vulnerability-instances/{cve_id}` uses cursor pagination (limit 1–5000, default 3000). One precise distinction worth holding onto: `exploitability_status = null` means "we haven't looked yet"; `insufficient_data` means "we looked and couldn't tell." They are not interchangeable.
 
+Measured by queue depth broken down by state, the accuracy of the Vulnerability Reduction bar itself, Request Research latency, and the actionable-queue ratio the whole page exists to demonstrate.
+
 ## Investigation: Chat Guidance (US-008)
 
 The conversational surface onto Dux Agent: not a general-purpose security chatbot. Every turn routes through the same governed agent workflows (audit, kill switch, tenant scope, HITL) as the rest of the product, and chat runs in its own failure domain: a separate SSE connection pool and its own LLM quota bucket, so chat degradation can never block the core assessment queue.
