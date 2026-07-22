@@ -36,6 +36,7 @@ A Public Data API key is hard-rejected on any Application-plane route, and `POST
 | Application API | Unversioned | Breaking changes ship behind a feature flag instead |
 | SSE event schemas | `2026.06` | New event types are additive; removing a field requires a version bump |
 | Webhook payloads | `v1`, HMAC-signed | Requires an `Idempotency-Key`; deprecated fields stay honored for 90 days |
+| Management API | `/v1/admin/*`, `/v1/agents/*` | A fixed path token, not a semantic version: it evolves independently of the Public Data API's `v1.0.0`/`/v2` policy, despite the shared `/v1` segment. The two are never to be conflated |
 
 ### Authentication and authorization
 
