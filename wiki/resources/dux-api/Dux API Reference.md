@@ -223,7 +223,7 @@ Delivery runs on a durable NATS JetStream queue: explicitly not a Redis-backed j
 | Retry | Exponential backoff with jitter, base 1 second, up to 5 attempts |
 | Dead letter | A dedicated dead-letter stream; alerts above 10 failures per tenant per hour; retained 7 days |
 | Replay | A tenant-facing replay endpoint, plus an internal operator command |
-| Signing | Every payload carries an HMAC-SHA256 signature header, keyed from a secret in Vault |
+| Signing | Every payload carries an `X-Dux-Signature: sha256=HMAC_SHA256(payload, webhook_secret)` header, keyed from a secret in Vault |
 | Circuit breaker | Delivery pauses automatically above 10 failures per tenant per hour |
 
 ### SSE streams
