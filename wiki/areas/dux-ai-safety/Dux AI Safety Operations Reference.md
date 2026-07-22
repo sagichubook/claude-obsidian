@@ -96,13 +96,17 @@ Dux tracks against the current OWASP Top 10 for Agentic Applications (published 
 | ASI09 Human-Agent Trust Exploitation | Partial | Medium–High |
 | ASI10 Rogue Agents | Partial (kill switch and cost cap already Implemented) | Low |
 
-### LLM risks (LLM01–10, selected)
+### LLM risks (LLM01–10)
 
 | Risk | Maturity | Gate-1 blocker? |
 |---|---|---|
 | LLM01 Prompt Injection | Implemented | No |
+| LLM02 Sensitive Info Disclosure | Partial in weeks 1–10 (regex) → Implemented from week 11 (Presidio) | No |
+| LLM03 Supply Chain | Partial → Implemented after the week-8 pin gate | No |
 | LLM04 Data/Model Poisoning | Implemented | No |
+| LLM05 Improper Output Handling | Partial → Implemented at week 9 (schema pins) | No |
 | LLM06 Excessive Agency | Implemented | No |
+| LLM07 System Prompt Leakage | Partial (seed red team) | No |
 | LLM08 Vector/Embedding Weaknesses | Implemented | No |
 | **LLM09 Misinformation** | Partial → Implemented at Gate 1 | **Yes** |
 | LLM10 Unbounded Consumption | Implemented | No |
