@@ -46,7 +46,7 @@ Layered on top of the spine, an eight-layer defense-in-depth model maps each lay
 | L5 Execution isolation | Self-hosted Firecracker microVM + AST pre-scan | Unexpected code execution, rogue agents |
 | L6 Governance gates | Intent + Budget + Effect + DLP kernel | Nearly every category at once |
 | L7 Audit | HMAC-SHA256 hash chain, hourly anchoring | Human-agent trust exploitation |
-| L8 Kill switch | Sub-5-second propagation, tenant-scoped | Rogue agents |
+| L8 Kill switch | Sub-5-second propagation for KS-L2 through KS-L4; KS-L1 within 30 seconds, tenant-scoped | Rogue agents |
 
 ### Credential-honeypot mitigations
 
