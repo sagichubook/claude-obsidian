@@ -249,11 +249,13 @@ Measured by sync success rate, asset-count growth, time to first sync, connector
 
 ## Platform: Tenant Settings, Help & Custom Metrics (US-014, US-015, US-022)
 
-**US-014 Tenant Settings** is where the two safety-critical admin controls live: kill-switch activation (`POST /v1/admin/kill-switch`, propagating in under 5 seconds) and agent-policy LLM spend caps. One rule worth being precise about: **data API keys and agent-provisioning keys are two non-interchangeable families**: data keys (`agt_…` bearer tokens, scoped to specific read/write permissions) are rejected on dashboard JWT routes, and agent-provisioning keys can't call public data endpoints without those same scopes. Kill-switch severity is legible at a glance in the UI: L1 is silent and single-session; L2/L3 raise an in-app banner naming the reason, actor, and UTC timestamp; L4 is platform-wide.
+**US-014 Tenant Settings** is where the two safety-critical admin controls live: kill-switch activation (`POST /v1/admin/kill-switch`, propagating in under 5 seconds) and agent-policy LLM spend caps. These two are Gate-0 in priority (users and agent policy are P0); API keys and webhooks are a notch behind, at P1. One rule worth being precise about: **data API keys and agent-provisioning keys are two non-interchangeable families**: data keys (`agt_…` bearer tokens, carrying the specific scopes `custom_metrics:read`, `vulnerability_instances:read`, and `cve_research:write`) are rejected on dashboard JWT routes, and agent-provisioning keys can't call public data endpoints without those same scopes. Kill-switch severity is legible at a glance in the UI: L1 is silent and single-session; L2/L3 raise an in-app banner naming the reason, actor, and UTC timestamp; L4 is platform-wide.
+
+Measured by kill-switch activation count, webhook delivery success, export volume, API-key usage by tier and scope, and LLM spend against cap.
 
 **US-015 Help & Support** (Phase-1 exit, not a Gate-1 blocker) is a static link hub. One real, currently-open risk worth flagging here rather than burying: `trust.dux.io` was unreachable at the June-2026 documentation scrape: a genuine launch blocker, covered by a broken-link synthetic check, though it carries no agent or safety impact.
 
-**US-022 Custom Metrics Configuration** (Seed) lets a tenant admin define custom metrics via a DQL filter and dashboard binding: explicitly **not** arbitrary code execution; invalid DQL is rejected at save with a 422.
+**US-022 Custom Metrics Configuration** (Seed) lets a tenant admin define custom metrics via a display name, a DQL filter, a `group_by`, and a dashboard binding: explicitly **not** arbitrary code execution; invalid DQL is rejected at save with a 422. The metric appears in the public `GET /v1/custom-metrics` once the Seed API trigger fires.
 
 ## Sources
 
