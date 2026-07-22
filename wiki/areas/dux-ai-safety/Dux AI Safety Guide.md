@@ -82,7 +82,7 @@ The governance kernel is a synchronous chain of thirteen gates (`GOV-001` throug
 | GOV-007 CostCap | Hard per-tenant spend cap, $25/hour default, checked before every LLM call | L2 kill switch |
 | GOV-008 Effect | Tool side effects stay within tenant scope; blast tiers scale from single-asset up to tenant-wide | Block + audit |
 | GOV-009 DLP | Regex-based redaction, upgrading to NER-based detection once false positives drop below 5% | Redact or block |
-| GOV-010 Loop | Max 50 reasoning iterations per assessment, max 10 tool calls per iteration | `GOVERNANCE_BLOCKED` |
+| GOV-010 Loop | Max 50 reasoning iterations per assessment, max 10 tool calls per iteration; high-blast-radius agents get a tighter compound cap of `min(50, 10 × P-LLM iterations)` | `GOVERNANCE_BLOCKED` |
 | GOV-011 PromptScreen | The trusted user prompt is screened before the privileged reasoning step ever plans against it | `PROMPT_SCREEN_BLOCKED` |
 | GOV-012 OutputAudit | Untrusted-tier output is scanned for instruction leakage before it reaches the privileged tier | `OUTPUT_AUDIT_BLOCKED` |
 | GOV-013 TieredRisk | A tool's blast-radius tier must match the session's risk tier | `TIERED_RISK_BLOCKED`, tiered HITL |
