@@ -159,9 +159,11 @@ flowchart TD
     CI --> Retire["8. Deprecate-on-retire runbook"]
 ```
 
+Four fields are validator-enforced, controlled vocabularies across every registry row: `kind` (`cloud_connector`, `vendor_connector`, `intel_feed`, `research_source`, `customer_idp`, `roadmap`), `capability` (`ingest`, `action`, `idp`, `intel`), `status` (`active`, `gate_2c`, `gate_3`, `gate_5`, `ui_evidence`, `platform_managed`, `roadmap`, `deprecated`, `retired`), and agent `layer` (`product_persona`, `runtime_service`, `workflow_subagent`, `gate3_workflow`, `third_party_isv`, `roadmap`).
+
 ### 1. Integration catalog
 
-The largest, most-revised registry. At least three live connectors ship at Gate 1 (CrowdStrike, Wiz, and ServiceNow or Entra). The full Wave-1/Gate-1 set: `aws`, `nvd`, `cisa-kev`, `epss`, `csv-fallback`, `crowdstrike` (ingest + action), `wiz`, `servicenow` (ingest + action), `entra-id`, `splunk`. Wave 2 / Gate 3 adds `intune` and `qualys`.
+The largest, most-revised registry. At least three live connectors ship at Gate 1 (CrowdStrike, Wiz, and ServiceNow or Entra). The full Wave-1/Gate-1 set: `aws`, `nvd`, `cisa-kev`, `epss`, `csv-fallback`, `crowdstrike` (ingest + action), `wiz`, `servicenow` (ingest + action), `entra-id`, `splunk`. Wave 2 / Gate 3 adds `intune` and `qualys`. A `customer_idp`-kind pair, `okta-idp` and `entra-idp`, backs seed-stage SSO (US-014) separately from the `entra-id` ingest connector above.
 
 Beyond that near-term set, the public `Sources` OpenAPI enum carries 42 wire-level provenance values: a scanner/ingest attribution tag set, **not** a connector roadmap. As of a single 2026-07-21 pass, all 33 of the not-yet-built values were assigned a real connector role:
 
