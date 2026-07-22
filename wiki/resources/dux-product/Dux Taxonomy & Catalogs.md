@@ -75,7 +75,7 @@ A framing distinction worth internalizing, because it's how the product explains
 | Firewall Blocks Exploitation | `firewall_blocks_exploitation` | CrowdStrike | Gate 1 |
 | Process Not Listening On Ports | `process_not_listening` | resident agent | Gate 5 |
 
-**Figma's "playbook cards" are these same factor cards under a design-file name, never a separate entity** — the identical naming trap as "Mitigation nav" versus "Mitigate stage" below, and worth stating with the same explicitness.
+**Figma's "playbook cards" are these same factor cards under a design-file name, never a separate entity:** the identical naming trap as "Mitigation nav" versus "Mitigate stage" below, and worth stating with the same explicitness.
 
 Underneath the factor cards sits a second, more granular controlled vocabulary: the specific `CONTROL.settings` values the UI surfaces as the rule detail when a card is expanded. These don't replace the factor-card model, they back it:
 
