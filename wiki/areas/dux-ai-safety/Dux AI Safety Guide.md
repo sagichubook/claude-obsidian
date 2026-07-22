@@ -110,14 +110,14 @@ The write path shipped unattended-by-default at Gate 1 on the premise that this 
 
 ## The kill switch: the emergency override
 
-Four escalating levels, propagated in under 5 seconds at p99, riding NATS core pub/sub:
+Four escalating levels, on two distinct propagation paths that are never conflated: KS-L2 through KS-L4 relay over NATS core pub/sub at under 5 seconds at p99, while KS-L1 rides a separate Unleash feature-flag path at up to 30 seconds:
 
-| Level | Scope |
-|---|---|
-| KS-L1 | Single-action halt |
-| KS-L2 | Tenant-scope freeze: this is what a budget breach triggers |
-| KS-L3 | Broader tenant-level halt (e.g., tenant suspension, a compromised resident agent) |
-| KS-L4 | Platform-wide halt |
+| Level | Scope | Propagation |
+|---|---|---|
+| KS-L1 | Single-action halt | Separate Unleash path, ≤30s |
+| KS-L2 | Tenant-scope freeze: this is what a budget breach triggers | NATS pub/sub, <5s p99 |
+| KS-L3 | Broader tenant-level halt (e.g., tenant suspension, a compromised resident agent) | NATS pub/sub, <5s p99 |
+| KS-L4 | Platform-wide halt | NATS pub/sub, <5s p99 |
 
 The kill switch is the primary compensating control for the unattended-by-default write path: alongside the governance kernel, least-privilege credentials, and hash-chained audit, it replaces the mandatory human-approval step that used to gate every write before that path was re-gated. A concrete trigger example: a per-tenant sandbox budget breach (above 300 sandbox-seconds/hour or 5 concurrent microVMs) fires an L2 freeze automatically. Any L2/L3/L4 activation for a tenant or session also populates a short-TTL JWT denylist, forcing re-authentication before that tenant's sessions can resume.
 
