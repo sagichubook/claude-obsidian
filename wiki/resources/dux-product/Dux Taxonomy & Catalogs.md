@@ -250,7 +250,7 @@ Writes flow only through `VendorActionGate`: connectors are never permitted to c
 
 ### 7. Reasoning eval catalog
 
-`EXP-CIT-001` (citation must be present), `EXP-FN-001` (false-negative guard), `EXP-AWS-SG-001`, `EXP-VENDOR-001`. A golden-set regression above 2% is a hard merge block. Personalization stays strictly tenant-scoped: cross-tenant training is never permitted.
+`EXP-CIT-001` (citation must be present), `EXP-FN-001` (false-negative guard), `EXP-NOISE-001` (non-exploitable findings are deprioritized), `EXP-AWS-SG-001`, `EXP-VENDOR-001`. A golden-set regression above 2% is a hard merge block. Personalization stays strictly tenant-scoped: cross-tenant training is never permitted.
 
 ### 8. Compliance framework catalog
 
