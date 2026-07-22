@@ -91,6 +91,8 @@ Where the pipeline's output becomes a single defensible verdict: severity badges
 
 Factor cards live at Gate 1: `aws_sg_blocks_port` (live), `product_not_affected` (live), `network_reachability` (partial), `firewall_blocks_exploitation` (live via CrowdStrike), `process_not_listening` (Gate 5 only). **NFR-013 sets a hard performance bar: p95 under 500ms at 1,000 assets.** Cross-tenant `GET /cves/{id}` returns 404. With AWS absent, factor cards fall back to assessment logic only, and **KS-L1** halts an in-flight assessment for the session.
 
+Risk-group rows on the same page carry their own icon set, distinct from the four exposure-state instance icons in [[Dux Taxonomy & Catalogs]]: a crossed eye marks a high-risk group, an umbrella marks medium, and a tree marks low or already-mitigated.
+
 One documentation note worth repeating precisely: the reference-UI demo numbers baked into the original Figma spec (8,341 researched, a 74.3/15.6/10.1% split, 78% certainty) are illustrative placeholders, not measured product metrics. Don't cite them as real.
 
 Measured by: the assessment confidence distribution, factor-card coverage, attack-path query latency, the drill-down-to-trace open rate, and golden-set exploitability accuracy.
