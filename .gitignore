@@ -55,6 +55,8 @@ auth.json
 WIKI*.md
 PROMPT.md
 Welcome.md
+# Exception: this vault's Welcome.md is real PARA entry-point content, not throwaway
+!Welcome.md
 *.tmp.*
 Obsidian vault*
 Untitled.canvas
