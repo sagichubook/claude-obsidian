@@ -792,6 +792,8 @@ Not every latency regression is a runaway loop — sometimes it's subagents talk
 
 ### 4.15 · R12 — Prompt brittleness
 
+The last of the twelve, and it's explicitly a diagnosis-of-exclusion — step 1 rules out the two other things a golden-set regression might actually be.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** golden-set regression >2% (NFR-008) traced to a prompt/schema edit, not a provider EOL migration.
