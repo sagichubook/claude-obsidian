@@ -77,9 +77,11 @@ Four sections, in that order, because that's the order an incident actually unfo
 
 ## 1 · Agent identity
 
+Every write the governance kernel authorizes eventually traces back to one question: *which agent is this, and does it still have the right to be here?* Get identity wrong and every downstream gate is checking the wrong thing.
+
 **Purpose:** how assessment agents — and the optional Gate-5 physical-residency agents — are identified, authenticated, authorized, and audited. **Parents:** BR-003, BR-007.
 
-Phase 1 uses JWT with SPIFFE-format claims. Full SPIFFE/SPIRE X.509 SVIDs target a Month-3 proof of concept.
+Phase 1 uses JWT with SPIFFE-format claims. Full SPIFFE/SPIRE X.509 SVIDs target a Month-3 proof of concept — a deliberately staged migration rather than a big-bang cutover, laid out in the ladder below.
 
 ### 1.1 · JWT claim schema
 
