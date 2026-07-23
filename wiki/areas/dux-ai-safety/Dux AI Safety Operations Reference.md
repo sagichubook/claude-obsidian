@@ -143,7 +143,7 @@ An agent's identity has a birth, a rotation cadence, and — when things go wron
 
 > Gate 5 only. Not used by the default Unified Integration Layer.
 
-DaemonSet `dux-resident-agent`. Heartbeat: `POST /resident-agents/{id}/heartbeat`, authenticated by **mTLS** (preferred) or a signed JWT carrying `agent_id`, `tenant_id`, `nonce`, and `exp` ≤60 s — a stale nonce is rejected. The response may carry `halt: true` to trip the kill switch.
+A future, optional deployment mode gets a heartbeat contract of its own. DaemonSet `dux-resident-agent`. Heartbeat: `POST /resident-agents/{id}/heartbeat`, authenticated by **mTLS** (preferred) or a signed JWT carrying `agent_id`, `tenant_id`, `nonce`, and `exp` ≤60 s — a stale nonce is rejected. The response may carry `halt: true` to trip the kill switch.
 
 ### 1.7 · Shadow AI detection and behavioral baselines
 
