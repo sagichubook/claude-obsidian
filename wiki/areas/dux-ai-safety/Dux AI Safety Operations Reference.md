@@ -235,7 +235,7 @@ When logprobs are unavailable, the remaining two signals renormalize to **entrop
 
 ### 2.2 · Platt scaling and the ECE gate
 
-Platt scaling fits 2 parameters (A, B — a 1-D logistic regression over the raw ensemble score) and is enforced by:
+A raw ensemble score isn't automatically calibrated — "80% confident" has to actually mean right 80% of the time, which is what this gate enforces. Platt scaling fits 2 parameters (A, B — a 1-D logistic regression over the raw ensemble score) and is enforced by:
 
 ```bash
 pnpm test:calibration --ece-threshold 0.15
