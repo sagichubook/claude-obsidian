@@ -290,7 +290,7 @@ When a verdict is `insufficient_data`, the abstention carries one of three reaso
 
 ### 2.7 · Critic rules
 
-Rule-based from Month 1; an ML critic runs in shadow from seed.
+A calibrated score can still sit on top of an internally inconsistent chain of reasoning, so a separate critic layer checks the reasoning itself, not just the number. Rule-based from Month 1; an ML critic runs in shadow from seed.
 
 | Rule | Check | Severity | Test name |
 |------|-------|----------|-----------|
