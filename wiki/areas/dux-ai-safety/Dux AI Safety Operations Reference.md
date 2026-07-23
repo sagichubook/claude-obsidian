@@ -305,7 +305,7 @@ A calibrated score can still sit on top of an internally inconsistent chain of r
 
 > Resolves OI-21.
 
-**Platt scaling fits 2 parameters** (A, B — a 1-D logistic regression over the raw ensemble score). Standard practice for logistic-regression calibration is a minimum of 10–15 held-out samples per parameter per class outcome (positive/negative) — a well-established rule of thumb (Peduzzi et al.'s "events per variable" heuristic, applied to calibration rather than the original model fit). For 2 parameters × 2 outcome classes, that floor is **40–60 samples overall** — comfortably below the existing ECE gate's own **n ≥ 50** holdout, which was already set above this floor independently.
+The **n ≥ 50** holdout above wasn't picked arbitrarily — here's the statistics behind why it's the right floor. **Platt scaling fits 2 parameters** (A, B — a 1-D logistic regression over the raw ensemble score). Standard practice for logistic-regression calibration is a minimum of 10–15 held-out samples per parameter per class outcome (positive/negative) — a well-established rule of thumb (Peduzzi et al.'s "events per variable" heuristic, applied to calibration rather than the original model fit). For 2 parameters × 2 outcome classes, that floor is **40–60 samples overall** — comfortably below the existing ECE gate's own **n ≥ 50** holdout, which was already set above this floor independently.
 
 ### 2.9 · Per-stratum minimums
 
