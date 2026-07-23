@@ -186,7 +186,7 @@ Process groups are logically separated:
 
 ### Autoscale-on-Queue-Depth Policy
 
-Each Deployment scales independently via a Kubernetes `HorizontalPodAutoscaler` (HPA), min 2 / max 10 replicas per service:
+This policy resolves OI-30/DA-18, rewritten 2026-07-19 (D-33 for K8s, narrowed by D-34 for EKS). Each Deployment scales independently via a Kubernetes `HorizontalPodAutoscaler` (HPA), min 2 / max 10 replicas per service:
 
 | Service | Scaling metric | Target |
 |---------|----------------|--------|
