@@ -2,7 +2,7 @@
 type: area
 title: "Dux"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 review_cadence: weekly
 tags: [area, dux, dux/hub]
 status: evergreen
@@ -10,60 +10,64 @@ related: ["[[index]]", "[[Dux Product Guide]]", "[[Dux Architecture Guide]]", "[
 sources: [".raw/dux/README.md", ".raw/dux/00-meta/vision-reference.md", ".raw/dux/00-meta/decisions-log.md", ".raw/dux/10-product/product-overview.md"]
 ---
 
-# Dux
+# Dux: Safety at Machine Speed
+
+### The front door to a knowledge base about building an AI agent that gets to act — not just alert — before an attacker does
 
 Navigation: [[index]]
 
 ---
 
-## What Dux is
+## The window is closing, and it isn't closing slowly
 
-**Dux** is an agentic exposure management platform built for a world where vulnerability exploitation windows are collapsing from weeks to minutes. Use **Dux Agent** to determine what's actually exploitable in your environment, identify the fastest path to protection, and eliminate exposure before it's used against you. We bring exploitability, context, and action together — so you achieve **safety at machine speed**.
+There is a specific, measurable moment security teams have been losing ground on for years: the gap between the moment a vulnerability becomes public and the moment someone weaponizes it. That gap used to be measured in weeks. Mandiant's own numbers now put the industry's mean time-to-exploit at roughly **−7 days in 2025**, down from **−1 day in 2024** — negative, because attackers are frequently exploiting a flaw *before* it's even disclosed. Meanwhile the tools built to help — scanners, dashboards, ticket queues — were optimized for a different problem: visibility. More findings, better reports, cleaner backlog rankings. None of that tells a team what's actually exploitable **in their own environment**, right now, today.
 
-The pipeline is three stages — **Analyze → Mitigate → Remediate** — live end to end at Gate 1, **unattended by default**. Human review is an anomaly-escalation path, not a gate on every write. Agents **write and execute** investigation code in self-hosted Firecracker microVM sandboxes, and re-assess continuously as threat intel and the environment change.
+**Dux** is built for that specific gap. It's an agentic exposure management platform: give it a CVE and a customer's live environment evidence — assets, runtime, identity, network, existing controls — and **Dux Agent** works out what's genuinely exploitable and the fastest way to shut the door on it. The pipeline runs **Analyze → Mitigate → Remediate**, live end to end at Gate 1, and it runs **unattended by default**. Human review isn't a gate on every write anymore — it's an anomaly-escalation path, reserved for when something looks wrong. The agents don't just recommend; they **write and execute** investigation code, inside self-hosted Firecracker microVM sandboxes, and they keep re-assessing as threat intel and the environment change underneath them.
 
-**Defensive only. Never PTaaS. Never a scanner replacement.**
+One line matters more than any other in this corpus, so it's worth stating up front: **defensive only. Never PTaaS. Never a scanner replacement.** Everything that follows sits inside that boundary.
 
-This page is the single front door into the full knowledge base: what the product does, how it's built, how it stays safe while acting with real autonomy, and how the business around it runs.
+This page is the single front door into the full knowledge base — what the product does, how it's built, how it stays safe while acting with real autonomy, and how the business around it runs.
 
 ---
 
-## Positioning & taglines
+## How Dux talks about itself
+
+Positioning has to survive contact with an engineering spec, so it's worth being precise about the words Dux actually uses in public before getting into what's behind them.
 
 - **Category:** Agentic Exposure Management
 - **Primary tagline:** *Safety at Machine Speed*
 - **Alternate marketing copy:** *Safety Faster than the Speed of Strike*
 - **Stage headline (dux.io):** *If it's not exploitable, why fix it?*
 - **Contact-section header (dux.io):** *Faster Safety Starts Here*
-- **Naming:** Public "AI-workers" / "Dux AI agents" = **Dux Agent** (canonical product name). Legal entity: **Dux, Inc.** (press "Dux Technologies Inc." is non-canonical) — confirmed (D-51).
+- **Naming:** Public "AI-workers" / "Dux AI agents" = **Dux Agent** (the canonical product name). The legal entity is **Dux, Inc.** — press references to "Dux Technologies Inc." are non-canonical — confirmed (D-51). Naming discipline matters here because it's one of the few places marketing copy and engineering reality are required to agree exactly.
 
-### Canonical hero copy
+### The canonical hero copy
 
 > Dux is an agentic exposure management platform built for a world where vulnerability exploitation windows are collapsing from weeks to minutes. Use **Dux Agent** to determine what's actually exploitable in your environment, identify the fastest path to protection, and eliminate exposure before it's used against you. We bring exploitability, context, and action together — so you achieve **safety at machine speed**.
 
-### Hero / CVE-drop scenario
+### The scenario that sells it
 
 > When a zero-day drops, your scanners flag thousands of instances. Teams spin up **Dux Agent** to investigate which are **actually exploitable in your environment** — with evidence for controls already blocking the path. Stop drowning in alerts. Start focusing on what actually matters.
 
-### Gate-safe context line
+And the line that keeps the whole platform honest about what "critical" means:
 
 *Not exploitable = not urgent. Context changes everything.* (CVSS 9.8 doesn't mean critical in **your** environment; EPSS is an input badge, not the verdict.)
 
-### Problem narrative
+### Why the old approach stopped working
 
 For years, vulnerability management was optimized for visibility — more dashboards, better reports, cleaner ticket flows, and incremental "rank your backlog better" tools that still leave teams drowning in noise. When vulnerabilities move from disclosure to exploitation in hours, visibility isn't the problem anymore; **speed is**. Security teams fall behind because they can't quickly tell what's actually exploitable, what's already blocked, and what really needs action. Moving data around doesn't solve that. Understanding true exposure does. Attackers weaponize vulnerabilities in hours, not days; autonomous AI agents are now documented executing attacks end-to-end (Anthropic, 2025); most teams still work through week-old backlogs — a structural problem, not a process problem.
 
 ---
 
-## The "thousands to tens" story
+## The story in one sentence: "thousands → tens"
 
-The story Dux tells is **"thousands → tens"**: scanner findings become a small set of evidence-backed action groups. The agent takes a CVE plus a customer's live environment evidence — assets, runtime, identity, network, existing controls — and works out what's genuinely exploitable and the fastest way to shut the door on it.
+If Dux has an elevator pitch, this is it. The agent takes a CVE plus a customer's live environment evidence — assets, runtime, identity, network, existing controls — and works out what's genuinely exploitable and the fastest way to shut the door on it. What comes out the other end isn't another dashboard full of red rows; it's a small set of evidence-backed action groups. **Scanner findings become tens, not thousands.**
 
 ---
 
-## Company facts
+## Who built this, and with what
 
-**Dux, Inc.** — founded 2024, dual-headquartered in Tel Aviv, Israel (R&D) and New York, USA (go-to-market).
+**Dux, Inc.** was founded in 2024, dual-headquartered in Tel Aviv, Israel (R&D) and New York, USA (go-to-market). The company facts below are the ones that show up in press coverage, funding announcements, and diligence conversations — worth having in one place rather than scattered across a dozen articles.
 
 | Fact | Detail |
 |------|--------|
@@ -78,13 +82,13 @@ The story Dux tells is **"thousands → tens"**: scanner findings become a small
 | **Markets** | U.S.-first GTM; Europe medium-term (FinSMEs CEO interview); Israel is the R&D base, not a served market |
 | **Revenue model** | Subscription SaaS, B2B, tiered plans ([pricing-packaging.md](../80-gtm/pricing-packaging.md)); ACV language implies annual contracts |
 
-> **Note:** Armis is also listed as a named competitor in [[Dux GTM Guide]] — see the disclosure note there. The CEO's "deep-learning MSc TAU" credential could not be re-corroborated (2026-07-21 web pass) — treat as unverified pending a citable source.
+Two footnotes worth carrying forward: Armis is also listed as a named competitor in [[Dux GTM Guide]] — see the disclosure note there. And the CEO's "deep-learning MSc TAU" credential could not be re-corroborated in a 2026-07-21 web pass — it's treated as unverified pending a citable source, not repeated as fact.
 
 ---
 
-## Three-stage public framing
+## The three questions dux.io answers, in order
 
-The dux.io site is structured around three buyer stages, each answering a different question:
+The public site is structured around three buyer-facing stages, each built to answer a different question a security leader is actually asking:
 
 | Stage | Public headline | Buyer questions on site |
 |-------|-----------------|-------------------------|
@@ -92,21 +96,17 @@ The dux.io site is structured around three buyer stages, each answering a differ
 | **Lightweight Mitigations** | Apply mitigations that get you to safety | Can I mitigate this quickly? What can I do with my existing stack? Am I still protected? |
 | **Remediation Acceleration** | Speed up remediation when required | Who should remediate? What should I remediate? How can I customize this? |
 
-**Public outcomes (BusinessWire, dux.io):** materially smaller attack surface; far shorter path from vulnerability discovery to resolution; less time chasing noise in the research queue; reactive exposure triage → proactive defensive strategy.
-
-**Additional dux.io site copy:** "Not every gap needs a patch" (Lightweight Mitigations stage framing); compensating controls / stopgap measures that close critical gaps instantly while waiting on a patch; "works with your existing stack, no new purchases" (no new purchase required); Remediation Acceleration stage explicitly names bottleneck elimination — "blows past spotty data, unclear ownership, legacy systems" — and legacy system handling as a named capability.
+The outcomes the site claims flow directly from that structure (BusinessWire, dux.io): a materially smaller attack surface; a far shorter path from vulnerability discovery to resolution; less time chasing noise in the research queue; and a shift from reactive exposure triage to proactive defensive strategy. The Lightweight Mitigations stage carries its own memorable framing — **"Not every gap needs a patch"** — built around compensating controls and stopgap measures that close critical gaps instantly while a patch is pending, and pitched explicitly as **"works with your existing stack, no new purchases."** Remediation Acceleration, meanwhile, names its bottleneck problem directly: it promises to blow past "spotty data, unclear ownership, legacy systems," with legacy-system handling called out as a named capability rather than an afterthought.
 
 ---
 
-## Product thesis
+## What kind of system this actually is
 
-Dux is a **per-environment, attacker-minded reasoning system**. It decides what is *actually exploitable here*, and the *fastest path to protection*.
+Strip away the marketing language and Dux is a **per-environment, attacker-minded reasoning system**. Its job is to decide what is *actually exploitable here*, and the *fastest path to protection* — not to rank a generic backlog the same way for every customer.
 
-It runs at machine speed for analysis and re-assessment. It is personalized per customer through coding agents rather than static rules. It rides third-party frontier models. **It is defensive only.** And it takes governed write actions on the customer's security stack. Three of five actions are unattended by default, with human review as the anomaly-escalation path; the other two (`endpoint.isolate`, `patch.deploy_special_devices`) are gated to mandatory human approval until each earns unattended execution via a field-proven safety record (D-17).
+It runs at machine speed for analysis and re-assessment. It's personalized per customer through coding agents rather than static rules — there's no single prioritization formula shared across tenants. It rides third-party frontier models rather than a proprietary one. **It is defensive only.** And, critically, it takes governed write actions on the customer's security stack: three of five canonical actions run unattended by default, with human review as the anomaly-escalation path rather than a checkpoint on every call. The other two — `endpoint.isolate` and `patch.deploy_special_devices` — stay gated to mandatory human approval until each earns unattended execution through a field-proven safety record (D-17). That distinction, three unattended and two gated, is one of the load-bearing facts of the whole platform, and it recurs throughout this knowledge base.
 
----
-
-## Five delivery pillars
+### The five pillars holding the moat up
 
 | Pillar | Delivered by | Canonical spec |
 |--------|-------------|----------------|
@@ -118,11 +118,11 @@ It runs at machine speed for analysis and re-assessment. It is personalized per 
 
 ---
 
-## Core capabilities (Gate 1)
+## What's actually live right now (Gate 1)
 
-All eight capabilities are live at Gate 1. Write actions execute unattended by default for 3 of 5 canonical actions; `endpoint.isolate` and `patch.deploy_special_devices` require mandatory HITL until they earn unattended execution (D-17). Only **preference learning** and **physical residency** remain fenced.
+This is the part that separates Dux from a pitch deck: all eight core capabilities below are **live at Gate 1**, not roadmap items. Write actions execute unattended by default for 3 of the 5 canonical actions; `endpoint.isolate` and `patch.deploy_special_devices` require mandatory HITL until they earn unattended execution (D-17). Only **preference learning** and **physical residency** remain fenced off for later gates.
 
-**The operating principle (GCIS v2.2):** close every claim↔capability gap by **raising the design to deliver the claim, not by narrowing the claim**. A promoted capability ships in Phase 1 with best-practice architecture plus governance-kernel, kill-switch, and audit controls. Staging is retained only where earlier delivery is physically impossible — insufficient data volume, an unsigned contract, or a safety record that does not yet exist.
+The operating principle behind all of it comes from GCIS v2.2: close every claim↔capability gap by **raising the design to deliver the claim, not by narrowing the claim**. A promoted capability ships in Phase 1 with best-practice architecture plus governance-kernel, kill-switch, and audit controls. Staging is retained only where earlier delivery is physically impossible — insufficient data volume, an unsigned contract, or a safety record that doesn't yet exist.
 
 | # | Capability | BR | Claims | Gate-1 delivery | Fenced beyond Gate 1 |
 |---|-----------|----|--------|-----------------|----------------------|
@@ -135,20 +135,22 @@ All eight capabilities are live at Gate 1. Write actions execute unattended by d
 | 7 | Multi-source data aggregation | BR-004 | B2 step 1, B6, B3 | AWS + NVD/KEV/EPSS + CSV + ≥3 vendor connectors | Full 42-source taxonomy → waves W2/W3 |
 | 8 | Exploitability-based prioritization | BR-002 | D1, C7 | Mitigation queue + exposure states | Preference learning → Gate 2c |
 
-### The agent's operational loop — four steps, all Gate 1
+### The agent's operational loop — four steps, all live at Gate 1
 
 1. Continuously analyze vulnerabilities across connected environments.
 2. Determine whether existing tools and configuration already block the attack path.
 3. Surface lightweight mitigations that are faster than a full patch.
 4. Route focused remediation to the right stakeholders.
 
-Steps 3 and 4 execute unattended by default for `network.blocklist_add`/`policy.deploy_device_config`/`ticket.create_remediation`, human review firing only on anomaly escalation; `endpoint.isolate`/`patch.deploy_special_devices` require mandatory HITL on every call (D-17).
+Steps 3 and 4 execute unattended by default for `network.blocklist_add` / `policy.deploy_device_config` / `ticket.create_remediation`, with human review firing only on anomaly escalation. `endpoint.isolate` and `patch.deploy_special_devices` still require mandatory HITL on every call (D-17) — the two highest-blast-radius actions are the ones held back deliberately.
 
 ---
 
-## Claims inventory (Dec 2025 press, canonical IDs)
+## What was said in public, and what it's actually tied to
 
-> **Nothing here is an engineering commitment.** This file records what was said in public, and when. Every claim maps to the [[Dux Decisions & Traceability Reference]], and to the gap list in §Vision-vs-implementation gaps.
+Every public-facing claim about Dux traces back to a canonical ID, and every one of those IDs maps to the [[Dux Decisions & Traceability Reference]] and to the gap list below. This inventory exists precisely so that "what we said" and "what we built" can be compared honestly, in both directions, without either side quietly winning by default.
+
+> **Nothing here is an engineering commitment.** This section records what was said in public, and when.
 >
 > **Scope of the claims map (D-10).** It binds **GTM copy, product naming, and UI strings.** It does **not** bind safety posture, control design, gate criteria, or SLOs.
 >
@@ -211,7 +213,7 @@ Steps 3 and 4 execute unattended by default for `network.blocklist_add`/`policy.
 | E3 | **Long-term:** expand beyond patching-only "1000 lb hammer" | Redpoint + articles |
 | E4 | **Predictive risk forecasting** — "which assets are likely to become risky in the future" | FinSMEs CEO interview (Dec 2025); **committed roadmap capability per the 2026-07-13 claims-alignment directive** (live press claim binds the corpus, per MC-07) |
 
-**E4 specced** (resolves OI-09, D-24, 2026-07-16). BR-013 → EP-03 → US-028 → FR-030, Gate 2. It answers the claim literally, as an evidence-trend computation (EPSS/finding-count/control-coverage deltas) — not a new ML model or a composite score, consistent with how the rest of this corpus treats risk scoring. **Implementation hours are not yet in the backlog** — the spec-authoring task (`EP-03-F04-T01`) is closed by this; sizing the build is separate, unbudgeted work.
+E4 is worth a closer look, because it's the aspirational claim that actually got specced rather than left floating: **E4 specced** (resolves OI-09, D-24, 2026-07-16). BR-013 → EP-03 → US-028 → FR-030, Gate 2. It answers the claim literally, as an evidence-trend computation (EPSS/finding-count/control-coverage deltas) — not a new ML model or a composite score, consistent with how the rest of this corpus treats risk scoring. **Implementation hours are not yet in the backlog** — the spec-authoring task (`EP-03-F04-T01`) is closed by this; sizing the build is separate, unbudgeted work.
 
 ### Why now (market context — never product capability claims)
 
@@ -222,19 +224,17 @@ Steps 3 and 4 execute unattended by default for `network.blocklist_add`/`policy.
 | F3 | AI-driven attack **speed** outpaces patch cycles | bizportal |
 | F4 | Industry MTTR for critical-severity vulnerabilities remains **~65 days** | Edgescan's 2023 Vulnerability Statistics Report (8th edition, published 2023-04-11, analyzing 2022 data); Dux's own RSA-2026 LinkedIn post confirmed: "40,000 security pros. 600+ vendors. Endless acronyms. And somehow, the average MTTR is still 65 days." (D-49) |
 
-### Additional press-sourced claims
+Beyond the lettered claim IDs, a longer tail of press-sourced language runs through the corpus too: per-customer autonomous research; **coding agents write and run deterministic investigation code**; an **evolving research playbook** per customer; major U.S. enterprises operating at **hundreds of thousands of assets / millions of vulnerabilities**; a shift toward **mean time to protection (MTTP)** as the metric that matters; zero-day response, ad-hoc threat investigations, and continuous exposure analysis as core use cases; U.S.-first with Europe medium-term (FinSMEs CEO interview).
 
-Per-customer autonomous research; **coding agents write and run deterministic investigation code**; **evolving research playbook** per customer; major U.S. enterprises at **hundreds of thousands of assets / millions of vulnerabilities**; shift toward **mean time to protection (MTTP)**; zero-day response, ad-hoc threat investigations, continuous exposure analysis use cases; U.S. and Europe medium-term GTM (FinSMEs CEO interview).
+The Redpoint interview is its own rich source: an autonomous researcher working inside the customer environment; breaking CVEs into real-world exploitation requisites; gathering runtime, identity, network, and controls evidence; code-backed investigations that are consistent, inspectable, and repeatable; operational maturity reached in a few weeks; thousands of alerts collapsing into small human-readable groups with evidence attached; exposure management reframed as a **reasoning problem**; and a stated 10-year vision to close the loop beyond patching entirely.
 
-**Redpoint interview highlights:** autonomous researcher in customer environment; breaks CVEs into real-world exploitation requisites; gathers runtime/identity/network/controls evidence; code-backed investigations (consistent, inspectable, repeatable); operational maturity in a few weeks; thousands of alerts → small human-readable groups with evidence; exposure management as a **reasoning problem**; 10-year vision to close the loop beyond patching.
-
-**Additional press source (MC-16):** ice.co.il (Dec 2025, Hebrew) — same launch-press claim set (three pillars, exploitability focus, funding facts); one unqualified line "resolving them before attacks occur" (V-13 class, press-immutable). Also first press source stating **20 employees** (bizportal corroborates; LinkedIn shows 24 as of 2026-07).
+One more press source is worth flagging by ID: **ice.co.il (MC-16)**, Dec 2025, Hebrew — the same launch-press claim set (three pillars, exploitability focus, funding facts), plus one unqualified line, "resolving them before attacks occur" (a V-13-class line, press-immutable). It's also the first press source to state **20 employees**, which bizportal corroborates even though LinkedIn later shows 24 as of 2026-07.
 
 ---
 
-## Market validation quotes
+## What customers and investors actually said
 
-> Usage policy: approved for sales collateral and RFP attachments until **2026-09-30**; owner GTM lead; refresh quarterly from dux.io and primary press sources.
+These quotes are usage-policy-approved for sales collateral and RFP attachments until **2026-09-30**, owned by the GTM lead, and refreshed quarterly from dux.io and primary press sources. They're preserved here verbatim, with attribution, because that's the only responsible way to reuse a customer's words.
 
 > "These attacks don't wait for patch cycles. Defenders need rapid insight into what's actually exploitable and the means to reduce those exposures effectively, at the pace modern attacks demand." — **Or Latovitz, Co-Founder and CEO, Dux** (BusinessWire, Dec 2025)
 
@@ -262,11 +262,11 @@ Per-customer autonomous research; **coding agents write and run deterministic in
 
 ---
 
-## Illustrative marketing numbers
+## The numbers marketing uses — and the caveats attached to every one
 
 > **Never contractual.** Illustrative only — not production targets, customer SLAs, or guaranteed outcomes; validate with design partners before signed collateral.
 
-### Funnel (harmonized across banner/body/social; maps to US-010 Vulnerability Reduction buckets)
+The most-repeated of these is a funnel harmonized across the banner, body copy, and social posts, mapped to US-010's Vulnerability Reduction buckets:
 
 | Metric | Value | Bucket |
 |--------|-------|--------|
@@ -277,24 +277,15 @@ Per-customer autonomous research; **coding agents write and run deterministic in
 | Exposed | 0 (0.0%) | Exposed |
 | Need attention | 2,143 (25.7%) | Partial + Required + Exposed |
 
-### Other reference numbers
-
-- **Ownership-inference certainty example:** 78%
-- **Missing Blocklist / Protected By Policy examples:** 307 / 1,030
-- **CTEM benchmarks:** testing exploitability reduces false urgency by **up to 84%** (Picus Security's own reported figure, not independent research — a category stat, not a Dux SLA, D-53)
-- **Design-partner aggregate pain:** ~1,247 critical findings/mo at ~15% remediation capacity (N=3 anonymized, 2026-06)
-- **"10+ tools"** = contractual integration-catalog connectors (not the 42-value OpenAPI `Sources` attribution enum)
-- **Market sizing (all forward-looking hypotheses):** TAM $8–12B, SAM $800M–1.2B, SOM Y1–2 $5–15M; category sizing CybersecTools 85 exposure-management tools / 459 attack-surface
+Beyond the funnel, a handful of other reference numbers circulate in collateral and are worth having pinned down precisely rather than repeated loosely: an **ownership-inference certainty example of 78%**; **Missing Blocklist / Protected By Policy examples of 307 / 1,030**; a CTEM benchmark claiming that testing exploitability reduces false urgency by **up to 84%** — that figure is Picus Security's own reported number, not independent research, and it's a category stat, not a Dux SLA (D-53); a design-partner aggregate pain point of roughly **1,247 critical findings/month at ~15% remediation capacity** (N=3 anonymized, 2026-06); the phrase **"10+ tools"**, which refers to contractual integration-catalog connectors and not the 42-value OpenAPI `Sources` attribution enum (an important distinction covered in full in [[Dux Taxonomy & Catalogs]]); and market-sizing figures that are explicitly forward-looking hypotheses — TAM $8–12B, SAM $800M–1.2B, SOM Y1–2 $5–15M — alongside a category-sizing reference of 85 exposure-management tools and 459 attack-surface tools (CybersecTools).
 
 ---
 
-## Personas
+## Who actually uses this, and what breaks for them without a connector
 
-### The agent persona — Dux Agent
+Dux's own persona for its AI system has a name and a personality brief: an "Aggressive Exposure Management Specialist" — calm, logical, humble, transparency-focused, and **citation-first**, meaning every exploitability claim references a permitted source (NVD, asset inventory, control evidence). **Dux Agent** is the only name that ever appears in front of a customer for the AI doing the work — no other agent name is customer-facing.
 
-An "Aggressive Exposure Management Specialist": calm, logical, humble, transparency-focused, and **citation-first** — every exploitability claim references a permitted source (NVD, asset inventory, control evidence). **Dux Agent** is the only name that ever appears in front of a customer for the AI system doing the work.
-
-### Human personas
+On the human side, six personas cover the buying and using organization, each with a different job to be done and a different failure mode if a connector isn't live yet:
 
 | Persona | Goal | Primary stories | Degraded path without connectors |
 |---------|------|-----------------|----------------------------------|
@@ -307,9 +298,9 @@ An "Aggressive Exposure Management Specialist": calm, logical, humble, transpare
 
 ---
 
-## Navigation → user-story map
+## Where each user story lives in the product
 
-The eight-icon sidebar:
+The eight-icon sidebar is the physical map of the product, and it's worth memorizing because two of its labels are easy to conflate — see the callout below the table.
 
 | Nav | Page title | User stories |
 |-----|-----------|--------------|
@@ -322,19 +313,21 @@ The eight-icon sidebar:
 | Settings | Tenant Administration | US-014 |
 | Help | Help & Support | US-015 |
 
-The nav-label vs page-title split, and the Mitigation-nav vs Mitigate-stage distinction, are canonical in [[Dux Taxonomy & Catalogs]] — they are easy to conflate, and must not be.
+The nav-label vs page-title split, and the **Mitigation-nav vs Mitigate-stage** distinction, are canonical in [[Dux Taxonomy & Catalogs]] — they're easy to conflate, and must not be. It's flagged there as the single most common naming error in the whole corpus.
 
 ---
 
-## Canonical end-to-end path (demo / POC)
+## Walking the canonical demo path
 
-US-012 Dashboard → US-013 AWS connector (or CSV) → US-010 Request Research → US-011 Exposure Analysis → US-017 trace, showing the reasoning and the executed code → optionally US-008 Chat Guidance.
+If you only ever see one flow through the product, this is the one the sales and design-partner teams actually walk: **US-012 Dashboard → US-013 AWS connector (or CSV) → US-010 Request Research → US-011 Exposure Analysis → US-017 trace**, showing the reasoning and the executed code, with an optional detour through **US-008 Chat Guidance**.
 
-The story it tells is **"thousands → tens"**: scanner findings become a small set of evidence-backed action groups.
+It tells the same story as the tagline: **"thousands → tens."** Scanner findings become a small set of evidence-backed action groups, and the trace lets anyone in the room see exactly how the agent got there.
 
 ---
 
-## Phase-1 gate model
+## The gates that decide when things are allowed to ship
+
+Dux's roadmap isn't a quarterly calendar — it's a sequence of gates, each with hard exit criteria that have to be met before the next phase of scope unlocks.
 
 | Gate | Meaning | Exit criteria |
 |------|---------|---------------|
@@ -345,7 +338,7 @@ The story it tells is **"thousands → tens"**: scanner findings become a small 
 | Gate 3 | **Closed-loop mitigation validation (US-019)** | A field-proven action-safety record. Unattended write *execution* is already Gate 1 |
 | Gate 5 | Optional physical residency | A signed on-prem contract |
 
-### Release milestones (16-week calendar, D-7 R1)
+That timeline maps onto a concrete 16-week calendar (D-7 R1), with a real EU regulatory deadline sitting inside it:
 
 | Week | Milestone |
 |------|-----------|
@@ -356,17 +349,19 @@ The story it tells is **"thousands → tens"**: scanner findings become a small 
 | 12 | Gate 1 review + minimal HITL approve/deny UI |
 | 14 | `chat_write_tools` + full chat HITL UI |
 
-**Abort rule:** switch the inner framework if the golden set regresses by more than 2%.
+**Abort rule:** if the golden set regresses by more than 2%, the plan is to switch the inner framework rather than push through with a degrading eval.
 
 ---
 
-## Capacity
+## The capacity math behind the calendar
 
-**Capacity resolved (D-19, D-23).** The backlog consumes 2,040 h against the re-baselined 2,080 h envelope (~98%, a 40 h buffer) — 26 focused h/week instead of 25, same 5-engineer team, no sixth hire. Gate-1 Week 12 and exit Week 16 timing are unchanged.
+None of the above works if the engineering hours don't fit the envelope, and this was genuinely a close call. **Capacity is resolved (D-19, D-23).** The backlog consumes 2,040 h against the re-baselined 2,080 h envelope — about **98%**, leaving a 40 h buffer — achieved at 26 focused hours/week instead of 25, with the same 5-engineer team and no sixth hire. Gate-1 Week 12 and exit Week 16 timing are unchanged by the re-baseline.
 
 ---
 
-## Explicitly out of scope for Phase 1
+## What Phase 1 deliberately does not do
+
+Scope discipline is as much a design decision as anything that shipped. Here's everything explicitly held out of Phase 1, and where it lands instead:
 
 | Item | Where it lands |
 |------|----------------|
@@ -381,11 +376,13 @@ The story it tells is **"thousands → tens"**: scanner findings become a small 
 | Native mobile app | Series A |
 | **Scanner replacement, and PTaaS** | **permanent non-goals** |
 
+That last row isn't a scoping decision that might change later — it's a permanent boundary, the same one the "Defensive only. Never PTaaS." line draws at the very top of this page.
+
 ---
 
-## Vision-vs-implementation gap list
+## Where the vision still runs ahead of the build — and where it's caught up
 
-Under the ideal-state canon (GCIS v2.2), most launch-press claims are now **engineering-true at Gate 1**. Remaining gaps:
+This is the honesty mechanism at the center of the whole corpus. Under the ideal-state canon (GCIS v2.2), most of the launch-press claims are now **engineering-true at Gate 1** — but not all of them, and the ones that aren't are tracked here explicitly rather than quietly smoothed over.
 
 | # | Vision/marketing language | Implementation reality (ideal-state canon) | Status |
 |---|---------------------------|--------------------------------------------|--------|
@@ -406,23 +403,23 @@ Under the ideal-state canon (GCIS v2.2), most launch-press claims are now **engi
 
 ---
 
-## Claim firewall mechanics
+## How a claim is allowed to become truth
 
-Every public claim must trace through the Marketing Claims → Technical Achievement map to a BR/FR/US at the same gate. The pre-publication checklist (**PM + Counsel signed, stored in CRM**) is a blocking process gate for RFPs, order forms, and decks.
+None of the honesty above happens by accident — it's enforced by a specific mechanism. Every public claim has to trace through the Marketing Claims → Technical Achievement map to a BR/FR/US at the same gate. There's a pre-publication checklist, signed by PM and Counsel and stored in CRM, that acts as a blocking process gate for RFPs, order forms, and decks — nothing goes out the door without it.
 
 **Authority order:** decisions-log → GCIS v2.2 → OpenAPI 3.1 (`/v1/*` wire contract only) → BR→FR→US → agent registry (manifests).
 
 **Claims-alignment rule (D-10, 2026-07-14, Sagi):** the Marketing Claims map binds **GTM copy, product naming, and UI strings**. It does **not** bind safety posture, control design, gate criteria, or SLOs — an engineering doc states what the system does. Where a live public claim and engineering reality diverge, the divergence is raised as a claim-integrity item; it does not bend the spec. The Gate/build-status record in [[Dux Decisions & Traceability Reference]] tracks actual delivery.
 
-**What this means in practice:** a claim is only "GCIS-true" when the underlying BR/FR/US is at the same gate as the claim's stated capability. If the engineering delivery lags the marketing language, the gap is documented, never papered over by editing the spec to match the claim.
+In practice, that means a claim is only "GCIS-true" when the underlying BR/FR/US is at the same gate as the claim's stated capability. If the engineering delivery lags the marketing language, the gap gets documented — it's never papered over by editing the spec to match the claim.
 
 ---
 
-## How this knowledge base is organized
+## How to actually navigate the rest of this knowledge base
 
-Ten source domains (product, architecture, API, AI safety, engineering, operations, governance, GTM, and the execution backlog) have been consolidated into a small set of dense, purpose-built guides rather than left as dozens of narrow pages. Each domain gets an **explanation-and-how-to guide** written to be read start to finish, and where a domain also needs fast lookup (API contracts, decision history, the controlled vocabulary), it gets a companion **reference** page built for scanning, not reading.
+Ten source domains — product, architecture, API, AI safety, engineering, operations, governance, GTM, and the execution backlog — have been consolidated into a small set of dense, purpose-built guides rather than left scattered across dozens of narrow pages. Each domain gets an **explanation-and-how-to guide** written to be read start to finish, and where a domain also needs fast lookup (API contracts, decision history, the controlled vocabulary), it gets a companion **reference** page built for scanning, not reading straight through.
 
-### Reading paths by role
+### Pick your starting point by role
 
 | You are | Start here | Then |
 |---|---|---|
@@ -435,7 +432,7 @@ Ten source domains (product, architecture, API, AI safety, engineering, operatio
 | Auditor or compliance reviewer | [[Dux Governance & Compliance Guide]] | [[Dux Decisions & Traceability Reference]] |
 | Anyone, before starting real work | [[Dux Governance & Compliance Guide]] for open items | whatever guide the open item touches |
 
-### The domain map
+### The full domain map
 
 **Product**
 - [[Dux Product Guide]]: thesis, the five delivery pillars, write-action autonomy, personas, the gate model, the roadmap
@@ -473,9 +470,9 @@ Ten source domains (product, architecture, API, AI safety, engineering, operatio
 
 ---
 
-## Document contract
+## The rules every document in this tree follows
 
-Every file in this tree carries front-matter:
+Consistency across dozens of files only holds if there's a shared contract, so every file in this tree carries the same front-matter:
 
 ```yaml
 ---
@@ -498,10 +495,10 @@ Then: an `# H1`, a **Purpose** line, and numbered `##` sections.
 | `backlog-shell` | a planning placeholder. **Inherit the earlier stage's artifacts** — do not execute from a stub |
 | `process-record` | dated audit evidence. **Not a spec, and not on any reading path** |
 
-### Authority & conventions
+### The five conventions that keep the corpus honest
 
 1. **Authority order:** decisions-log → GCIS v2.2 → OpenAPI 3.1 (`/v1/*` wire contract only) → BR→FR→US → agent registry (manifests).
-2. **Stage model:** playbook names = operational maturity, not funding rounds. Pre-seed = Phase 1 build (Days 0–90); seed = post-Gate-2 ops (Days 90–365); Series A = certifications/governance; Series B = global-scale programs (backlog shell). The company's $9M seed round (Dec 2025) is unrelated to "seed playbook" activation.
+2. **Stage model:** playbook names describe operational maturity, not funding rounds. Pre-seed = Phase 1 build (Days 0–90); seed = post-Gate-2 ops (Days 90–365); Series A = certifications/governance; Series B = global-scale programs (backlog shell). The company's $9M seed round (Dec 2025) is unrelated to "seed playbook" activation — it's easy to conflate the two and the corpus is explicit that they aren't the same thing.
 3. **Terminology:** **Dux Agent** = only customer-facing agent name; *assessment agent* internal role only; *Mitigation nav* = research queue (Analyze), distinct from the *Mitigate* pipeline stage; kill switch (noun) / kill-switch (adjective); World Model is a proper noun; API/code say `tenant_id`, UI may say organization.
 4. **Open questions:** every unresolved question lives in [[Dux Governance & Compliance Guide]] as `OI-##`, with an owner, a severity, and what it blocks (D-11). A spec links to the item rather than restating it, and never carries a `> **TBD**` box of its own.
 5. **Current truth only:** specs are written in the present tense (D-12). **Change history belongs in [[Dux Decisions & Traceability Reference]] — never in body prose.** No "re-gated 2026-07-13", no "superseded — was: …", no dated parentheticals. A reader should learn the current state by reading, not by mentally applying a chain of diffs.
@@ -513,17 +510,19 @@ Then: an `# H1`, a **Purpose** line, and numbered `##` sections.
 
 ---
 
-## A note on how this knowledge base itself is maintained
+## A note on how this knowledge base itself was built
 
 This corpus was ingested with a genuinely unusual amount of rigor: four independent verification passes cross-checked citation coverage, dense ID ranges, dollar figures and diagram coverage, and inline-code spans against the source material, catching and fixing nineteen real content gaps along the way. The full account of that process lives in `wiki/migration-audit.md` and `wiki/validation-checklist.md`, preserved as a historical record from before this knowledge base was consolidated into the guides above. The source material itself remains mirrored in full at `.raw/dux/` and is never modified: every fact in every guide above traces back to it.
 
-### Validation
+The developer-facing docs tree that produced this corpus organizes itself the same way, domain by numbered folder — `00-meta` for provenance and open questions, `10-product` for capabilities and taxonomy, `20-architecture` for system design, `30-api` for wire contracts, `40-ai-safety` for the governance spine, `50-engineering` for local setup and CI, `60-operations` for runbooks and SLOs, `70-governance` for compliance, `80-gtm` for the claims firewall, and `90-execution` for the backlog itself. `00-meta/quick-reference.md` in particular is called out as a pure compilation of already-documented facts — the fastest place to fact-check something without reading a full guide. Several process-record audit files that once lived alongside it (stack-review, claims-implementation, marketing-claims, architecture-panel, security-domain, doc-framework, stack-design-review) have since been removed once their findings closed — their disposition history lives in the decisions log, and the originals remain recoverable from git history.
+
+### How changes get validated
 
 After editing docs, run `python3 scripts/validate-playbooks.py`. **Exit 0 is required to merge.** It checks:
 - dead links **and anchors** (renaming a heading changes its anchor — the validator catches the resulting dead links, but keep anchors stable where you can);
 - duplicate canonical H2 IDs (`## US-`, `## EP-`, `## ADR-`, …) — each may be defined in exactly one file;
 - task → epic → portfolio hour reconciliation, including the grand total;
-- the front-matter contract below;
+- the front-matter contract above;
 - **change history in spec prose** — a reintroduced "re-gated …" or "superseded — was: …" fails the gate.
 
 ---
@@ -534,3 +533,4 @@ After editing docs, run `python3 scripts/validate-playbooks.py`. **Exit 0 is req
 - `.raw/dux/00-meta/vision-reference.md`
 - `.raw/dux/00-meta/decisions-log.md`
 - `.raw/dux/10-product/product-overview.md`
+</content>
