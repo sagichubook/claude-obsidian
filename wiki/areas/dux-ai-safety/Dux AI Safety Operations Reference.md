@@ -606,6 +606,8 @@ The fallback model is `claude-sonnet-4-6` (+28% latency).
 
 ### 4.6 · R3b — Model EOL / forced deprecation
 
+Not an incident so much as a slow-motion inevitability that deserves its own runbook rather than getting handled ad hoc.
+
 > Gate-2 hardening (H6). Planned work, not incident-triggered.
 
 **Provider models are EOL-dated dependencies.** In 2026, ChatGPT-surface models have been retired on two weeks' notice; the API minimum is 6 months GA and **3 months for variants** — and the S-LLM workhorse is a variant.
