@@ -442,6 +442,8 @@ The allowlist is therefore **domain *and* integrity**:
 
 ### 3.8 · OWASP MCP Top 10 crosswalk
 
+MCP gets its own risk taxonomy, distinct from the general LLM and Agentic ones — mapped here to the exact PS policy IDs that answer each row:
+
 | MCP risk | Policy IDs | Maturity (pre-seed) | Seed Gate-2 exit |
 |----------|-----------|---------------------|------------------|
 | Tool poisoning | PS-006, PS-003, `mcp-scan` CI | Implemented | — |
