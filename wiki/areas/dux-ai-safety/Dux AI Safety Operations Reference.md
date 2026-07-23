@@ -709,6 +709,8 @@ A quiet deploy or a pin change can wreck the cache hit rate and quietly inflate 
 
 ### 4.11 · R8 — Hallucinated-CVE citation
 
+This is the failure mode LLM09 exists to catch (see [[#3.3 · LLM risks — LLM01–LLM10]]) — a citation that looks legitimate but doesn't actually check out against NVD.
+
 > **Severity:** P1 · **Type:** AGENTIC-SAAS
 
 **Trigger:** EXP-CIT-001 fails at generation time — a citation's CVE ID doesn't resolve against NVD, or its CVSS/description diverges from the resolved record.
