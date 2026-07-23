@@ -5,6 +5,7 @@
     "hooks/",
     "skills/",
     "_templates/",
+    ".github/",
     "README.md",
     "CLAUDE.md",
     "WIKI.md",

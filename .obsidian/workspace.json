@@ -11,10 +11,14 @@
             "id": "56a9c5f33d840e78",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "wiki/areas/dux-operations/Dux Customer Success Guide.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Dux Customer Success Guide"
             }
           }
         ]
@@ -187,13 +191,21 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "5565f1231fe95c42",
+  "active": "56a9c5f33d840e78",
   "lastOpenFiles": [
-    "2026-07-23.md",
-    "Untitled.canvas",
-    "wiki/meta/lint-report-2026-07-23.md",
     "camel-plane.md",
     "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md",
+    "wiki/log.md",
+    "docs/compound-vault-guide.md",
+    "docs/audits/v1.7.1-fixes-plan.md",
+    "CHANGELOG.md",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "2026-07-23.md",
+    "wiki/projects/dux/Dux Portfolio.md",
+    "wiki/meta/lint-report-2026-07-23.md",
+    "Untitled.canvas",
     "wiki/areas/dux-ai-safety/Dux AI Safety Operations Reference.md",
     "wiki/log.md.tmp.6960.c04d5ba12c4a",
     "wiki/hot.md.tmp.6960.a6dbb18470a0",
@@ -208,23 +220,16 @@
     "wiki/areas/dux-gtm/Dux GTM Guide.md",
     "architecture-diagrams.md",
     "GEMINI.md",
-    "CODE_OF_CONDUCT.md",
     "CLAUDE.md",
-    "CHANGELOG.md",
     "AGENTS.md",
     "ATTRIBUTION.md",
     "CONTRIBUTING.md",
-    "PRIVACY.md",
     "WIKI.md",
     "hooks/README.md",
     "docs/methodology-modes-guide.md",
     "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md",
     "wiki/resources/dux-api/Dux API Reference.md",
-    "wiki/log.md",
     "wiki/hot.md",
-    "wiki/areas/dux-architecture/Dux Architecture Guide.md",
-    "wiki/areas/dux-product/Dux Product Guide.md",
-    "wiki/references/transport-fallback.md",
     "assets/diagrams/hybrid-retrieval.svg",
     "assets/social-preview.png",
     "assets/diagrams/vault-flow.svg",
