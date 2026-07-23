@@ -771,6 +771,8 @@ This is CaMeL's own detection surface (`camel.output_audit_failed`, `connector_d
 
 ### 4.14 · R11 — Coordination overhead
 
+Not every latency regression is a runaway loop — sometimes it's subagents talking past each other. Step 2 exists specifically to tell the two apart.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** assessment p95 latency regression traced to worker-to-worker handoff, with GOV-010 loop counters within limits.
