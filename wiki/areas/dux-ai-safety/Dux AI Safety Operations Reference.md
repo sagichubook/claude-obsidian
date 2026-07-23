@@ -333,6 +333,8 @@ Calibration isn't a one-time fit — the world drifts, so the schedule has to ca
 
 ## 3 · OWASP assessments
 
+Identity and calibration are Dux-specific mechanisms. This section is the outside check — how the whole safety program scores against the industry's own agreed-upon risk taxonomies, re-run and stored as evidence rather than asserted from memory.
+
 **Purpose:** the standing OWASP risk assessments and their maturity ratings. **Parents:** BR-003.
 
 ### 3.1 · Assessment metadata
