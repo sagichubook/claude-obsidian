@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux Product Guide"
+address: c-000012
 created: 2026-07-22
 owner: Founder
 status: canonical
