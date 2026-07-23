@@ -76,7 +76,7 @@ The practical implication: every capability in the table below has a clear deliv
 | **A** — Moat: World Model, eval, personalization | [[Dux Taxonomy & Catalogs]] (World Model), investigation-code artifacts, preference engine, golden-set eval | [[Dux Architecture Guide]] (data-model), [[Dux Taxonomy & Catalogs]] (taxonomy), US-017 / US-009 |
 | **B** — Safety scales with autonomy | governance kernel, kill switch, CaMeL, anomaly-escalation HITL | [[Dux AI Safety Guide]] |
 | **C** — Claim ↔ capability firewall | claims traceability, gate-safe copy | [[Dux GTM Guide]] |
-| **D** — Isolation + compliance invariants | RLS FORCE, composite keys, SOC 2 / ISO | [[Dux Architecture Guide\|multi-tenancy]], [[Dux Governance & Compliance Guide]] |
+| **D** — Isolation + compliance invariants | RLS FORCE, composite keys, SOC 2 / ISO | [[Dux Architecture Guide]] (multi-tenancy), [[Dux Governance & Compliance Guide]] |
 | **E** — Extensibility spine | the 8-part contract, catalogs-as-manifest | [[Dux Taxonomy & Catalogs]] |
 
 Pillar B is worth dwelling on, because it's the thesis behind Dux's whole approach to autonomy: safety doesn't get bolted on after the agent gets more capable, it scales *with* capability, gate by gate. That principle shows up everywhere below.
