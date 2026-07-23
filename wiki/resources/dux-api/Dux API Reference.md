@@ -508,7 +508,7 @@ EntityType:
 
 Custom metrics are read-only over public v1. Configuration happens in the tenant-admin UI (US-022), at Seed.
 
-### Grammar
+### Grammar (Resolves OI-15)
 
 DQL is a flat, single-entity boolean filter expression — **no joins, no subqueries.** `dql_filter` is stored as the raw expression string; `entity_type` fixes which World Model entity's columns are addressable.
 
