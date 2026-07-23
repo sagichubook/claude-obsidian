@@ -1,10 +1,14 @@
 ---
+type: area
+title: "Dux Product Guide"
+created: 2026-07-22
 owner: Founder
 status: canonical
 gate: 1
 last_reviewed: 2026-07-21
 updated: 2026-07-23
 decisions: [D-3, D-4, D-7, D-17, D-36, H1, H4, H5]
+tags: [area, dux, dux/product]
 ---
 
 # Dux Product Guide
