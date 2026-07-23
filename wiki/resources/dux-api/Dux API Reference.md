@@ -3,18 +3,22 @@ type: resource
 title: "Dux API Reference"
 topic: "dux/api"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [resource, dux, dux/api]
 status: mature
 sources: [".raw/dux/30-api/api-overview.md", ".raw/dux/30-api/openapi.yaml", ".raw/dux/30-api/application-api.md", ".raw/dux/30-api/public-data-api.md", ".raw/dux/30-api/events-webhooks.md", ".raw/dux/20-architecture/architecture-diagrams.md"]
 related: ["[[Dux]]", "[[Dux Product Guide]]", "[[Dux Feature Reference]]", "[[Dux AI Safety Guide]]", "[[Dux Taxonomy & Catalogs]]"]
 ---
 
-# Dux API Reference
+# Three APIs, One Product: Inside the Dux Wire Contract
+
+### Why a security-assessment platform needs three separate REST planes, a query language of its own, and a webhook queue it had to defend in writing against a stale spec
 
 Navigation: [[Dux]] | [[Dux Feature Reference]] | [[Dux Taxonomy & Catalogs]]
 
-This is the canonical, publication-ready API reference for all three Dux REST planes. `openapi.yaml` in the source repository is a draft skeleton — it inventories paths, auth, and limits but is not yet the wire authority. Until it moves to the API service repo and gains Spectral lint + contract tests in CI, the prose contracts below are canonical.
+Most products get away with one API. Dux needed three — and keeping them straight turned out to be one of the more consequential documentation decisions in the whole corpus, because a credential valid on one plane is explicitly rejected on the others, regardless of scope. Get that wrong in an integration and you don't get a slow failure; you get a hard 401 in a customer's CI pipeline. This reference exists to make the boundary impossible to miss.
+
+Before the endpoint tables, one authority note that governs everything below: **`openapi.yaml` in the source repository is a draft skeleton — it inventories paths, auth, and limits but is not yet the wire authority.** It was added 2026-07-09 specifically to resolve blind spot BS-17a, "OpenAPI declared canonical but does not exist in the repo." Best practice here is contract-first: the file **moves to the API service repo at build start**, gains Spectral lint and contract tests in CI, and only then becomes the pinned `v1.0.0` wire authority for `/v1/*`. Until that happens, the prose contracts in this reference are canonical, and the skeleton must not be consumed by integrators. It has also already been corrected once in its short life: as of 2026-07-12 it stopped describing "two planes" and gained the management plane's paths and auth scheme, which it had omitted entirely.
 
 > **`openapi.yaml` is a draft skeleton, not the wire authority.** It inventories the paths, auth, and limits of all three planes. It moves to the API service repo at build start — contract-first, Spectral-linted, contract-tested. Until then, the prose contracts in this folder are canonical.
 
@@ -32,11 +36,13 @@ Dux exposes three separate REST planes. **Do not conflate them.** A credential v
 
 **Path-alias note.** The application DTO tables use the shorthand `/admin/kill-switch`. **The runtime route is `POST /v1/admin/kill-switch`** — it belongs to the management plane, and the gateway rewrites the prefix per environment.
 
-A Public Data API key is hard-rejected on any Application-plane JWT route. `POST /v1/agents` (Management plane) authenticates with platform-admin JWT only — it cannot be called with a Public Data API key at all, regardless of scopes.
+The rejection is not a soft warning either: a Public Data API key is hard-rejected on any Application-plane JWT route, and `POST /v1/agents` (Management plane) authenticates with platform-admin JWT only — it cannot be called with a Public Data API key at all, regardless of scopes.
 
 ---
 
 ## 2. Versioning
+
+Three planes, three different relationships to the word "version" — and they are deliberately not unified, because unifying them would make one plane's stability promise a lie about another's.
 
 | Surface | Version | Breaking-change policy |
 |---|---|---|
@@ -70,6 +76,8 @@ platformAdminJwt:
   bearerFormat: JWT
   description: "Management plane (/v1/admin/*, /v1/agents/*). Distinct, higher-privilege scheme from bearerJwt."
 ```
+
+The `platformAdminJwt` scheme is itself a fix, not an original design: it was added 2026-07-12 because the kill-switch and agent-registry endpoints had previously inherited the default application `bearerJwt` with no explicit scope — a gap that meant a compromised application-plane JWT could, in principle, reach a management-plane action never intended for it.
 
 ### Public Data API
 
@@ -114,7 +122,7 @@ Authentication alone does not authorize every Application-plane endpoint — the
 
 ## 5. Rate Limits
 
-Two distinct rate-limit tables, enforced per plane.
+Two distinct rate-limit tables, enforced per plane — the original corpus stated both without reconciling them, which is exactly the trap conflating the planes creates. They govern genuinely different traffic shapes: one is interactive dashboard and agent traffic, the other is programmatic batch access.
 
 ### Application API — Interactive Dashboard and Agent Traffic
 
@@ -169,6 +177,8 @@ Flood control sits at the Cloudflare edge. Identity-aware plan and tenant limits
 
 ## 7. Error Handling
 
+Every error on every plane — REST, SSE, or webhook — funnels through one shared envelope. That's a deliberate constraint: an integrator who has learned to parse `DuxError` once never has to relearn error handling for a different transport.
+
 ### DuxError Envelope
 
 Shared across REST, SSE, and webhooks:
@@ -183,6 +193,8 @@ schemas:
       message: { type: string }
       reason: { type: string }
 ```
+
+The `VALIDATION_FAILED` code itself replaced an orphaned name: `openapi.yaml` notes the shared 422 shape retired an earlier `HTTPValidationError` name that had drifted out of use, standardizing on `VALIDATION_FAILED` with a `details: [{field, message}]` payload as the one request-validation-failure shape used corpus-wide.
 
 ### DuxError Codes
 
@@ -212,7 +224,7 @@ schemas:
 
 **Plane:** Application — Bearer JWT, `aud=api.dux.io`.
 
-This API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /assessments/{id}`) — not a generic "submit a scan, poll for a report" shape. Dux's unit of work is a CVE against a live World Model, continuously re-assessed (US-021), not a point-in-time scan job.
+This API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /assessments/{id}`) — not a generic "submit a scan, poll for a report" shape some exposure-management frameworks assume. That's a deliberate scoping decision, not a documentation gap: Dux's unit of work is a CVE against a live World Model, continuously re-assessed (US-021), not a point-in-time scan job. A framework audit expecting the scan-and-poll shape will not find it here.
 
 | Endpoint | Story | Notes |
 |----------|-------|-------|
@@ -233,6 +245,8 @@ This API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /as
 | `POST /tenants/{id}/export`, `DELETE /tenants/{id}` | US-014 | |
 | `POST /v1/admin/kill-switch` | US-014 (management plane) | |
 | Chat SSE + POST | US-008 | |
+
+The `openapi.yaml` skeleton fleshes out a handful of these with response-level detail worth carrying forward: `GET /assessments/{id}` documents a 404 on cross-tenant access — **never a 403**, so a tenant probing another tenant's assessment ID learns nothing about whether it exists. `POST /research/schedule` responds `201 created` on success, alongside the `GET` variant that simply returns the schedule. And `POST /v1/cve-research` on the Public Data plane changed its success code from `201` to `202` on 2026-07-21, aligning it with the async-enqueue semantics `POST /research/queue` already used — a fix worth knowing about if an older integration still checks for `201`.
 
 ---
 
@@ -263,6 +277,8 @@ This API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /as
 **SSE:** `queue_row_update` patch. Target latency: <1 s.
 
 ### `POST /research/queue`
+
+This is the front door for research, and it is worth understanding in some depth, because the same underlying capability is exposed a second way on the Public Data plane (see §11 below), and the differences between the two are deliberate rather than accidental drift.
 
 **Request body (`ResearchQueueRequest`):**
 
@@ -298,7 +314,7 @@ Fields: `id`, `tenant_id`, `finding_id`, `cve_id`, `status`, `confidence_score`,
 
 ### `GET /assessments/{id}/replay` → `AssessmentReplayDto`
 
-The `replay_trace_id` capability (observability-slo §2), keyed by the assessment's `trace_id`. Bearer JWT, `aud=api.dux.io` — same as the rest of this section.
+The `replay_trace_id` capability (observability-slo §2), keyed by the assessment's `trace_id`. Bearer JWT, `aud=api.dux.io` — same as the rest of this section. This endpoint was the last of the three assessment reads to make it into the OpenAPI skeleton, added 2026-07-21 in a path-inventory sync — the capability itself predates that addition.
 
 | Field | Shape |
 |-------|-------|
@@ -379,7 +395,7 @@ Contract: the Kill Switch. The same `hitl_request`/`hitl_response` pair carries 
 
 `POST /vulnerability-instances/{id}/acknowledgments`: `{reason, expires_at?}` → `{acknowledgment_id, is_acknowledged: true, expires_at?}`.
 
-`DELETE …/acknowledgments/{ack_id}` revokes — the plural collection name matches the `acknowledgment_id` field it returns, consistent with this API's other resource names.
+`DELETE …/acknowledgments/{ack_id}` revokes — the plural collection name matches the `acknowledgment_id` field it returns, consistent with this API's other resource names. That plural naming is itself a 2026-07-21 rename, made specifically so the collection name would match the field it returns.
 
 The public read of `is_acknowledged` is true only for an **active** acknowledgment — not revoked, and with `expires_at` either null or in the future.
 
@@ -389,7 +405,7 @@ The public read of `is_acknowledged` is true only for an **active** acknowledgme
 
 **Plane:** Public Data — Bearer API key (`agt_…`, data scopes). Ships at the Seed public-API trigger, **not** in Phase 1.
 
-**Authority:** OpenAPI 3.1 is the source of truth. The contract is pinned at `v1.0.0` (2026-06-26). Auth mechanics, rate limits, and the versioning policy shared across all three planes are covered once in [api-overview.md §3–4](api-overview.md#3-auth).
+**Authority:** OpenAPI 3.1 is the source of truth. The contract is pinned at `v1.0.0` (2026-06-26). Auth mechanics, rate limits, and the versioning policy shared across all three planes are covered once in [api-overview.md §3–4](#3-authentication).
 
 **Every endpoint is a GET, except `POST /v1/cve-research`.** There is no create, update, or delete for metrics or instances in v1.
 
@@ -421,7 +437,7 @@ A paginated list.
 
 → `CustomMetricDataResponse`: `metric_id`; `data` (a `CustomMetricDataPoint[]` of `timestamp`, `group_by_values` — a nullable map — and a numeric `value`); `sources` (nullable).
 
-**Time-range bounded**, since a metric's history can grow unbounded: `from`/`to` timestamps, plus the same cursor shape as §4.
+**Time-range bounded**, since a metric's history can grow unbounded: `from`/`to` timestamps, plus the same cursor shape as §4. The exact page-size ceiling here is Engineering's to size against expected data-point volume — deliberately not invented in this reference.
 
 ### `GET /v1/vulnerability-instances/{cve_id}` (FR-022, US-024)
 
@@ -445,7 +461,7 @@ Path pattern: `^CVE-\d{4}-\d{4,}$`.
 
 **Request body (`CveResearchV1Request`):** `cve_ids`, 1–50 entries, each matching `^CVE-\d{4}-\d{4,}$`.
 
-**202** → an array of `CveResearchV1Item`, each carrying `status: backlog | completed` — matching `POST /research/queue`'s async-enqueue semantics.
+**202** → an array of `CveResearchV1Item`, each carrying `status: backlog | completed` — matching `POST /research/queue`'s async-enqueue semantics. As noted in §8, this success code moved from `201` to `202` on 2026-07-21 to make that alignment explicit.
 
 **Dedup.** Shares the same per-`cve_id` dedup mechanism as `POST /research/queue` (not per-batch, since batches can overlap) — a resubmitted `cve_id` inside a batch does not enqueue a duplicate research run.
 
@@ -476,7 +492,7 @@ The same capability is exposed differently on each plane, and the differences ar
 
 ## 12. DQL (Dux Query Language)
 
-A tenant-scoped filter expression, stored in `CustomMetricItem.dql_filter` and evaluated against World Model entities.
+Custom metrics needed a way for tenants to define their own filtered views over World Model entities, without opening a door to arbitrary SQL. The answer is DQL: a tenant-scoped filter expression, stored in `CustomMetricItem.dql_filter` and evaluated against World Model entities.
 
 ### `EntityType` Enum
 
@@ -533,7 +549,7 @@ This grammar is normative; the OpenAPI 3.1 `description` field on `dql_filter` l
 
 ### Event Catalog
 
-The source of truth is the [event catalog](../10-product/catalogs.md#4-event-catalog-ssot-for-webhooks--sse--audit). Do not add an event type outside it.
+The source of truth is the event catalog. Do not add an event type outside it.
 
 #### Event Semantics
 
