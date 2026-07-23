@@ -532,6 +532,8 @@ At a glance, before the full detail below — every canonical failure mode, its 
 
 ### 4.3 · R1 — Cross-tenant context leak
 
+The worst-case failure in a multi-tenant agentic system: one tenant's data surfaces inside another's session. It's the only runbook that reaches for the global L4 halt as its first automation gate.
+
 > **Severity:** P0-C · **Type:** COMPOSITE
 
 **Trigger:** `DuxCrossTenantContextDetected` (`foreign_tenant_refs > 0` + isolation SLO burn ≥5%/1h), or a fuzz failure.
