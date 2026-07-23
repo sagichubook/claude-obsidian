@@ -414,7 +414,7 @@ A maturity rating means nothing without a command that actually proves it. Each 
 
 ### 3.6 · LLM04 and LLM08 reassessments
 
-Both were reassessed under **D-55** when Agentic RAG + Apache AGE graph went live ([ADR-020 R2](../20-architecture/adr-index.md#adr-020-r2--agentic-rag-and-graph-retrieval)):
+Turning on Agentic RAG (see [[Dux AI Safety Guide]]) changed the threat surface enough to force a re-score of two rows above — here's exactly what changed. Both were reassessed under **D-55** when Agentic RAG + Apache AGE graph went live ([ADR-020 R2](../20-architecture/adr-index.md#adr-020-r2--agentic-rag-and-graph-retrieval)):
 
 **LLM04 — Data / Model Poisoning:**
 - Per-edge provenance + integrity hashing covers graph-poisoning
