@@ -147,7 +147,7 @@ A future, optional deployment mode gets a heartbeat contract of its own. DaemonS
 
 ### 1.7 · Shadow AI detection and behavioral baselines
 
-A daily job compares declared agents (the `agents` table) against observed MCP `agent_id` headers and runtime `agent.session.started` audit records. Undeclared drift triggers **P0-B containment** plus a registry update, with an SLA of **1 hour to investigate** and **4 hours to contain**.
+Identity alone doesn't catch an agent that was never declared in the first place — that's what this section is for. A daily job compares declared agents (the `agents` table) against observed MCP `agent_id` headers and runtime `agent.session.started` audit records. Undeclared drift triggers **P0-B containment** plus a registry update, with an SLA of **1 hour to investigate** and **4 hours to contain**.
 
 #### Behavioral baselines per `agent_type`
 
