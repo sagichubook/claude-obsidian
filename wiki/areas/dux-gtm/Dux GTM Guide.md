@@ -3,28 +3,26 @@ type: area
 title: "Dux GTM Guide"
 topic: "dux/gtm"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [area, dux, dux/gtm]
 status: mature
 sources: [".raw/dux/80-gtm/competitive.md", ".raw/dux/80-gtm/pricing-packaging.md", ".raw/dux/80-gtm/gtm-guardrails.md", ".raw/dux/80-gtm/lean-canvas.md", ".raw/dux/80-gtm/external-corrections-2026-07.md"]
 related: ["[[Dux]]", "[[Dux Product Guide]]", "[[Dux Customer Success Guide]]", "[[Dux Governance & Compliance Guide]]"]
 ---
 
-# Dux GTM Guide
+# What Dux Is Allowed to Say — and Why That Changed
+
+### The claims firewall, the pricing ladder, the competitive map, and a paste-ready list of every stale fact still floating around the internet about a company that only launched in December 2025
 
 Navigation: [[Dux]] | [[Dux Product Guide]] | [[Dux Customer Success Guide]]
 
-Everything GTM needs in one place: the claims firewall, competitive positioning, the lean canvas, pricing and packaging, and a ready-to-use corrections list for fixing stale external surfaces.
+Every fast-moving security startup eventually hits the same problem: the product ships faster than the marketing copy can keep up, or — just as often — the marketing copy races ahead of what actually shipped. Dux built a specific answer to that problem: a single claims map that governs what GTM copy, product naming, and UI strings are allowed to say, and nothing else. It doesn't touch safety posture, control design, gate criteria, or SLOs — those are set by engineering (D-10 defines this scope boundary explicitly), and if marketing copy and engineering reality ever diverge, that divergence gets raised as an open item and resolved by fixing the copy, never by quietly editing a spec to match the marketing. Everything below — pricing, positioning, the business model, and a running list of external corrections — sits downstream of that one rule.
 
-## The claims firewall: what governs everything below
+## Why the Guardrails Inverted
 
-Before pricing, positioning, or the business model: one rule sits above all of it. A single claims map governs what GTM copy, product naming, and UI strings are allowed to say, and it binds *only* those three surfaces. It never binds safety posture, control design, gate criteria, or SLOs: those are set by engineering, and if marketing copy and engineering reality ever diverge, that divergence gets raised as an open item and resolved by fixing the copy, never by quietly editing a spec to match the marketing.
+The original GTM guidance *suppressed* claims: code execution was "Gate 2+," continuous analysis was "Gate 3," Mitigate and Remediate were "Gate 3" — because the product, at the time, was Analyze-only. Under GCIS v2.2 those capabilities now ship at Gate 1. The claims became true, so the guardrails inverted: what was once suppressed is now safe to say. Only two fences remain.
 
-### Why the guardrails inverted
-
-The original GTM guidance **suppressed** claims — code execution was "Gate 2+", continuous was "Gate 3", Mitigate and Remediate were "Gate 3" — because the product was Analyze-only. Under GCIS v2.2 those capabilities ship at Gate 1. **The claims became true, so the guardrails inverted: what was once suppressed is now safe to say.** Only two fences remain.
-
-### The two remaining fences
+### The Two Remaining Fences
 
 Do not imply either has shipped before its gate.
 
@@ -33,20 +31,22 @@ Do not imply either has shipped before its gate.
 | Preference-learning refinement | Gate 2c | The Gate-1 substitute is per-instance acknowledgment plus session-scoped routing preferences |
 | Optional physical residency | Gate 5 | "Lives inside your environment" means *logical* residency (read-only APIs and OAuth) for Phases 1 through 4 |
 
-### Claim-safe at Gate 1
+### Claim-Safe at Gate 1
 
 | Claim | Status |
 |---|---|
 | "Continuous exploitability analysis" | True, unqualified — continuous re-assessment (US-021, ADR-016) plus the on-demand queue |
 | "Agents write **and run** investigation code" | True: self-hosted Firecracker microVM execution at Gate 1; code artifacts and executed results appear in traces |
-| "Ties together all data sources / auto-tags every asset" | True, unqualified — integration-catalog coverage is tracked separately as an engineering roadmap item |
+| "Ties together all data sources / auto-tags every asset" | True, unqualified — integration-catalog coverage is tracked separately as an engineering roadmap item, not a messaging constraint |
 | "Lightweight mitigations / rapid remediation" | True, unqualified — no HITL caveat required in customer-facing messaging |
 | The full Analyze → Mitigate → Remediate pipeline | True end to end at Gate 1 |
 | "Machine-speed analysis" / "full protection at machine speed" | True, unqualified, end to end |
 | "Instant" — "instant exploitability analysis", "close critical gaps instantly" | Claim-safe as stated — both accepted verbatim |
-| **"Zero-day investigated in minutes"** | **Qualified** — true per individual CVE, but an environment-wide sweep is queue-paced (hours, bounded by sandbox capacity) and must never be implied as minutes-scale |
+| **"Zero-day investigated in minutes"** | **Qualified** — true per individual CVE (an FR-004 MTXV-qualified design-partner anecdote, never an SLA), but an environment-wide sweep is queue-paced (hours, bounded by sandbox capacity) and must never be implied as minutes-scale |
 
-### Permanent rules
+The minutes-vs-hours line isn't arbitrary — it's bounded by real infrastructure limits. The D-9 sandbox tenant caps are **300 sandbox-seconds/hour and 5 concurrent microVMs** (SR-11; competitor-scan CS-19), and those caps are what push a full-environment zero-day sweep into hours rather than minutes at fleet width. The live dux.io copy makes no environment-wide-minutes claim, so nothing about that cap is currently being suppressed — but it's the reason the fence exists.
+
+### Permanent Rules
 
 Some rules apply regardless of gate:
 
@@ -56,12 +56,14 @@ Some rules apply regardless of gate:
 - **Never claim, at any gate:** scanner replacement · PTaaS or offensive execution · OT/IoT discovery · an on-prem resident agent before Gate 5 · financial-impact quantification.
 - **Naming:** public/press materials have used "AI-workers" — never use it in Dux-authored copy. Canonical is **Dux Agent** (historical usage recorded in [[Dux Product Guide]]).
 - **Ecosystem mentions:** the CrowdStrike / AWS / NVIDIA 2026 Accelerator (Dux among 35 startups), and InfraRed-100-style listings, are ecosystem validation only, used with GTM approval. Never present them as product-feature claims.
+- **Illustrative numbers:** the 8,341 → 2,143 funnel and its reduction statistics are illustrative, not measured — validate with design partners before they enter signed collateral.
+- **Outcome claims (C1/C2):** "Materially smaller attack surface" and "far shorter path from vulnerability discovery to resolution" are accepted baseline messaging — but the *measured* numbers behind them don't exist yet. They arrive with Phase-1 exit instrumentation (H9 — cache-hit and MTTP distributions). Until then, make the claims without attaching specific figures — same numeric discipline as the illustrative funnel.
 
-### The pre-publication claims checklist
+### The Pre-Publication Claims Checklist
 
-A pre-publication claims checklist, signed by both product management and counsel and stored against the CRM opportunity, is required before every RFP response, order form, sales-deck revision, founder interview, social post, and conference talk. Any statistic that appears in a public post has to carry a source URL and a date, no exceptions.
+A pre-publication claims checklist, signed by both product management and counsel and stored against the CRM opportunity, is required before every RFP response, order form, sales-deck revision, founder interview, social post, and conference talk. An RFP answer without a stored checklist is a blocked send. Any statistic that appears in a public post has to carry a source URL and a date, no exceptions.
 
-The checklist has already caught real problems: two AI-search-summary-shaped false claims about Dux (a fabricated hosted conference reception, a fabricated Redpoint award placement) were caught before they entered the corpus, while a genuinely real LinkedIn post claim was independently confirmed and is now safely citable with its source.
+The checklist earns its keep by catching real problems before they ship. Two AI-search-summary-shaped false claims about Dux were caught on 2026-07-21 while re-verifying an unrelated post: a claimed Dux-hosted RSA 2026 reception (the actual host was the unrelated "Dune Security"), and a claimed Dux placement on Redpoint's 2026 InfraRed 100 list (Dux does not appear on the real list). Neither had entered the corpus before being caught — both are the same plausible-sounding, no-primary-source failure mode. On the other side of the ledger, a genuinely real claim — the "65-day MTTR" RSA-2026 LinkedIn post — was independently confirmed (D-49) and is now safely citable with its source URL attached.
 
 ```mermaid
 flowchart TD
@@ -72,7 +74,7 @@ flowchart TD
     Stored --> Publish[RFP / order form / deck / post]
 ```
 
-### Public-surface launch blockers
+### Public-Surface Launch Blockers
 
 | Item | Required state |
 |---|---|
@@ -83,11 +85,11 @@ flowchart TD
 | CybersecTools listing | corrected |
 | cyberdb.co | corrected — verify, then close (listing may have been removed) |
 
-### Archive step
+### Archive Step
 
 The Wayback Machine holds zero 2025–2026 captures of dux.io. After every site revision — and once now — trigger Save Page Now on `https://dux.io/`, and store the capture URL in provenance. Without it there is no independent record of what the public surface claimed, and when.
 
-## Claim-safe short-form blocks
+## Claim-Safe Short-Form Blocks
 
 ### Hero copy
 
@@ -105,7 +107,7 @@ The Wayback Machine holds zero 2025–2026 captures of dux.io. After every site 
 
 Framing rule: this block describes mechanisms (sandbox execution, CaMeL boundary, kill switch, HITL tiers), not outcomes or speed — it does not need the "instant"/"machine speed" fences, and must not be edited to add them.
 
-### Customer qualification answers
+### Customer Qualification Answers
 
 | Customer asks | Say | Do not say |
 |---|---|---|
@@ -117,11 +119,9 @@ Framing rule: this block describes mechanisms (sandbox execution, CaMeL boundary
 | "Is the analysis instant?" | "Yes — instant exploitability analysis, reaching full protection at machine speed." | Do not add a "starts / streams / completes-in-minutes" hedge |
 | "Do you think like an attacker?" | "We apply an attacker-minded lens to determine real-world exploitability in your environment — defensive analysis only, not PTaaS." | "We hack your environment" / "We run pen tests" |
 
-## The business model in one page
+## The Business Model in One Page
 
-Every entry in the lean canvas is explicitly tagged validated or hypothesis: a discipline that keeps a strategy document honest rather than letting it drift into an unverified set of claims dressed up as facts.
-
-**Tags:** `[V]` = validated · `[H]` = hypothesis. Review quarterly, at the gap-closure workshop.
+Every entry in the lean canvas is explicitly tagged validated or hypothesis — `[V]` = validated, `[H]` = hypothesis — a discipline that keeps a strategy document honest rather than letting it drift into an unverified set of claims dressed up as facts. Reviewed quarterly, at the gap-closure workshop.
 
 ### Problem
 
@@ -159,7 +159,7 @@ Agents **write and execute** investigation code in microVM sandboxes, and re-ass
 
 ### Revenue streams
 
-**`[H]`** Design partner at $500/month or usage-based → Starter $2,500/month and Professional $8,000/month at Gate 2b list → Series A ACV of $50–150 K, or $150 K+.
+**`[H]`** Design partner at $500/month or usage-based → Starter $2,500/month and Professional $8,000/month at Gate 2b list → Series A ACV of $50–150K, or $150K+.
 
 Outcome-based pricing — per validated true positive, plus an unexploitable credit — becomes the Enterprise default at Series B.
 
@@ -177,24 +177,37 @@ All forward-looking hypotheses:
 
 | Measure | Range |
 |---|---|
-| TAM | $8–12 B |
-| SAM | $800 M – $1.2 B |
-| SOM, years 1–2 | $5–15 M — 50–150 enterprises × $50–100 K ACV |
+| TAM | $8–12B |
+| SAM | $800M – $1.2B |
+| SOM, years 1–2 | $5–15M — 50–150 enterprises × $50–100K ACV |
 
-Category sizing: CybersecTools lists 85 exposure-management tools. Every range here is a stage-model illustration. Any external deck must cite a source URL and a date.
+Category sizing: CybersecTools lists 85 exposure-management tools — it is not a product authority. Every range here is a stage-model illustration. Any external deck must cite a source URL and a date.
 
 ### Cost structure
 
 | Line item | Figure |
 |---|---|
 | LLM cost per assessment | $0.75 hard ceiling, $0.55 design target (D-3 gates: breaker $0.675, CI $0.55) |
-| Self-hosted Kubernetes infrastructure (EKS, database, cache, storage, workflow engine) | ~$1,300–1,800/month at MVP 3-node scale (3× m6i.2xlarge + CloudFront/DNS ~$100, EKS control plane ~$73/mo) |
-| LLM token spend (Bedrock) | ~$500–1,000/month at MVP scale |
-| Team | 5 engineers against a 2,160-hour capacity envelope (D-40: 27 h/week) |
+| Self-hosted Kubernetes infrastructure (EKS, database, cache, storage, workflow engine) | ~$1,300–1,800/month at MVP 3-node scale (3× m6i.2xlarge, ~$800–1,200/mo compute, plus CloudFront/DNS ~$100; EKS control plane ~$73/mo additive) — replaces the separate Temporal Cloud and ECS Fargate line items entirely |
+| LLM token spend (Bedrock, usage-dependent) | ~$500–1,000/month at MVP scale (direct-Bedrock-SDK cost model) |
+| Team | 5 engineers against a 2,160-hour capacity envelope (D-40: 27 h/week — a re-baseline that supersedes the earlier 2,080 h / D-23 figure) |
 
-Capacity is tracked honestly rather than absorbed silently: backlog currently runs at **2,118 hours against 2,160 hours** (~98%, 42 hours buffer), logged as an open item.
+Capacity is tracked honestly rather than absorbed silently: backlog currently runs at **2,118 hours against 2,160 hours** (~98%, 42 hours buffer), logged as an open item, and still tracking the still-unestimated Agentic RAG/Apache AGE net-new scope separately.
 
 → [[Dux Operations Guide]]
+
+### Key metrics
+
+**`[V]`** Targets:
+
+| Metric | Target |
+|---|---|
+| MTXV | <15 min per CVE |
+| Time to value | <48 h from connector |
+| Queue reduction | thousands → tens |
+| Golden set | ≥80% by Gate 1; <2% regression |
+| Kill switch | p99 <5 s |
+| Design partners | 2+ committed by the Gate-1 review (Week 12) |
 
 ```mermaid
 flowchart TB
@@ -205,18 +218,20 @@ flowchart TB
     Revenue --> Cost["Cost structure\n~$1,300-1,800/mo infra"]
 ```
 
-## Pricing and packaging
+## Pricing and Packaging
 
 Tier gating is deliberately commercial, not technical: the full Analyze pipeline and the Mitigate/Remediate write path ship at Gate 1 for *every* tier, unattended by default, the same way everywhere. Human review is an anomaly-escalation path, never something a customer pays more to unlock. Pricing tiers gate access and scale, not capability depth.
 
+The tier structure itself was approved in Phase 1. **List prices activate at Gate 2b GTM sign-off** — until Stripe SKUs publish, design-partner pricing applies.
+
 ### Tier structure
 
-| Tier | Price | Asset band | API rate limit | SSO | SLA | Support |
-|---|---|---|---|---|---|---|
-| Design Partner | $500/mo or usage-based | — | — | — | Beta, no formal SLA | email |
-| Starter | $2,500/mo | Up to ~1,000 assets | 1,000 req/min | — | 99.5% | email |
-| Professional | $8,000/mo | Up to ~10,000 assets | 5,000 req/min | included¹ | 99.9%² | email + chat |
-| Enterprise | custom | Unlimited | 10,000 req/min | included | 99.99%³ | dedicated CSM |
+| Tier | Price | Active from | Asset band | API rate limit | SSO | SLA | Support |
+|---|---|---|---|---|---|---|---|
+| Design Partner | $500/mo or usage-based | Phase-1 pilots (NDA) | — | — | — | Beta, no formal SLA | email |
+| Starter | $2,500/mo | Gate 2b list | Up to ~1,000 assets | 1,000 req/min | — | 99.5% | email |
+| Professional | $8,000/mo | Gate 2b list | Up to ~10,000 assets | 5,000 req/min | included¹ | 99.9%² | email + chat |
+| Enterprise | custom | enterprise RFP | Unlimited | 10,000 req/min | included | 99.99%³ | dedicated CSM |
 
 **Per-tenant database isolation (D-38).** A dedicated-CloudNativePG-per-tenant option is offered to Enterprise buyers who require physical isolation beyond the default shared-schema row-level security model — priced and scoped at deal time, on the same enterprise-RFP trigger as the FedRAMP path, not a self-serve SKU.
 
@@ -230,7 +245,17 @@ The public data API is a separate plane, with its own limits: Starter 60, Profes
 
 Pipeline stages by tier: Starter is Analyze only; Professional adds Mitigate; Enterprise gets all three. But that gating is commercial, not technical — the Analyze pipeline *and* Mitigate/Remediate all ship at Gate 1 for every tier.
 
-### Outcome-based pricing
+The professional-services add-on `PS-ONBOARD-001` blocks $100K ACV until the trust-portal minimum page set is live — one more way pricing discipline and compliance readiness are wired together.
+
+### Data and GDPR (the fine print buyers ask about)
+
+**Export:** Parquet by default, or JSON, via `POST /tenants/{id}/export`. 30-day retention.
+
+**GDPR deletion:** `DELETE /tenants/{id}` triggers `GDPRDeletionWorkflow` — a one-calendar-month read-only export window (Art. 12(3), Art. 17), then a 90-day hard purge. That 90 days is operational retention, not a statutory maximum.
+
+Subprocessors are listed at `trust.dux.io/subprocessors`.
+
+### Outcome-Based Pricing
 
 **Seed pilot (pre-Gate 2b):** Design partners at $500/month, or usage-based.
 
@@ -241,7 +266,7 @@ Pipeline stages by tier: Starter is Analyze only; Professional adds Mitigate; En
 
 Finance reconciles monthly, with a 14-day dispute window. Publishing an outcome-based SKU requires explicit sign-off from both product management and finance on the algorithm, plus at least one signed design-partner letter of intent.
 
-**Gate 2b readiness:** PM and Finance sign off, and at least one design-partner LOI exists, before any Stripe SKU publishes. Finance and the CTO must validate the cost model against real partner telemetry, define usage caps, and confirm Starter profitability — or explicitly reposition it as a loss-leader.
+**Gate 2b readiness:** PM and Finance sign off, and at least one design-partner LOI exists, before any Stripe SKU publishes. Finance and the CTO must validate the cost model against real partner telemetry, define usage caps, and confirm Starter profitability — or explicitly reposition it as a loss-leader, with strict limits. Telemetry collection starts during Phase 1.
 
 **Series A enterprise pricing.** Professional at $50–150K ACV ($8K/mo list). Enterprise at $150K+ — the full 3-stage offering post-Gate 3, with an outcome-based option: base + per-validated-true-positive + unexploitable credit.
 
@@ -249,13 +274,13 @@ Finance reconciles monthly, with a 14-day dispute window. Publishing an outcome-
 
 **Renewal drivers.** A TenantHealthScore below 50 triggers a Security/FinOps review. Golden-set drift triggers a contract-amendment discussion.
 
-### The KPIs that actually get tracked
+### The KPIs That Actually Get Tracked
 
 | KPI | Target |
 |---|---|
 | Mean time to exploitability verdict (MTXV) | <15 min per CVE |
-| Actions per assessment (p95) | <60 — governance warns above 100, halts at 200 |
-| Mean time to protection (MTTP) | Measured end to end by Phase-1 exit — a metric, not an SLA, and distinct from MTTR |
+| Actions per assessment (p95) | <60 — the canonical SLO. Governance warns above 100, halts at 200 |
+| Mean time to protection (MTTP) | Measured end to end by Phase-1 exit (H9) — a metric, not an SLA, and distinct from MTTR |
 | Mean time to remediate (MTTR) | <72 h (Gate 3) |
 | Time to value | <48 h from connector |
 | Kill switch (p99) | <5 s |
@@ -265,7 +290,7 @@ Finance reconciles monthly, with a 14-day dispute window. Publishing an outcome-
 
 **Product MTTR is not DORA MTTR.** DORA MTTR is incident recovery, targeted under 1 h. Product MTTR targets under 72 h by Gate 3. They measure different things.
 
-Reconciled against engineering data: observed range of 40–80 actions (p50 ≈ 55, p95 ≈ 58). The p95 <60 figure is consistent with that data.
+Reconciled against engineering data: observed range of 40–80 actions (p50 ≈ 55, p95 ≈ 58) — the 70–80 tail is a sub-5% case driven by multi-hop attack-path traversal on large asset inventories, and doesn't move the p95. The p95 <60 figure is consistent with that data.
 
 ```mermaid
 flowchart LR
@@ -277,9 +302,9 @@ flowchart LR
     Ent -.-> AllTiers
 ```
 
-## Competitive positioning
+## Competitive Positioning
 
-### The CTEM framing
+### The CTEM Framing
 
 Dux's structural framing against the market is the five-stage Continuous Threat Exposure Management model, with one stage claimed as a genuine wedge rather than a feature checkbox:
 
@@ -293,43 +318,41 @@ Dux's structural framing against the market is the five-stage Continuous Threat 
 
 The outcome metric "thousands → tens" (the actionable-queue ratio) stays illustrative until measured on real partner data at N ≥ 10.
 
-### Supporting category statistics
+### Supporting Category Statistics
 
 | Statistic | Note |
 |---|---|
-| Testing exploitability reduces false urgency by **up to 84%** | Picus Security's own reported figure, not independent research (D-53). CTEM-validation research — validation is the stage most teams skip |
-| Only **16%** of organizations have operationalized CTEM, though **84%** call it important | Reflectiz survey, n=128 (D-53) — a small, single-vendor-run survey |
-| **~5% of published CVEs have a known exploit in the wild** | EPSS (FIRST.org), corroborated by independent secondary analysis (~5–6%) and consistent with Tenable (~3%), Fortinet (~5.7%), Kenna/Cyentia (<2%) |
+| Testing exploitability reduces false urgency by **up to 84%** | Picus Security's own reported figure, not independent research (D-53). CTEM-validation research — validation is the CTEM stage most teams skip, and it matters most |
+| Only **16%** of organizations have operationalized CTEM, though **84%** call it important | Reflectiz survey, n=128 (D-53) — market timing, but a small, single-vendor-run survey, not a broad industry finding |
+| **~5% of published CVEs have a known exploit in the wild** | EPSS (FIRST.org), corroborated by an independent secondary analysis (~5–6%, resilientcyber.io, 2024-08) and in the same range as other vendors' independent estimates (Tenable ~3%, Fortinet ~5.7%, Kenna/Cyentia <2%, NopSec ~3.4%) — the empirical basis for "if it isn't exploitable, why fix it?" |
 
-### Analyst validation
+Dux already runs an internal DeepEval + 250-CVE golden-set eval harness for its own regression testing. Once those results are stable and validated, they become an owned, measured proof point — replacing or supplementing the cited category statistics above. No number gets published here until it's real and validated; none is fabricated in the meantime.
 
-A quote previously attributed to "Gartner (Nunez, Mar 2026)" — **status: unconfirmed, not "primary research."** A 2026-07-21 web pass could not independently corroborate this quote's exact wording, date, or attribution. **Do not use this quote internally or externally — in decks, sales enablement, or RFPs — until Legal or the Founder locates and confirms the primary source.** Jonathan Nunez is a real Gartner analyst covering Exposure Management, but that does not confirm this specific quote.
+### Analyst Validation — a Cautionary Tale, Not a Citation
 
-**No reprint/syndication licence exists (confirmed 2026-07-16).** Even if confirmed, it remains internal-use-only unless Legal secures a Gartner reprint licence.
+**Do not lead with this, and do not cite it anywhere, pending re-verification (D-48).** A quote was previously attributed to "Gartner (Nunez, Mar 2026)" claiming that organizations prioritizing exposures by threat intelligence, asset context, exploitability modeling, and control validation would reduce breach likelihood by at least 70% versus CVSS-based peers. **Status: unconfirmed, not "primary research."** A 2026-07-21 web pass could not independently corroborate this quote's exact wording, date, or attribution — the nearest real, indexed Gartner statement is a differently-worded 2022 CTEM prediction (a two-thirds reduction in breaches by 2026, with no named analyst attached). That finding supersedes an earlier 2026-07-09 decisions-log call (D-48) that the quote had been "confirmed primary research" — nobody on the team can currently point to the actual primary Gartner document it was sourced from. Jonathan Nunez is a real Gartner analyst covering Exposure Management, but that does not confirm this specific quote. **Do not use this quote internally or externally — in decks, sales enablement, or RFPs — until Legal or the Founder locates and confirms the primary source.** Even if it's later confirmed, no reprint/syndication licence exists (confirmed 2026-07-16), so it would remain internal-use-only unless Legal secures an actual Gartner reprint licence — a restriction independent of, and in addition to, the sourcing question.
 
-The broader positioning claim does not depend on this quote: "CVSS is not enough" is the mainstream Gartner, Rapid7, and Zafran position. Dux's capabilities map onto that direction regardless.
+None of that sinks the broader positioning claim, which doesn't depend on the disputed quote: "CVSS is not enough" is the mainstream Gartner, Rapid7, and Zafran position, and Dux's capabilities map onto that direction regardless.
 
-> **Note on CybersecTools CSF percentages:** NIST CSF 2.0 coverage numbers (ID 72% / PR 85% / DE 60% / RS 45% / RC 38% / GV 55%) on the CybersecTools listing were never provided by Dux — directory-generated, third-party fabrication. These must never be cited as Dux's own.
+> **Note on CybersecTools CSF percentages.** NIST CSF 2.0 coverage numbers (ID 72% / PR 85% / DE 60% / RS 45% / RC 38% / GV 55%) on the CybersecTools listing were never provided by Dux — directory-generated, third-party fabrication, and inconsistent with Dux's own published CSF crosswalk. These must never be cited as Dux's own.
 
-### Competitor profiles
+### Competitor Profiles
 
 | Competitor | Their pitch | The Dux counter | Caveat |
 |---|---|---|---|
 | **ZEST Security** | Owns "Agentic Exposure Management"; AI maps risks to resolution pathways | Dux **proves** exploitability per environment — agent-written and executed code, CaMeL safety boundary, claims firewall — *before* routing a fix | Same category phrase. Differentiate on validation depth, not the label |
-| **Konvu** | "Deterministic checks to confirm exploitability" | Per-environment agent reasoning with executed code and evidence traces, not fixed checks. Dux also owns the governed write path — unattended by default, kill-switch-covered | Rising visibility (RSAC 2026 Launch Pad finalist; won Infosecurity Europe Cyber Startup competition, Jun 2026). No new funding since $5M seed (Jun 2024) |
+| **Konvu** | "Deterministic checks to confirm exploitability" | Per-environment agent reasoning with executed code and evidence traces, not fixed checks. Dux also owns the governed write path — unattended by default, kill-switch-covered | Rising visibility (RSAC 2026 Launch Pad finalist; won Infosecurity Europe's inaugural Cyber Startup competition, Jun 2026). No new funding since $5M seed (Jun 2024) |
 | **Ethiack / SecRecon / Securifera** (agentic pentest, CART) | "Prove what's exploitable" — by attacking | **Dux is defensive only.** Reasons about exploitability from evidence, never attacks. That is the wedge, not a limitation | Buyers who conflate validation with pentesting |
-| **Tenable Hexa AI** (GA May 2026, 40K customers) | Agentic orchestration across Tenable One; remediation workflows — GA adds multistep reasoning and MCP support | Prerequisite decomposition, per-source citations, executed-code traces (US-017); connector-backed live context vs. cloud-side Exposure Data Fabric | Buyers already bundled into Tenable One |
-| **Strobes AI** (Mar 2026 — 4.2 s per finding, 100+ integrations, 95% noise reduction; Apr 2026 "AI Harness") | Fast triage, noise reduction | Exploitability-validated buckets **plus a reasoning trace** — not speed-only triage. Customer-environment code artifacts behind the CaMeL boundary | Analyze is live at Gate 1 |
-| **Wiz** (part of Google Cloud — acquisition closed March 2026) | Risk graphs, exposure scores | Environmental exploitability and control-aware paths, over a posture score | Wiz/Google Cloud standardization; watch for deeper bundling as Gemini AI integration proceeds |
-| **Tenable / Qualys VM** (Qualys "Agent Val" GA March 2026) | Scanner breadth, now with Qualys shipping its own agentic validation layer | **Enrich** scanner findings with environmental exploitability — Dux ingests Qualys and Wiz as input | A scanner vendor shipping a comparable agentic layer inside the renewal window |
-| **Armis / Averlon / RunSybil / IONIX** | AI validation with PoC evidence | Unified integration layer, preference learning, CaMeL security boundary, inspectable reasoning | **Disclosure: an Armis executive is also a Dux angel investor** (BusinessWire, Dec 2025). ServiceNow agreed to acquire Armis for $7.75B cash (Armis ARR $340M, +50% YoY), expected close H2 2026. Averlon shipped "Precog" (May 2026) and joined Anthropic's Cyber Verification Program (Jun 2026). RunSybil raised $40M (Mar 2026, Khosla Ventures, incl. Anthropic/Menlo's Anthology Fund) |
+| **Tenable Hexa AI** (GA May 2026, 40K customers) | Agentic orchestration across Tenable One; remediation workflows — GA adds multistep reasoning and MCP (Model Context Protocol) support for custom agent building | Prerequisite decomposition, per-source citations, executed-code traces (US-017); connector-backed live context vs. cloud-side Exposure Data Fabric | Buyers already bundled into Tenable One |
+| **Strobes AI** (Mar 2026 — 4.2 s per finding, 100+ integrations, 95% noise reduction; Apr 2026 "AI Harness" claims 2–4 week pentests compressed to <48 h) | Fast triage, noise reduction | Exploitability-validated buckets **plus a reasoning trace** — not speed-only triage. Customer-environment code artifacts behind the CaMeL boundary | Analyze is live at Gate 1 |
+| **Wiz** (part of Google Cloud — acquisition closed March 2026) | Risk graphs, exposure scores | Environmental exploitability and control-aware paths, over a posture score | Wiz/Google Cloud standardization; Google has stated Gemini AI integration is forthcoming — watch for deeper platform bundling as it proceeds |
+| **Tenable / Qualys VM** (Qualys "Agent Val" GA March 2026, claiming 90%+ remediation-noise reduction, 70% faster time-to-remediate, 1,600+ CVEs covered) | Scanner breadth, now with Qualys shipping its own agentic validation layer | **Enrich** scanner findings with environmental exploitability — Dux ingests Qualys and Wiz as input | A scanner vendor shipping a comparable agentic layer inside the renewal window — Qualys Agent Val is now that case, not just a hypothetical |
+| **Armis / Averlon / RunSybil / IONIX** | AI validation with PoC evidence | Unified integration layer, preference learning, CaMeL security boundary, inspectable reasoning | **Disclosure: an Armis executive is also a Dux angel investor** (BusinessWire, Dec 2025) — the positioning here is independent of that relationship, noted for transparency. ServiceNow agreed (Dec 2025) to acquire Armis for $7.75B cash (Armis ARR $340M, +50% YoY), expected close H2 2026 — Armis may reposition as a ServiceNow-platform capability rather than a standalone vendor. Averlon shipped "Precog" (May 2026, pre-production/CI-integrated exploitability evaluation ahead of merge) and joined Anthropic's Cyber Verification Program (Jun 2026). RunSybil raised $40M (Mar 2026, led by Khosla Ventures, incl. Anthropic/Menlo's Anthology Fund; valuation undisclosed) |
 | **Prioritization layers (CVSS + EPSS)** | Rank the backlog | Per-environment exploitability reasoning, plus lightweight mitigation paths | — |
 
-### Honest competitive gaps
+**Honest competitive gaps**, stated plainly: broad scanner replacement (out of scope permanently) · PTaaS (rejected — defensive only) · OT/IoT (Phase 2+) · on-prem and air-gapped (Gate 5) · financial-impact quantification (Phase 3) · native mobile (Series A).
 
-Stated plainly: broad scanner replacement (out of scope permanently) · PTaaS (rejected — defensive only) · OT/IoT (Phase 2+) · on-prem and air-gapped (Gate 5) · financial-impact quantification (Phase 3) · native mobile (Series A).
-
-### Feature availability matrix
+### Feature Availability Matrix
 
 **Attach this to every RFP and every pre-Gate-3 contract.**
 
@@ -348,22 +371,22 @@ The "Live" cells describe what the *capability* does at that gate — not what e
 | Public REST data API | — | Seed trigger | — | Seed+ | Enterprise |
 | Optional physical residency | — | — | Gate 5 | roadmap only | Enterprise |
 
-### Press errata
+### Press Errata
 
 Attach when a prospect cites the December-2025 press.
 
 | Press claim | Gate-safe response |
 |---|---|
-| Full pipeline at machine speed | **True** — Analyze → Mitigate → Remediate live at Gate 1, unattended by default |
+| Full pipeline at machine speed | **True** — Analyze → Mitigate → Remediate live at Gate 1, unattended by default. Closed-loop validation is Gate 3 |
 | "Continuous exploitability analysis" | **True** — continuous re-assessment ships at Gate 1 (ADR-016) |
 | "Major U.S. enterprises" / millions of vulnerabilities | **Design partners under NDA.** No scale claims until Gate-2 re-baseline |
 | CEO: agents "write and run" code | **True** — sandboxed execution at Gate 1 (self-hosted Firecracker) |
-| "Dux Technologies Inc." (SiliconANGLE) | **The contracting entity is Dux, Inc.** (D-51). Dux's Privacy Policy PDF names "Dux Technologies Inc." in error — external follow-up needed |
+| "Dux Technologies Inc." (SiliconANGLE) | **The contracting entity is Dux, Inc.** (D-51). Dux's Privacy Policy PDF names "Dux Technologies Inc." in error — external follow-up needed, independent of the ZoomInfo/PitchBook corrections already in flight |
 | "fastest safe fix" (BusinessWire) | **The phrase is retired, stays retired** (V-13). Say **"fastest path to protection"** — fix-safety validation is closed-loop at Gate 3 |
 | PR subhead: "shuts them down before they're used in an attack" | "Dux identifies exploitable paths and closes critical gaps instantly, reaching full protection at machine speed" — the gtm-guardrails wording |
 | FinSMEs: "already supporting major U.S. enterprises … hundreds of thousands of assets and millions of vulnerabilities" | **Design partners under NDA** (V-7). No scale claims until Gate-2 re-baseline (V-9) |
 
-### 14-day proof of concept
+### 14-Day Proof of Concept
 
 | Phase | Days | Success looks like |
 |---|---|---|
@@ -375,7 +398,7 @@ A 1–2 page security excerpt (tenant isolation, kill switch, data-flow diagram,
 
 **POC exit:** convert to a paid pilot, or record a documented disqualification.
 
-### ROI calculator
+### ROI Calculator
 
 **Inputs:** critical findings per month; remediation capacity (%); engineer hourly rate.
 
@@ -383,7 +406,7 @@ A 1–2 page security excerpt (tenant isolation, kill switch, data-flow diagram,
 
 MTTR reduction is a Gate 3+ output. Product MTTR is not measured in Phase 1 — keep it out of the calculator.
 
-### Market validation quotes
+### Market Validation Quotes
 
 | Speaker | Quote |
 |---|---|
@@ -400,11 +423,11 @@ MTTR reduction is a Gate 3+ output. Product MTTR is not measured in Phase 1 — 
 | Erica Brescia (Redpoint YouTube, 2026) | "We chat with a lot of CISOs at Redpoint, and every single one bemoans the millions of vulnerabilities across their tooling. Most aren't actually exploitable: teams waste time on low-priority noise." |
 | Or Latovitz (Redpoint YouTube, 2026) | "Up until now, vulnerability management teams mainly had one 1000 lb hammer: patching. For the first time, we're expanding that arsenal so VM teams can close the loop and fix problems themselves, not only orchestrate remediation with IT." |
 
-## External corrections: fixing what's already wrong
+## External Corrections: Fixing What's Already Wrong
 
 A short, ready-to-use action list exists because a correct internal record doesn't automatically fix a stale external one: a directory listing or an old press link stays wrong until someone actually submits the correction. The facts anchoring every item below: the legal entity is **Dux, Inc.**, the company is dual-headquartered in Tel Aviv (R&D) and New York (GTM), founded in 2024, with a seed round co-led by Redpoint, TLV Partners, and Maple Capital.
 
-### Site copy fixes (paste directly)
+### Site Copy Fixes (paste directly)
 
 **MC-13 — banner omits a co-lead.**
 
@@ -424,7 +447,7 @@ A short, ready-to-use action list exists because a correct internal record doesn
 
 > A structural skeleton for Legal to fill in and approve — not to be published as-is. Sections 4–6 point at real corpus facts; sections 1, 5, and 7 need Legal's actual wording. The draft covers: who Dux is, data collected, how it's used, subprocessors, user rights (export/deletion), security posture, and change-notice process.
 
-### Third-party listing corrections
+### Third-Party Listing Corrections
 
 Submit via each site's correction/dispute form:
 
@@ -437,7 +460,7 @@ Submit via each site's correction/dispute form:
 | **SiliconANGLE** | Live, immutable press article — lower priority. Handle via site-side banner retarget instead of chasing article edit |
 | **CybersecTools** | NIST CSF 2.0 coverage percentages (ID 72% / PR 85% / DE 60% / RS 45% / RC 38% / GV 55%) attributed to Dux that Dux never supplied. Request removal or relabel as third-party estimates |
 
-### What's still not covered
+### What's Still Not Covered
 
 - **trust.dux.io / status.dux.io / docs.dux.io DNS** (MC-01) — infrastructure work (point DNS, deploy pages), not copy.
 - **MC-14 "how it works" section** — drafted in the claim-safe short-form block above.
