@@ -729,6 +729,8 @@ This is the failure mode LLM09 exists to catch (see [[#3.3 · LLM risks — LLM0
 
 ### 4.12 · R9 — Alert fatigue
 
+A HITL queue that rubber-stamps everything isn't providing review — it's providing theater. This runbook is about telling that apart from a genuine surge.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** HITL queue backlog with a rubber-stamp approval pattern (>95% approved, sub-baseline median review time).
