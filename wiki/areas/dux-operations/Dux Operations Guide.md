@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux Operations Guide"
+address: c-000010
 topic: "dux/operations"
 created: 2026-07-22
 updated: 2026-07-23
