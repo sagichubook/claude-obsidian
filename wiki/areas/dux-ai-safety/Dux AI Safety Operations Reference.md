@@ -690,6 +690,8 @@ The ceiling is 128 K, with L1–L3 compression selected by asset count.
 
 ### 4.10 · R7 — Prompt cache invalidation
 
+A quiet deploy or a pin change can wreck the cache hit rate and quietly inflate cost and latency together.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** `DuxPromptCacheHitRateDrop` (>15% over 5 min).
