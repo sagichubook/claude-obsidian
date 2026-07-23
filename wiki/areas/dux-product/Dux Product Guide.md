@@ -73,7 +73,7 @@ The practical implication: every capability in the table below has a clear deliv
 
 | Pillar | Delivers | Canonical spec |
 |--------|----------|----------------|
-| **A** — Moat: World Model, eval, personalization | [[Dux Taxonomy & Catalogs\|World Model]], investigation-code artifacts, preference engine, golden-set eval | [[Dux Architecture Guide\|data-model]], [[Dux Taxonomy & Catalogs\|taxonomy]], US-017 / US-009 |
+| **A** — Moat: World Model, eval, personalization | [[Dux Taxonomy & Catalogs]] (World Model), investigation-code artifacts, preference engine, golden-set eval | [[Dux Architecture Guide]] (data-model), [[Dux Taxonomy & Catalogs]] (taxonomy), US-017 / US-009 |
 | **B** — Safety scales with autonomy | governance kernel, kill switch, CaMeL, anomaly-escalation HITL | [[Dux AI Safety Guide]] |
 | **C** — Claim ↔ capability firewall | claims traceability, gate-safe copy | [[Dux GTM Guide]] |
 | **D** — Isolation + compliance invariants | RLS FORCE, composite keys, SOC 2 / ISO | [[Dux Architecture Guide\|multi-tenancy]], [[Dux Governance & Compliance Guide]] |
