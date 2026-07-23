@@ -1,6 +1,7 @@
 ---
 type: resource
 title: "Dux Feature Reference"
+address: c-000011
 topic: "dux/product"
 created: 2026-07-22
 updated: 2026-07-23
