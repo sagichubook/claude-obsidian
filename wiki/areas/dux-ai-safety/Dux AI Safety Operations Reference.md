@@ -479,7 +479,7 @@ Everything above this line is preventive. This section is what happens after pre
 
 ### 4.1 · Runbook template
 
-Every runbook follows the same twelve-section structure:
+None of the twelve runbooks below reads like a general essay — each is built from the same rigid twelve-section skeleton, so an on-call engineer never has to hunt for where the containment step lives:
 
 | § | Section | § | Section |
 |---|---------|---|---------|
