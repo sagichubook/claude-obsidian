@@ -70,11 +70,11 @@ status: evergreen
 
 ## Domains
 
-All ten Dux domain folders (`00-meta` through `90-execution`, 66 source files) were ingested and consolidated into the 16-file structure above. Every page has been rewritten as publication-ready SaaS documentation with complete data from all source files. See [[Dux]] for the domain map and reading paths by role.
+All ten Dux domain folders (`00-meta` through `90-execution`, 68 source files) were ingested and consolidated into the 16-file structure above. Every page has been rewritten as publication-ready SaaS documentation with complete data from all source files. See [[Dux]] for the domain map and reading paths by role.
 
 ## Verification
 
 - **Last verified:** 2026-07-22
-- **Source files:** 66 (all under `.raw/dux/`)
+- **Source files:** 68 (all under `.raw/dux/`)
 - **Wiki pages:** 16 consolidated guides
 - **Status:** Zero data loss confirmed

@@ -41,7 +41,7 @@ Four sections, in that order, because that's the order an incident actually unfo
    - [[#2.3 · CalibrationRecord]]
    - [[#2.4 · Verbalized confidence insufficiency]]
    - [[#2.5 · From score to verdict]]
-   - [[#2.6 · insufficient_data_reason enum]]
+   - [[#2.6 · `insufficient_data_reason` enum]]
    - [[#2.7 · Critic rules]]
    - [[#2.8 · Sample-size power analysis]]
    - [[#2.9 · Per-stratum minimums]]

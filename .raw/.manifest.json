@@ -74,6 +74,20 @@
     ".raw/dux/90-execution/backlog-ep10.md": "wiki/projects/dux/Dux Portfolio.md"
   },
   "address_map": {
-    "wiki/concepts/DragonScale Memory.md": "c-000001"
+    "wiki/Dux.md": "c-000013",
+    "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md": "c-000003",
+    "wiki/areas/dux-ai-safety/Dux AI Safety Operations Reference.md": "c-000004",
+    "wiki/areas/dux-architecture/Dux Architecture Guide.md": "c-000005",
+    "wiki/areas/dux-engineering/Dux Engineering Guide.md": "c-000006",
+    "wiki/areas/dux-governance/Dux Governance & Compliance Guide.md": "c-000007",
+    "wiki/areas/dux-gtm/Dux GTM Guide.md": "c-000008",
+    "wiki/areas/dux-operations/Dux Customer Success Guide.md": "c-000009",
+    "wiki/areas/dux-operations/Dux Operations Guide.md": "c-000010",
+    "wiki/areas/dux-product/Dux Feature Reference.md": "c-000011",
+    "wiki/areas/dux-product/Dux Product Guide.md": "c-000012",
+    "wiki/projects/dux/Dux Portfolio.md": "c-000014",
+    "wiki/resources/dux-api/Dux API Reference.md": "c-000015",
+    "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md": "c-000016",
+    "wiki/resources/dux-product/Dux Taxonomy & Catalogs.md": "c-000017"
   }
 }

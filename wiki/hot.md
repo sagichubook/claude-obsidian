@@ -11,7 +11,7 @@ Last updated: 2026-07-22
 
 ## Current Context
 
-Full ingestion of `.raw/dux/` source tree verified. All 66 source files across 10 domain folders (00-meta through 90-execution) are consolidated into 16 wiki pages with zero data loss.
+Full ingestion of `.raw/dux/` source tree verified. All 68 source files across 10 domain folders (00-meta through 90-execution) are consolidated into 16 wiki pages with zero data loss.
 
 ## Key Pages
 
@@ -34,5 +34,5 @@ Full ingestion of `.raw/dux/` source tree verified. All 66 source files across 1
 ## Recent Activity
 
 - 2026-07-22: Full ingestion verification completed
-- 66 source files verified against 16 wiki pages
+- 68 source files verified against 16 wiki pages
 - Manifest updated with complete source-to-page mapping

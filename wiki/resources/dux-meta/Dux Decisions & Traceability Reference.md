@@ -331,7 +331,7 @@ A pure compilation of facts already documented elsewhere — no new claims, no n
 | `patch.deploy_special_devices` | mandatory HITL — every call | R-04 |
 | `ticket.create_remediation` | unattended by default, anomaly-only escalation | R-05 |
 
-See [[Dux Feature Reference]] for the write surfaces, [[Dux AI Safety Guide#Governance Kernel]], and D-17 above.
+See [[Dux Feature Reference]] for the write surfaces, [[Dux AI Safety Guide#The governance kernel: a synchronous chain nothing bypasses]], and D-17 above.
 
 ## Kill-switch levels
 
@@ -344,7 +344,7 @@ See [[Dux Feature Reference]] for the write surfaces, [[Dux AI Safety Guide#Gove
 
 **Execution-interruption SLO:** p99 <30 s (one heartbeat interval).
 
-See [[Dux AI Safety Guide#Kill Switch & HITL]].
+See [[Dux AI Safety Guide#Kill switch and human-in-the-loop: the halt authority]].
 
 ## Governance gates (GOV-001–014)
 
@@ -359,7 +359,7 @@ See [[Dux AI Safety Guide#Kill Switch & HITL]].
 
 **Cost-threshold evaluation order** (first match wins): $0.675/assessment soft breaker → $25/hour CostCap → 2× rolling-baseline circuit breaker.
 
-See [[Dux AI Safety Guide#Governance Kernel]].
+See [[Dux AI Safety Guide#The governance kernel: a synchronous chain nothing bypasses]].
 
 ## Confidence bands
 
@@ -373,7 +373,7 @@ See [[Dux AI Safety Guide#Governance Kernel]].
 
 **Scoring mechanism:** 3-signal ensemble (logprob 0.40 / semantic entropy 0.35 / verbalized confidence 0.25) → Platt scaling. This is confidence-in-exploitability, not a composite CVSS×EPSS×criticality×exposure risk score.
 
-See [[Dux Taxonomy & Catalogs#Confidence scoring methodology]], [[Dux AI Safety Guide#Confidence Calibration]].
+See [[Dux Taxonomy & Catalogs#Confidence bands]], [[Dux AI Safety Operations Reference#2 · Confidence calibration]].
 
 ## Compliance control-ID families
 
@@ -394,7 +394,7 @@ See [[Dux Governance & Compliance Guide]].
 - Zero Critical findings in the adversarial suite.
 - RLS `FORCE` on every tenant-scoped table, CI-verified (`check-rls.sh`).
 
-See [[Dux Feature Reference#Product Overview|the product overview]].
+See [[Dux Feature Reference#A Guided Tour of Every Screen Dux Ships — and Why It's Built the Way It Is|the product overview]].
 
 ---
 

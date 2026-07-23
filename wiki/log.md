@@ -17,7 +17,7 @@ status: evergreen
 
 ## [2026-07-22] Full Ingestion Verification
 
-- **Source:** `.raw/dux/` (66 files across 10 domain folders)
+- **Source:** `.raw/dux/` (68 files across 10 domain folders)
 - **Summary:** Complete re-verification of all ingested content
 - **Pages verified:** All 16 wiki pages
 - **Pages created:** None (all already existed)
