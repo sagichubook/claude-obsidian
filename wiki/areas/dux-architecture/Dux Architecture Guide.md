@@ -106,7 +106,7 @@ Blast-radius isolation comes from separate K8s Deployments:
 
 ### Network Topology
 
-A single EKS cluster per environment (dev/staging/prod), 3-AZ node pools with managed-node-group autoscaling (CPU >70%/2min or memory >80%/2min scales the node group; agent queue depth >50 scales Temporal workers). Node pools map to the three Deployment roles above, with K8s `NetworkPolicy` enforcing the same isolation ECS security groups previously provided. Cross-account customer asset-discovery IAM (ADR-004) remains a signed AWS API call against the *customer's* AWS account — a separate concern from EKS being Dux's own platform-hosting target.
+This section resolves part of OI-31 (the Deployment Guide gap) — rewritten 2026-07-19, D-33, narrowed by D-34. A single EKS cluster per environment (dev/staging/prod), 3-AZ node pools with managed-node-group autoscaling (CPU >70%/2min or memory >80%/2min scales the node group; agent queue depth >50 scales Temporal workers). Node pools map to the three Deployment roles above, with K8s `NetworkPolicy` enforcing the same isolation ECS security groups previously provided. Cross-account customer asset-discovery IAM (ADR-004) remains a signed AWS API call against the *customer's* AWS account — a separate concern from EKS being Dux's own platform-hosting target.
 
 An **nginx Ingress Controller** fronts `dux-api`, terminating TLS and applying rate limiting via Valkey. CloudNativePG, NATS, Valkey, and MinIO run as in-cluster StatefulSets/operators — no external managed-tier network hop.
 
