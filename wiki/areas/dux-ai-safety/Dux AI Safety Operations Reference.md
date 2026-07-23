@@ -87,6 +87,8 @@ Phase 1 uses JWT with SPIFFE-format claims. Full SPIFFE/SPIRE X.509 SVIDs target
 
 > Canonical — ADR-001 links here.
 
+Seven claims, and every agent token carries them all — this is the shape every downstream gate reads from:
+
 | Claim | Required | Example |
 |-------|----------|---------|
 | `sub` | yes | `spiffe://dux.io/tenant/{tenant_id}/agent/{agent_id}` |
