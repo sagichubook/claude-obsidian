@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux"
+address: c-000013
 created: 2026-07-22
 updated: 2026-07-23
 review_cadence: weekly
