@@ -471,6 +471,8 @@ Every "Partial" row above has a date attached, not just a promise — this is th
 
 ## 4 · Incident runbooks
 
+Everything above this line is preventive. This section is what happens after prevention fails — twelve named failure modes, each with an exact procedure, because "figure it out live" is not an acceptable incident-response plan for a system with write access to a customer's EDR.
+
 **Purpose:** the twelve canonical agentic failure modes and the procedure for each. **Parents:** BR-003, BR-005.
 
 > **This file is the source of truth for these twelve procedures.** [Seed runbooks](../60-operations/runbooks.md) add stage deltas — PagerDuty IDs, admin CLI, and a thirteenth agent-quota mode. Series A and B link here. **Do not duplicate the step tables downstream.**
