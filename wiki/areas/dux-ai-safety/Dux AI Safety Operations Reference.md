@@ -490,6 +490,8 @@ None of the twelve runbooks below reads like a general essay — each is built f
 | 5 | System/agent boundary | 11 | Verification |
 | 6 | Incident roles | 12 | Post-incident |
 
+Section 10 is worth singling out — it's the check that keeps an incident from being "resolved" while the agent fleet is still misbehaving underneath it.
+
 #### §10 AI safety check — all eight items, every incident
 
 | # | Check |
