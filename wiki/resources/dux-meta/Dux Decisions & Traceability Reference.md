@@ -1,6 +1,7 @@
 ---
 type: resource
 title: "Dux Decisions & Traceability Reference"
+address: c-000016
 topic: "dux/governance"
 created: 2026-07-22
 updated: 2026-07-23
