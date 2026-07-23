@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux Governance & Compliance Guide"
+address: c-000007
 topic: "dux/governance"
 created: 2026-07-22
 updated: 2026-07-23
