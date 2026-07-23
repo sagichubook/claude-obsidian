@@ -224,7 +224,7 @@ The `VALIDATION_FAILED` code itself replaced an orphaned name: `openapi.yaml` no
 
 **Plane:** Application — Bearer JWT, `aud=api.dux.io`.
 
-This API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /assessments/{id}`) — not a generic "submit a scan, poll for a report" shape some exposure-management frameworks assume. That's a deliberate scoping decision, not a documentation gap: Dux's unit of work is a CVE against a live World Model, continuously re-assessed (US-021), not a point-in-time scan job. A framework audit expecting the scan-and-poll shape will not find it here.
+This shape resolves the remaining half of OI-31: this API is CVE-lookup-and-assessment-centric (`GET /cves/{id}/detail`, `GET /assessments/{id}`) — not a generic "submit a scan, poll for a report" shape some exposure-management frameworks assume. That's a deliberate scoping decision, not a documentation gap: Dux's unit of work is a CVE against a live World Model, continuously re-assessed (US-021), not a point-in-time scan job. A framework audit expecting the scan-and-poll shape will not find it here.
 
 | Endpoint | Story | Notes |
 |----------|-------|-------|
