@@ -511,6 +511,8 @@ Plus the OWASP triple: the LLM and Agentic assessments and the MCP crosswalk.
 
 ### 4.2 · The twelve runbooks
 
+At a glance, before the full detail below — every canonical failure mode, its severity, what fires it, and the first containment move:
+
 | # | Runbook | Type | Severity | Trigger | Core containment |
 |---|---------|------|----------|---------|------------------|
 | R1 | [Cross-tenant context leak](#r1--cross-tenant-context-leak) | COMPOSITE | P0-C | `DuxCrossTenantContextDetected` (`foreign_tenant_refs > 0` + isolation SLO burn ≥5%/1h), or a fuzz failure | `admin:platform-contain` (L4); agent halt ≤60 s; context audit; engage counsel if PII (GDPR/DORA, 72 h) |
