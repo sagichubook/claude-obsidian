@@ -3,26 +3,30 @@ type: area
 title: "Dux Engineering Guide"
 topic: "dux/engineering"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [area, dux, dux/engineering]
 status: mature
 sources: [".raw/dux/50-engineering/engineering-standards.md", ".raw/dux/50-engineering/ci-cd-testing.md", ".raw/dux/50-engineering/local-development.md"]
 related: ["[[Dux]]", "[[Dux Architecture Guide]]", "[[Dux AI Safety Guide]]", "[[Dux Portfolio]]"]
 ---
 
-# Dux Engineering Guide
+# Shipping an Exploitability Engine Without Shipping a Cross-Tenant Leak
+
+### How Dux's engineering team turned 23 merge gates, a 250-CVE golden set, and one retired proxy into the mechanics of shipping safely
 
 Navigation: [[Dux]] | [[Dux Architecture Guide]] | [[Dux AI Safety Guide]]
 
-This guide is scoped deliberately narrow: team practice and pipeline mechanics only. System architecture and the technology stack live in [[Dux Architecture Guide]]; production monitoring and SLOs live in [[Dux Operations Guide]]. If you're looking for *why* a system is built a certain way, this isn't that page: it's *how the team ships it safely*.
+This guide is scoped deliberately narrow: team practice and pipeline mechanics only. System architecture and the technology stack live in [[Dux Architecture Guide]]; production monitoring and SLOs live in [[Dux Operations Guide]]. If you're looking for *why* a system is built a certain way, this isn't that page — it's *how the team ships it safely*.
+
+Every one of the numbers below exists because something specific demanded it: a naming trap that could hand an engineer's clone command to a stranger's repo, a supply-chain worm that compromised Dux's own frontend framework, a schema-parity blind spot that let output silently shrink 15.7% while every check stayed green. The standards aren't decoration. They're scar tissue.
 
 ---
 
-## 1. Local Development
+## 1. Getting the Stack Running Locally
 
-### 1.1 Repository and Prerequisites
+### 1.1 Repository and prerequisites
 
-The canonical repository is `github.com/duxsecurity/dux.git` — a private monorepo. One naming trap worth flagging before anything else: `github.com/duxsec` is a different, unrelated GitHub account, and using it by mistake is an easy, embarrassing error the team has explicitly called out to avoid **(resolves [OI-23](../00-meta/open-items.md))**. Engineers without access should request it through the standard IAM onboarding path, not by searching for alternate org names.
+Before anything else, one naming trap is worth flagging: the canonical repository is `github.com/duxsecurity/dux.git` — a private monorepo — and `github.com/duxsec` is a *different, unrelated* GitHub account. Using it by mistake is an easy, embarrassing error the team has explicitly called out to avoid **(resolves [OI-23](../00-meta/open-items.md))**. Engineers without access should request it through the standard IAM onboarding path, not by searching for alternate org names.
 
 | Tool | Version | Purpose |
 |------|---------|---------|
@@ -32,7 +36,7 @@ The canonical repository is `github.com/duxsecurity/dux.git` — a private monor
 | Python | 3.11+ | optional before Week 2. **After Week 2, use the `python-eval` container only** |
 | Git | 2.40+ | source control |
 
-### 1.2 Clone and Install
+### 1.2 Clone and install
 
 ```bash
 git clone git@github.com:duxsecurity/dux.git dux
@@ -42,7 +46,7 @@ cp .env.example .env.local
 
 **Environment loading.** The root `.env.local` is loaded by NestJS (`packages/api`), Vite (`packages/web`), and the workflow workers (`packages/core`), all through `dotenv/config`. `DATABASE_URL` lives in the root only — workers inherit it through the turbo env.
 
-### 1.3 Environment Variables
+### 1.3 Environment variables
 
 | Variable | Local value | Notes |
 |----------|-------------|-------|
@@ -65,7 +69,7 @@ cp .env.example .env.local
 
 > **AI-66 (P0). No plaintext development credentials in the docs or the repository.** Generate them at seed time. `git-secrets` and a pre-commit hook block credential commits.
 
-### 1.4 Start Infrastructure and Services
+### 1.4 Start infrastructure and services
 
 ```bash
 cd infra
@@ -77,7 +81,7 @@ pnpm --filter database db:seed
 docker compose up -d python-eval                # Week 2+ — canonical for the golden set
 ```
 
-### 1.5 Docker Compose Profiles
+### 1.5 Docker Compose profiles
 
 | Profile | Services | Purpose |
 |---------|----------|---------|
@@ -85,7 +89,7 @@ docker compose up -d python-eval                # Week 2+ — canonical for the 
 | `aws` | LocalStack | AWS connector testing (`AWS_ENDPOINT_URL=http://localhost:4566`) |
 | `python-eval` | python-eval container | Golden-set evaluation (Week 2+) |
 
-### 1.6 Start Application Services
+### 1.6 Start application services
 
 ```bash
 pnpm dev:all                  # everything at once
@@ -98,15 +102,15 @@ pnpm dev:all                  # everything at once
 
 **Verify:** web on `:3000`; API on `:3001/health`; connectors on `:3002/health`.
 
-### 1.7 Temporal Worker Setup
+### 1.7 Temporal worker setup
 
 The Temporal worker connects to the self-hosted Temporal cluster's dev namespace (K8s dev environment, ADR-007 R3), or to a local Temporalite. **Local development must never expose a production workflow UI.**
 
 If not running the full K8s dev namespace, use the official OSS bootstrap: `temporal server start-dev` — starts a local Temporal server plus Web UI (default `localhost:8233`) with no external dependencies, sufficient for `pnpm --filter core dev` to connect against. The older `temporalite` tool is deprecated upstream in favor of `temporal server start-dev`.
 
-### 1.8 First-Run Setup Notes (D-57)
+### 1.8 First-run setup notes (D-57)
 
-Confirmed (Founder, 2026-07-21) as matching the team's actual local-dev workflow.
+The Founder confirmed these on 2026-07-21 as matching the team's actual local-dev workflow — worth reading closely, since two of them (Vault dev mode, the Bedrock credential chain) are the kind of thing new engineers otherwise lose an afternoon to.
 
 - **Temporal.** Use `temporal server start-dev` — no external dependencies needed.
 - **Vault.** `docker compose up -d vault` alone does not make `VAULT_TOKEN` usable — Vault starts sealed by default. For local dev only, run Vault in dev mode (`vault server -dev`, or the container's dev-mode equivalent), which auto-unseals and prints a root token to use as `VAULT_TOKEN`. **Dev mode stores everything in memory and is never a template for the production init/unseal flow** (which uses Shamir key shares and persistent storage) — production unseal steps are out of scope for this file.
@@ -115,9 +119,11 @@ Confirmed (Founder, 2026-07-21) as matching the team's actual local-dev workflow
 
 ---
 
-## 2. Test Suite
+## 2. The Test Suite: Everything That Has to Stay Green
 
-### 2.1 Full Test Command Listing
+The full command list looks intimidating the first time you see it, but every entry maps to a specific failure mode the team has decided is unacceptable — cross-tenant leaks, kill-switch regressions, prompt injection, cost blowouts.
+
+### 2.1 Full test command listing
 
 ```bash
 pnpm test                    # unit (Vitest, all TS packages)
@@ -144,15 +150,17 @@ pnpm test:ci
 
 **The cost benchmark has no local equivalent yet.** It runs in CI only: a staging assessment averaging above **$0.55** blocks the merge ([§3.2](#32-merge-gates), D-3).
 
-### 2.2 Python Eval Extraction Trigger
+### 2.2 Python eval extraction trigger
 
 Containerized from Week 2: `docker compose up -d python-eval`. Extraction into a gRPC microservice triggers when engineering headcount exceeds 8 — a seed ops delta.
 
 ---
 
-## 3. CI/CD Pipeline
+## 3. The CI/CD Pipeline: 23 Gates Between a Push and Production
 
-### 3.1 Pipeline Flow
+### 3.1 Pipeline flow
+
+A push doesn't reach staging without clearing every one of these stages, in order:
 
 ```
 push
@@ -168,7 +176,9 @@ push
   → smoke
 ```
 
-### 3.2 Merge Gates
+### 3.2 Merge gates
+
+Twenty-three of them, each triggered by a different class of change and each backed by its own reasoning — cross-tenant isolation because a leaked row is unacceptable at any tier, the cost benchmark because an assessment that costs more than the customer pays for is not a business, the supply-chain gate because of an incident described below.
 
 | # | Gate | Trigger | Blocks merge |
 |---|------|---------|--------------|
@@ -196,13 +206,13 @@ push
 | 22 | Coverage drop on critical paths | every PR | warning above 2%; **blocks at −5%** |
 | 23 | Docs referential integrity | PR touching `docs/` | Yes — `python3 scripts/validate-playbooks.py` exit 0: dead links and anchors, duplicate canonical IDs, task/epic/portfolio hour reconciliation, the front-matter contract, and no change history in spec prose (D-12) |
 
-### 3.3 Cost Benchmark Gate (D-3, AI-75)
+### 3.3 The cost benchmark gate (D-3, AI-75)
 
-A staging assessment averaging above **$0.55** blocks the merge. Cold-cache runs (0% hit) are tracked as a P1 burn-down against a **$0.60 hard cap**. The cost envelope ($0.75/assessment hard, $0.55 design) is derived on a 45% cache-hit assumption (see §3.10).
+A staging assessment averaging above **$0.55** blocks the merge. Cold-cache runs (0% hit) are tracked as a P1 burn-down against a **$0.60 hard cap**. The cost envelope ($0.75/assessment hard, $0.55 design) is derived on a 45% cache-hit assumption (see §3.10) — a number the team doesn't just trust, it goes and measures.
 
-### 3.4 Golden Set — (CVE × Environment) Pairs (H1)
+### 3.4 The golden set: (CVE × environment) pairs, not CVEs (H1)
 
-**The unit of evaluation is a (CVE × synthetic-environment) pair, with a per-environment ground-truth verdict** — exploitable *here*, or not. **It is not a CVE with a fixed label.**
+Here's the distinction that keeps the "80% accuracy" claim honest: **the unit of evaluation is a (CVE × synthetic-environment) pair, with a per-environment ground-truth verdict** — exploitable *here*, or not. **It is not a CVE with a fixed label.**
 
 Exploitability is a property of the pair. **A CVE-only set validates CVE triage — which is precisely what Dux says it is not.**
 
@@ -220,7 +230,7 @@ Exploitability is a property of the pair. **A CVE-only set validates CVE triage 
 
 Each is then crossed with the environment fixtures above.
 
-### 3.5 Accuracy Floors — Merge-Blocked
+### 3.5 Accuracy floors — merge-blocked
 
 | Milestone | Floor |
 |-----------|-------|
@@ -232,21 +242,23 @@ Each is then crossed with the environment fixtures above.
 
 **Per-stratum block:** no single decile, KEV, or maturity slice may regress more than 2%, **even when the aggregate is within 2%** (`test:golden --stratified`). **Gate 1 uses the held-out set only.**
 
-### 3.6 ECE Gate and DeepEval Metrics
+### 3.6 ECE gate and DeepEval metrics
 
 ECE gate: ≤0.15 at n ≥ 50. DeepEval metrics run nightly as advisory: tool correctness >90%, task completion >95%, hallucination <2%, faithfulness >85%. **False-positive rate <5% on the golden set is the exception — it blocks merge if exceeded** (DA-09), matching the per-stratum regression-gate treatment above rather than the advisory-only cadence of the other four metrics.
 
-> **Schema parity alone is a known blind spot.** "Drift or Dice" (Zenodo, 2026) documents schema checks reporting **zero regressions** even as output silently shrank 15.7% and a tier failed 25% of hard tasks. **Model migrations must additionally measure output-length, latency, and tier-failure deltas** — see the [model-EOL runbook](../40-ai-safety/incident-runbooks.md).
+> **Schema parity alone is a known blind spot.** "Drift or Dice" (Zenodo, 2026) documents schema checks reporting **zero regressions** even as output silently shrank 15.7% and a tier failed 25% of hard tasks. **Model migrations must additionally measure output-length, latency, and tier-failure deltas** — see the [model-EOL runbook](../40-ai-safety/incident-runbooks.md). It's the kind of failure that passes every dashboard and still ships broken.
 
 ---
 
 ## 4. Mandatory Security Suites
 
-### 4.1 Isolation Suite (ISO-001–010)
+This is the layer that exists because a vulnerability-management product cannot itself be the vulnerability. Six categories, each blocking, each with its own test IDs.
+
+### 4.1 Isolation suite (ISO-001–010)
 
 404 masking (**not 403**), fail-closed behavior, SQL injection cannot bypass RLS, cache/search/quota scoping, and a body-versus-path `tenant_id` contradiction → 403. ISO-013 covers the `tenant_cve_findings` materialized-view refresh.
 
-### 4.2 Tenant-ID Fuzz (ISO-FUZZ-001–005)
+### 4.2 Tenant-ID fuzz (ISO-FUZZ-001–005)
 
 Fast-check, at the HTTP IDOR layer: swapped, missing, and malformed `tenant_id`; body/path contradiction; admin impersonation without scope and MFA. **Any cross-tenant read or write is a merge block.**
 
@@ -254,7 +266,7 @@ Fast-check, at the HTTP IDOR layer: swapped, missing, and malformed `tenant_id`;
 
 Invalid and expired JWT; missing tenant claim; role enforcement; API-key 401.
 
-### 4.4 Kill Switch (KS-001–007)
+### 4.4 Kill switch (KS-001–007)
 
 | Test | Assertion |
 |------|-----------|
@@ -271,7 +283,7 @@ Invalid and expired JWT; missing tenant claim; role enforcement; API-key 401.
 
 Unregistered server denied; schema drift blocked; PII redacted; egress allowlist enforced; cross-tenant JWT rejected.
 
-### 4.6 Prompt Injection — Three Layers
+### 4.6 Prompt injection — three layers
 
 | Layer | Cadence | Pass condition |
 |-------|---------|----------------|
@@ -279,19 +291,19 @@ Unregistered server denied; schema drift blocked; PII redacted; egress allowlist
 | Promptfoo | PR touching agent or LLM code | blocks on critical/high. Cost cap $5/PR |
 | Garak | nightly | probe subset — jailbreak, indirect injection, prompt extraction, encoding bypass. **0 critical, ≤2 new high** |
 
-### 4.7 Additional Security Checks
+### 4.7 Additional security checks
 
 - Error handling ERR-001–004
 - Script security (`test:script-security`)
 - Re-assessment triggers
 
-### 4.8 Error Handling Standard (DuxErrorCode)
+### 4.8 Error handling standard (DuxErrorCode)
 
 `DuxErrorCode` is the shared vocabulary across REST, SSE, and webhooks ([application-api §4](../30-api/application-api.md)) — new error paths extend that enum rather than inventing ad hoc codes. Never silently swallow a governance-kernel or connector failure; it either maps to a `DuxErrorCode` or raises the appropriate audit event.
 
-### 4.9 `ExploitabilityAssessmentWorkflow` Test Scenarios
+### 4.9 `ExploitabilityAssessmentWorkflow` test scenarios
 
-Checklist (2026-07-20, resolves part of [OI-43](../00-meta/open-items.md)). No `pnpm test:*` script or test file exists for this yet — this is a checklist for whoever writes it, not the suite itself. Each scenario cites the spec line it's derived from:
+This is a checklist, not a suite — resolved 2026-07-20 as part of [OI-43](../00-meta/open-items.md), but no `pnpm test:*` script or test file exists for it yet. It's here for whoever writes it. Each scenario cites the spec line it's derived from:
 
 | Scenario | Assertion | Spec source |
 |----------|-----------|--------------|
@@ -305,7 +317,9 @@ Checklist (2026-07-20, resolves part of [OI-43](../00-meta/open-items.md)). No `
 
 ---
 
-## 5. Additional CI Checks
+## 5. The Additional Checks That Don't Fit Neatly Elsewhere
+
+### 5.1 Additional CI checks
 
 | Check | When | Target |
 |-------|------|--------|
@@ -313,7 +327,7 @@ Checklist (2026-07-20, resolves part of [OI-43](../00-meta/open-items.md)). No `
 | Chromatic visual regression | Week 8 | US-010, US-011, US-012 exposure states |
 | llguidance constrained decoding | Week 8 | S-LLM prerequisites; retry rate <2%; Zod + retry fallback |
 
-### 5.1 Test Traceability
+### 5.1.1 Test traceability
 
 | Requirement | Coverage |
 |-------------|----------|
@@ -322,7 +336,7 @@ Checklist (2026-07-20, resolves part of [OI-43](../00-meta/open-items.md)). No `
 | NFR-008 | Golden set + DeepEval |
 | AUTH / ADR-001 | AUTH-001–005 |
 
-### 5.2 Accessibility on a Streaming UI (H10, fast-follow)
+### 5.2 Accessibility on a streaming UI (H10, fast-follow)
 
 **axe-core reports 0 violations and still misses the real problem.** It covers static contrast, but **it cannot see an ARIA live-region announcement storm** — and a screen reader announcing every streaming token and status change is unusable.
 
@@ -334,7 +348,7 @@ The streaming-heavy surfaces (`REASONING` / `TOOL_CALLING` / `EVALUATING`, plus 
 
 **axe-core alone does not validate the WCAG 2.2 AA claim for a streaming UI.**
 
-### 5.3 Shadow Mode Details (DA-10)
+### 5.3 Shadow mode details (DA-10)
 
 The model-version-check gate (§3.2 #18) is a binary staging-vs-pin comparison — it blocks an unpinned version from reaching staging, but it says nothing about how a *new* pinned version earns promotion. Shadow mode closes that gap:
 
@@ -342,11 +356,11 @@ The model-version-check gate (§3.2 #18) is a binary staging-vs-pin comparison �
 - Its outputs are scored against the golden set but **never delivered to the tenant** — the pinned version's output remains the one returned.
 - Promotion requires the candidate's golden-set accuracy to meet or exceed the pinned version's accuracy from §3.4, at the same stratification granularity (no per-stratum regression above 2%).
 
-### 5.4 Canary Rollout Details (DA-10)
+### 5.4 Canary rollout details (DA-10)
 
 Once shadow-cleared, the candidate is promoted behind a **5% → 25% → 100% traffic ramp over a 7-day window**, with the cost, accuracy, and kill-switch-rate dashboards from [observability-slo §3](../60-operations/observability-slo.md) monitored at each step. A regression at any step halts the ramp and rolls back to the prior pin; it does not proceed to the next percentage automatically.
 
-### 5.5 Cache-Hit-Rate Validation (A1, CI-07 Closure Spec)
+### 5.5 Cache-hit-rate validation (A1, CI-07 closure spec)
 
 **What this validates.** ADR-008 R2's cost envelope (≤$0.75/assessment hard, ≤$0.55 design) is derived **on a 45% cache-hit assumption** — prompt caching plus the ADR-010 R5 semantic cache. That assumption has never been measured against the golden set; it has only been assumed. This is the validation methodology for `US-001-T14` (CI-07 A1 closure), not the implementation itself.
 
@@ -362,9 +376,9 @@ Once shadow-cleared, the candidate is promoted behind a **5% → 25% → 100% tr
 
 **This is a one-time validation plus a recurring check**, not a new permanent CI gate: run once against the golden set to confirm or correct the 45% assumption, then re-run on any material change to prompt structure, model pin, or the semantic-cache threshold (ADR-010 R5's 0.95 similarity cutoff).
 
-### 5.6 Full-Tree Supply Chain (H11, Gate 1)
+### 5.6 Full-tree supply chain (H11, Gate 1)
 
-**2026-07-19, D-34: LiteLLM is retired** ([ADR-010 R5](../20-architecture/adr-index.md#adr-010-r5--llm-routing-layer)) — Claude inference now goes through the direct Bedrock SDK (`@aws-sdk/client-bedrock-runtime`) behind `LLMProviderPort`, an ordinary first-party npm dependency subject to the same full-tree scrutiny as everything else in this section, not a special-cased proxy with its own signed-GHCR-digest/cosign pipeline. The AST scanner pulls in `@babel/parser` and tree-sitter, and the entire npm and pip tree is attack surface regardless of which single dependency prompted the original hardening.
+This is the section with the sharpest teeth, and it earned them. **2026-07-19, D-34: LiteLLM is retired** ([ADR-010 R5](../20-architecture/adr-index.md#adr-010-r5--llm-routing-layer)) — Claude inference now goes through the direct Bedrock SDK (`@aws-sdk/client-bedrock-runtime`) behind `LLMProviderPort`, an ordinary first-party npm dependency subject to the same full-tree scrutiny as everything else in this section, not a special-cased proxy with its own signed-GHCR-digest/cosign pipeline. The AST scanner pulls in `@babel/parser` and tree-sitter, and the entire npm and pip tree is attack surface regardless of which single dependency prompted the original hardening.
 
 **Promoted from fast-follow to Gate-1 blocking** (panel review Q4). The "Mini Shai-Hulud" npm/PyPI supply-chain worm (April 29 – May 2026) compromised 170+ packages — **including TanStack, Dux's own frontend framework** — via stolen CI-runner credentials, and it did so while **defeating SLSA Build L3 provenance**. Dux's stack was in the blast radius, and the attack beat the exact class of control this section relies on; a fast-follow timeline is no longer defensible.
 
@@ -381,7 +395,7 @@ Gate-1 requires:
 
 ## 6. Coding Standards
 
-### 6.1 Language and Style
+### 6.1 Language and style
 
 **Language.** TypeScript strict mode across `packages/*` (NestJS API, React + Vite web, Temporal workers, Pulumi infra). Python only in `packages/python-eval` (DeepEval, Evidently, calibration) — containerized from Week 2; no host venv (see [§1.2](#12-clone-and-install)).
 
@@ -391,7 +405,7 @@ Gate-1 requires:
 
 **File organization.** Feature/domain folders under `packages/*` ([architecture-overview §4](../20-architecture/architecture-overview.md)), not by type. Target 200–400 lines per file; extract before a file exceeds ~800.
 
-### 6.2 Custom Lint Rules
+### 6.2 Custom lint rules
 
 Each rule is normative in its owning spec — this table is the index, not a second source of truth:
 
@@ -409,7 +423,7 @@ Each rule is normative in its owning spec — this table is the index, not a sec
 
 ## 7. Branching, Review, and Release
 
-### 7.1 Branching Model
+### 7.1 Branching model
 
 **Trunk-based**, short-lived feature branches off `main`. An ephemeral CloudNativePG cluster is created per PR ([ADR-003 R2](../20-architecture/adr-index.md#adr-003-r2--database-migrations)) — 7-day stale cleanup, alert above 20 live ephemeral clusters.
 
@@ -430,14 +444,14 @@ Each rule is normative in its owning spec — this table is the index, not a sec
 
 Body explains *why*, not *what* — the diff already shows what changed.
 
-### 7.2 CODEOWNERS Gates
+### 7.2 CODEOWNERS gates
 
 | Path | Required reviewer(s) | Source |
 |------|----------------------|--------|
 | `packages/agents/tools/` and `instructions.md` | `@dux-security` | [ADR-009](../20-architecture/adr-index.md#adr-009--agent-as-directory-registry) |
 | `packages/database/migrations/` (any `down` migration) | Engineering Lead + on-call | [runbooks §5](../60-operations/runbooks.md) |
 
-### 7.3 Review SLA and Reviewer Checklist
+### 7.3 Review SLA and reviewer checklist
 
 **Every PR passes the full merge-gate pipeline** (§3.2) before human review is requested — lint, typecheck, unit/integration, isolation/fuzz, the security-gate suite, and the golden set where applicable. Human review is not a substitute for a red gate.
 
@@ -452,11 +466,11 @@ Body explains *why*, not *what* — the diff already shows what changed.
 
 **Release gate.** `release-gate.yml` requires Engineering Lead sign-off before tagging, on top of the automated checks (§8.1).
 
-### 7.4 Hotfix Path
+### 7.4 Hotfix path
 
 A P0 hotfix lands within 30 minutes with 1 approval; P0 may bypass the normal review SLA, never the merge gates in [ci-cd-testing](ci-cd-testing.md).
 
-### 7.5 Contribution Guide
+### 7.5 Contribution guide
 
 **Setup:** clone, `pnpm install`, `docker compose up`, seed data, and the local test suite (see §1).
 
@@ -469,7 +483,7 @@ A P0 hotfix lands within 30 minutes with 1 approval; P0 may bypass the normal re
 
 **Commit messages** follow Conventional Commits (§7.1). Body explains *why*, not *what*.
 
-### 7.6 First PR Checklist
+### 7.6 First PR checklist
 
 For a new engineer: local dev stack running (`pnpm dev:all`), `pnpm test:isolation` green, read [architecture-overview §1–5](../20-architecture/architecture-overview.md) and [ADR-013](../20-architecture/adr-index.md#adr-013--provider-ports) before touching a provider port.
 
@@ -477,7 +491,7 @@ For a new engineer: local dev stack running (`pnpm dev:all`), `pnpm test:isolati
 
 ## 8. Release
 
-### 8.1 Release Gate
+### 8.1 Release gate
 
 `release-gate.yml` automates or prompts each check, and requires Engineering Lead sign-off before tagging.
 
@@ -486,6 +500,8 @@ Images are cosign-signed with an attached SBOM. **The deploy gate verifies the d
 ---
 
 ## 9. Common Failure Modes
+
+The failure modes engineers actually hit, and the fix each one maps to:
 
 | Symptom | Fix |
 |---------|-----|
