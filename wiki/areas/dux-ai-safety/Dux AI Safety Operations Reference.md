@@ -3,7 +3,7 @@ type: resource
 title: "Dux AI Safety Operations Reference"
 topic: "dux/ai-safety"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [resource, dux, dux/ai-safety]
 status: mature
 sources: [".raw/dux/40-ai-safety/agent-identity.md", ".raw/dux/40-ai-safety/confidence-calibration.md", ".raw/dux/40-ai-safety/owasp-assessments.md", ".raw/dux/40-ai-safety/incident-runbooks.md"]
@@ -12,7 +12,11 @@ related: ["[[Dux]]", "[[Dux AI Safety Guide]]", "[[Dux Operations Guide]]", "[[D
 
 # Dux AI Safety Operations Reference
 
-> *Where [[Dux AI Safety Guide]] covers the safety architecture itself — the gates, the kill switch, the dual-LLM boundary — this page covers the operational layer running on top of it: how an agent proves who it is, how confident an assessment is allowed to sound, how the whole system is scored against industry standards, and what actually happens when something goes wrong.*
+### At 3 a.m., nobody wants to read architecture docs — they want to know which command to run
+
+An agent walks into a customer's environment holding real credentials and the authority to isolate a production endpoint. [[Dux AI Safety Guide]] is the architecture that makes that survivable in the abstract: the gates, the kill switch, the dual-LLM boundary. This page is the operations layer sitting on top of it — the part that matters at 3 a.m. when something has actually gone sideways. It answers four questions in order: how does an agent prove it's the agent it claims to be, how confident does an assessment have to be before Dux lets it speak with authority, how does the whole system get scored against the industry's own risk frameworks, and — the one that actually gets used under pressure — what is the exact runbook when something breaks.
+
+Four sections, in that order, because that's the order an incident actually unfolds: an identity gets compromised or spoofed, a verdict comes out wrong, an OWASP category slips, or a named failure mode fires and someone needs the twelve-section runbook, not a design discussion.
 
 ---
 
