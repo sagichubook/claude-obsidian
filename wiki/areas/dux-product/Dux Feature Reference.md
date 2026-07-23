@@ -3,7 +3,7 @@ type: resource
 title: "Dux Feature Reference"
 topic: "dux/product"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [resource, dux, dux/product]
 status: mature
 sources: [".raw/dux/10-product/features/assessment-trace.md", ".raw/dux/10-product/features/chat-guidance.md", ".raw/dux/10-product/features/connector-hub.md", ".raw/dux/10-product/features/continuous-assessment.md", ".raw/dux/10-product/features/dashboard-audit.md", ".raw/dux/10-product/features/exposure-analysis.md", ".raw/dux/10-product/features/mitigation-write-path.md", ".raw/dux/10-product/features/predictive-risk-forecasting.md", ".raw/dux/10-product/features/research-dashboard.md", ".raw/dux/10-product/features/security-stepper.md", ".raw/dux/10-product/features/tenant-settings.md"]
@@ -12,9 +12,15 @@ related: ["[[Dux]]", "[[Dux Product Guide]]", "[[Dux Taxonomy & Catalogs]]", "[[
 
 # Dux Feature Reference
 
+## A Guided Tour of Every Screen Dux Ships — and Why It's Built the Way It Is
+
+*From the first prerequisite check on a raw CVE to the write action that closes the gap: the complete spec for every surface behind the eight-icon sidebar and chat, told as the journey a security engineer actually walks.*
+
 Navigation: [[Dux]] | [[Dux Product Guide]] | [[Dux Taxonomy & Catalogs]]
 
 The complete spec for every screen, API surface, and safety behavior behind the eight-icon sidebar and chat. Organized by where each feature sits in the Analyze → Mitigate → Remediate pipeline, not by nav order. Every user story (`US-###`) below is canonical and Gate 1 unless a status is called out explicitly.
+
+Think of what follows as a walkthrough, not a glossary. A security engineer's day starts with a CVE and thousands of unanswered questions about it; each section below is the next stop on the path from "what is this vulnerability, really?" to "it's handled, and here's the audit trail to prove it." Along the way, two pairs of near-identical-sounding features keep tripping people up — US-006 vs US-003, and the Mitigation nav vs the Mitigate pipeline stage — so this reference calls both out loudly, more than once, because that repetition is cheaper than the bug it prevents.
 
 ---
 
@@ -27,7 +33,7 @@ The complete spec for every screen, API surface, and safety behavior behind the 
 | **BRs** | BR-002, BR-004 |
 | **Gate** | 1 (US-001–007, read-only or unattended write for 3 of 5 canonical actions; `endpoint.isolate` / `patch.deploy_special_devices` mandatory HITL per D-17); US-009 is Gate 2c |
 
-The stepper is the seven-plus-one-step investigation journey a security engineer walks through on any single CVE. Two pairs of steps look adjacent and are frequently, wrongly, merged in engineering discussions: this reference calls both out up front:
+Every investigation starts here. The stepper is the seven-plus-one-step investigation journey a security engineer walks through on any single CVE — from "what would an attacker need?" all the way to "who owns the fix?" Two pairs of steps look adjacent and are frequently, wrongly, merged in engineering discussions: this reference calls both out up front:
 
 - **US-006 is not US-003.** US-006 answers "how is exposure trending?" (governance/audit); US-003 answers "am I still protected right now?" (live vendor control proof).
 - **US-002 is not US-011.** US-002 is a standalone CrowdStrike/Intune asset-context panel; per-asset AWS fields already live in the US-011 asset table.
@@ -41,6 +47,8 @@ Every step without a live connector renders the full designed layout in a connec
 | **Purpose** | Decompose a CVE into its real-world exploitation requisites, with cited sources |
 | **Gate** | 1 |
 | **Agent** | AI #1 (REASONING) |
+
+Before Dux can say anything about exploitability, it has to understand what an attacker would actually need — and where each claim comes from.
 
 **Orchestration.** `ExploitabilityAssessmentWorkflow` (Temporal), triggered on queue enqueue or CVE selection. The `prerequisite-extractor` subagent gathers NVD, GitHub, Metasploit, and Medium evidence through MCP read tools. The CaMeL S-LLM/P-LLM boundary sanitizes the untrusted CVE text. Status streams live.
 
@@ -60,6 +68,8 @@ Every step without a live connector renders the full designed layout in a connec
 |---|---|
 | **Purpose** | Prove or disprove environmental exploitability using runtime, network, SIEM, and role evidence on a specific asset |
 | **Gate** | 1 |
+
+A prerequisite list is theory. Step 2 grounds it in the specific asset in front of the engineer.
 
 **Orchestration.** `AssetContextWorker`. MCP tools query:
 
@@ -82,6 +92,8 @@ Every step without a live connector renders the full designed layout in a connec
 | **Purpose** | Answer "where am I already protected?" with vendor control proof — CrowdStrike policies at Gate 1; Intune at Gate 3/W2 |
 | **Gate** | 1 |
 
+This is the step that keeps a real control from being drowned out by a raw CVSS score: it asks what's *already* standing between the vulnerability and the attacker.
+
 **Orchestration.** `control-mapping-worker` correlates findings to active controls. MCP pulls CrowdStrike policy state at Gate 1. Output: segment cards — Protected, Partially Mitigated, Exposed — plus a settings and effect table.
 
 **API.** `ProtectionBreakdownDto` via `?projection=protection` on `GET /cves/{id}/detail`. Also `GET /attack-paths` (AWS security groups + vendor).
@@ -94,6 +106,8 @@ Every step without a live connector renders the full designed layout in a connec
 |---|---|
 | **Purpose** | Surface and execute lightweight mitigations — blocklist at Gate 1, Intune policy steps once the W2 connector lands — faster than a full patch, with a residual-risk count |
 | **Gate** | 1 — unattended by default for `network.blocklist_add` / `policy.deploy_device_config`; mandatory HITL for `endpoint.isolate` / `patch.deploy_special_devices` (D-17) |
+
+Here's where analysis turns into action. This is the moment the pipeline crosses from "we understand the exposure" to "we're doing something about it."
 
 **Canonical spec:** [[Dux Feature Reference#Mitigation and Remediation: the Write Surfaces (US-004, US-016, US-018, US-019)|Mitigation and Remediation Write Path]]. This section is the journey summary only.
 
@@ -110,6 +124,8 @@ Every step without a live connector renders the full designed layout in a connec
 | **Purpose** | Surface the highest-impact estate-wide configuration changes — disable NTLM, enable IMDSv2 — ranked by exposure reduction |
 | **Gate** | 1 (endpoint and stepper panel live; recommendation logic deferred to Gate 2 per D-19) |
 
+Not every fix is per-finding. Some of the biggest exposure reductions come from a single estate-wide config change, and this is where Dux surfaces them.
+
 **Orchestration.** `ControlRefinementQuery`, using the Specification pattern (`ByImpact`, `ByScanner`, `ByCVE`), aggregating across CVEs. Wiz ingest is live at Gate 1 (FR-019); Qualys is Gate 3/W2 per [[Dux Taxonomy & Catalogs]].
 
 **Ranking output carries an `effort` field** — S / M / L, sized by rollout scope, not build cost: **S** a single-toggle config change on one control; **M** a staged change across a device or asset group; **L** an estate-wide policy rollout needing change-management sign-off. Exposure reduction ranks the queue; `effort` is a secondary column shown alongside it, not a tiebreaker the ranking itself uses.
@@ -124,6 +140,8 @@ Every step without a live connector renders the full designed layout in a connec
 |---|---|
 | **Purpose** | A CISO-facing, board-ready exposure trend: delta cards and a tamper-evident audit trail |
 | **Gate** | 1, governance and audit |
+
+Where the security engineer's steps 1–5 answer "what's happening on this CVE," step 6 answers a different question for a different audience: is exposure trending the right direction, and can we prove it?
 
 **Canonical spec:** [[Dux Feature Reference#Visibility: Dashboard Home and Audit (US-012, US-006)|Dashboard Home & Audit]]. This section is the journey summary only.
 
@@ -141,6 +159,8 @@ Every step without a live connector renders the full designed layout in a connec
 | **Gate** | 1, read-only |
 | **Agent** | AI #7 |
 
+A fix that lands on the wrong desk is a fix that doesn't happen. Step 7 closes that gap.
+
 **Orchestration.** The ownership-inference activity. MCP reads ServiceNow and Entra ID, both live at Gate 1. Webhook: `ownership.inferred`.
 
 **API.** `OwnershipInferenceDto` (FR-016). Data: `OWNERSHIP_EVIDENCE`, `ASSET.owner_team`.
@@ -154,6 +174,8 @@ Every step without a live connector renders the full designed layout in a connec
 | **Purpose** | A CISO teaches risk appetite in natural language so future assessments respect scope |
 | **Gate** | 2c — not promoted |
 | **Status** | Draft |
+
+Eventually a CISO should be able to just tell Dux what matters to them. That day isn't Gate 1 — and here's exactly why not.
 
 **Why it stays at Gate 2c.** It needs behavioral-data volume: `PreferenceEngine`'s influence on scoring weights requires tenant assessment history that does not exist at Gate 1. The interim is session routing preferences (24 h TTL) plus per-instance acknowledgment (US-023).
 
@@ -207,7 +229,7 @@ flowchart LR
 | **BRs** | BR-002, BR-004 |
 | **Gate** | 1 — primary Analyze drill-down surface |
 
-Where the pipeline's output becomes a single defensible verdict: severity badges, risk groups, a flow bar, mitigation factor cards, an asset table, and attack paths — produced by the Prerequisite, AssetContext, and ControlMapping subagents together.
+If the stepper is the investigation, Exposure Analysis is the courtroom: where the pipeline's output becomes a single defensible verdict: severity badges, risk groups, a flow bar, mitigation factor cards, an asset table, and attack paths — produced by the Prerequisite, AssetContext, and ControlMapping subagents together.
 
 **Job.** A security engineer drills into a single CVE: severity badges, risk groups, flow bar, mitigation factor cards, asset table, and attack paths — ending in a verdict they can defend.
 
@@ -289,7 +311,7 @@ The reference UI demo numbers are illustrative, not measured — 8,341 researche
 | **BRs** | BR-002, BR-005 |
 | **Gate** | 1, including executed-code results (ADR-015 R4, FR-026) |
 
-Arguably Dux's single biggest competitive asset: a JSON bundle proving *why* a verdict was reached. The differentiating claim ("investigation backed by code: consistent, inspectable, repeatable") depends entirely on `execution_results` actually being populated, which it is at Gate 1 via a self-hosted Firecracker microVM sandbox; the only time it's null is when the sandbox has been disabled through the emergency kill path.
+If there's one feature Dux would put in front of a skeptical buyer first, it's this one. Arguably Dux's single biggest competitive asset: a JSON bundle proving *why* a verdict was reached. The differentiating claim ("investigation backed by code: consistent, inspectable, repeatable") depends entirely on `execution_results` actually being populated, which it is at Gate 1 via a self-hosted Firecracker microVM sandbox; the only time it's null is when the sandbox has been disabled through the emergency kill path.
 
 **Job.** A security engineer or CISO inspects the Dux Agent's reasoning steps and its generated investigation code, then exports the lot for audit or a competitive evaluation. Success is a JSON bundle that proves why a verdict was reached.
 
@@ -362,6 +384,8 @@ Trace export count; steps-per-assessment distribution; `execution_results` popul
 |---|---|
 | **Gate** | 1 |
 
+This is the queue that turns "thousands of alerts" into a number a human can actually hold in their head.
+
 **Job.** A security engineer or CISO tracks the Dux Agent queue — Completed, In Research, Backlog — reads the Vulnerability Reduction metrics, and enqueues new investigations. **The success moment: thousands of alerts collapse to tens of actionable rows, each with evidence links.**
 
 **Orchestration.** `POST /research/queue` → `ExploitabilityAssessmentWorkflow`, deduplicated by `AssessmentDeduplicationService`. Same agent stack as US-001 and US-011. Queue rows are **structured output, not chat**.
@@ -385,6 +409,8 @@ Trace export count; steps-per-assessment distribution; `execution_results` popul
 | Field | Value |
 |---|---|
 | **Gate** | 1 for write; public read at Seed |
+
+Not every finding needs a fix — some need a documented, expiring decision not to act. That's this feature, and it's deliberately not the same thing as teaching Dux a standing preference.
 
 **Job.** A security engineer accepts or suppresses risk on a **specific vulnerability instance**, with a reason, an optional expiry, and an audit trail.
 
@@ -441,13 +467,13 @@ The conversational surface onto Dux Agent — request research, compare remediat
 
 ### Write-Surface Risk Profile
 
-**Chat is not the only write surface with a live human-approval gate.** Product write actions triggered elsewhere in the UI (US-004, US-016, US-018) execute unattended by default for 3 of 5 canonical actions (`network.blocklist_add`, `policy.deploy_device_config`, `ticket.create_remediation`); `endpoint.isolate` and `patch.deploy_special_devices` are mandatory-HITL there too (D-17). The chat-triggered write-tool path (`chat_write_tools`) is gated for every action regardless of which of the five it targets, because **arbitrary MCP writes issued from open-ended conversation carry a prompt-injection blast radius (LLM01) that the other, schema-constrained write surfaces do not have**.
+Chat looks like just another way to trigger the same actions as the stepper — it isn't, and the reason is worth understanding before anything else on this page. **Chat is not the only write surface with a live human-approval gate.** Product write actions triggered elsewhere in the UI (US-004, US-016, US-018) execute unattended by default for 3 of 5 canonical actions (`network.blocklist_add`, `policy.deploy_device_config`, `ticket.create_remediation`); `endpoint.isolate` and `patch.deploy_special_devices` are mandatory-HITL there too (D-17). The chat-triggered write-tool path (`chat_write_tools`) is gated for every action regardless of which of the five it targets, because **arbitrary MCP writes issued from open-ended conversation carry a prompt-injection blast radius (LLM01) that the other, schema-constrained write surfaces do not have**.
 
 This is a deliberate, scoped exception on top of D-17's per-action gating. Revisit it only when chat-specific injection defenses — the CaMeL S-LLM boundary plus the prompt-injection regression suite — earn the same confidence as the constrained surfaces.
 
 ### Failure-Domain Isolation
 
-Chat gets a **separate SSE connection pool** and its **own LLM quota bucket** (`InstrumentedLLMClient` budget, NFR-011). Chat degradation or a chat rate limit **must not** block `ExploitabilityAssessmentWorkflow` queue processing.
+A chat outage should never take down the assessment pipeline, and vice versa. Chat gets a **separate SSE connection pool** and its **own LLM quota bucket** (`InstrumentedLLMClient` budget, NFR-011). Chat degradation or a chat rate limit **must not** block `ExploitabilityAssessmentWorkflow` queue processing.
 
 ### Orchestration
 
@@ -616,7 +642,7 @@ This file is the canonical spec for US-004; the journey summary lives in [[Dux F
 
 ### Rollback Catalog
 
-Every `rollbackProcedure` URL on a write action's audit/HITL payload resolves to one of the five entries below. `VendorActionGate` (GOV-014, [[Dux AI Safety Guide|governance-kernel §4]]) will not authorize unattended execution of an action whose entry is missing.
+Every write action Dux takes has a documented way back — this is the table that makes "reversible" a verifiable claim rather than an assurance. Every `rollbackProcedure` URL on a write action's audit/HITL payload resolves to one of the five entries below. `VendorActionGate` (GOV-014, [[Dux AI Safety Guide|governance-kernel §4]]) will not authorize unattended execution of an action whose entry is missing.
 
 | ID | Action | Compensating procedure | Trigger |
 |---|---|---|---|
@@ -647,6 +673,8 @@ Gate 3 refers specifically to closed-loop validation (US-019). A "self-healing" 
 | **BRs** | BR-008, BR-005 |
 | **Gate** | 1 (both US-012 and US-006) |
 | **Decisions** | H9 |
+
+Everyone's day starts here — it's the answer to "what needs attention now," and it's also the tamper-evident record of everything Dux has already done.
 
 ### US-012 Dashboard Home
 
@@ -710,13 +738,14 @@ It surfaces as a Dashboard donut widget plus a full view (US-012): a score gauge
 | **Nav** | Dashboard — new "Rising Risk" panel on Dashboard Home (US-012), a cross-asset aggregate view, distinct from US-011's per-CVE Exposure Analysis |
 | **Epic** | EP-03 (F04) |
 | **BR** | BR-013 |
+| **FR** | FR-030 |
 | **Gate** | 2 |
 | **Flag** | `risk_trend_forecasting` (Gate 2, default off) |
 | **Decisions** | D-24, D-36 |
 | **Status** | Draft |
 | **Parent** | BR-013 |
 
-Answers "which assets are likely to become risky in the future" — the literal E4 claim (FinSMEs CEO interview, Dec 2025; committed roadmap capability per the 2026-07-13 claims-alignment directive).
+Every other feature on this page answers "what's true right now." This one is the exception — a careful first step toward "what's about to become true" — and the care in how it's scoped is the point. Answers "which assets are likely to become risky in the future" — the literal E4 claim (FinSMEs CEO interview, Dec 2025; committed roadmap capability per the 2026-07-13 claims-alignment directive).
 
 ### Design Principle: Trend, Not a New Model
 
@@ -783,7 +812,7 @@ No write action is ever triggered by a trend alone — `rising` surfaces a prior
 | **Gate** | 1 |
 | **Decisions** | D-9 |
 
-The feature that makes "continuous exploitability" a literally true claim at Gate 1.
+A one-time scan is a photograph; the world keeps moving after the shutter closes. This is the feature that makes "continuous exploitability" a literally true claim at Gate 1.
 
 **Job.** A tenant admin or CISO configures scheduled and on-event re-queueing — on a connector change, a KEV addition, or a cron. This is what makes the public "continuous exploitability" claim true at Gate 1.
 
@@ -813,6 +842,8 @@ Per-tenant cron config; KEV feed subscription; connector change detector.
 
 ### Safety — Per-Tenant Rate Caps
 
+The scheduler is generous, but it isn't unbounded — a per-tenant re-queue cap keeps a single feed storm from becoming a runaway cost or a noisy-neighbor problem.
+
 | Tier | Re-queue cap |
 |---|---|
 | Design Partner | 50/hour |
@@ -824,7 +855,7 @@ Enforced alongside GOV-004's `WorkflowTenantBudget` (Starter 500 / Pro 5,000 / E
 
 ### Burst-Tier Degradation Model (resolves OI-13, SR-11)
 
-A platform-wide feed storm — a daily EPSS re-score touching every CVE — is bounded two ways before it ever reaches a tenant's re-queue cap:
+The nightmare scenario for a re-assessment engine is a platform-wide feed storm — a daily EPSS re-score touching every CVE at once. It's bounded two ways before it ever reaches a tenant's re-queue cap:
 
 1. **It never touches the NVD/EPSS/KEV request quota (50 req/30 s per key).** EPSS publishes as a single daily bulk file (FIRST.org), not per-CVE API calls — the ingest pipeline downloads and diffs that one file, then emits a debounce trigger only for `(tenant, cve, asset)` triples with an open finding on a CVE whose EPSS score actually moved. The 200 K-row global delta collapses to "tenants with a matching open finding," which is orders of magnitude smaller.
 2. **Within a tenant's resulting trigger set, the dirty-check (above) already resolves most as no-op.** Of what remains, execution-backed re-runs are ordered **KEV-first, then descending EPSS, then descending CVSS** — the same priority a human triage queue would use — and paced against the [[Dux AI Safety Guide|sandbox budget]] (D-9: 300 sandbox-seconds/hour and 5 concurrent microVMs per tenant). That budget, not the debounce window, is the real ceiling: it bounds a tenant to roughly 5–10 execution-backed re-assessments/hour regardless of how many triggers the storm produced. GTM copy about assessment speed refers to a **single CVE**, not a platform-wide sweep — see [[Dux Product Guide|gtm-guardrails §3]].
@@ -853,7 +884,7 @@ Customer copy using the word "continuous" must still distinguish **data sync** (
 | **Gate** | 1 (US-013, AWS as P0); US-020 is Gate 5 |
 | **Decisions** | D-34 |
 
-The prerequisite gate for nearly everything above: it feeds live AWS evidence into Exposure Analysis and is the deep-link target from every degraded empty state in the stepper. Its most consequential rule is integrity over coverage: a vendor connector never shows a false "Connected" state (it reads "Coming soon" until both credential validation and a first successful sync succeed), and a bad CSV upload produces typed errors rather than a partial, poisoned ingest.
+Nothing above this line works without this feature. The prerequisite gate for nearly everything above: it feeds live AWS evidence into Exposure Analysis and is the deep-link target from every degraded empty state in the stepper. Its most consequential rule is integrity over coverage: a vendor connector never shows a false "Connected" state (it reads "Coming soon" until both credential validation and a first successful sync succeed), and a bad CSV upload produces typed errors rather than a partial, poisoned ingest.
 
 ### US-013 Connector Hub
 
@@ -976,6 +1007,8 @@ Sync success rate; asset-count growth; time to first sync; connector error MTTR;
 | **Epics** | EP-01, EP-07, EP-08 |
 | **BRs** | BR-001, BR-003, BR-005, BR-006, BR-011 |
 | **Gate** | 1 (US-014); US-015 Phase-1 exit; US-022 Seed |
+
+The last stop on the tour: the control room where a tenant admin runs the account, pulls the kill switch if needed, and finds their way to help.
 
 ### US-014 Tenant Settings
 

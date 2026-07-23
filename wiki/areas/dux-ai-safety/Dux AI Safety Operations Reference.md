@@ -394,6 +394,8 @@ Overall exit is met with a documented remediation backlog for the Partial items.
 
 ### 3.4 · Pre-seed exit criteria
 
+Distilled down to three lines, this is what actually has to be true before pre-seed exit:
+
 - Every applicable row at **Partial or better**
 - **ASI01 and ASI02:** Implemented
 - **ASI10:** Partial or better
