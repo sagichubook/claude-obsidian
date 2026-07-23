@@ -1,6 +1,7 @@
 ---
 type: resource
 title: "Dux AI Safety Operations Reference"
+address: c-000004
 topic: "dux/ai-safety"
 created: 2026-07-22
 updated: 2026-07-23
