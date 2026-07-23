@@ -646,6 +646,8 @@ A dead MCP server is deceptively quiet — nothing crashes, results just stop sh
 
 ### 4.8 · R5 — Rate limit cascade
 
+Two rate limiters — the model provider's and Dux's own — can trip in the same window and compound each other.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** `DuxRateLimitCascade` — model 429 and customer 429 in the same window. The signature is a **dual 429** — OpenAI (60 RPM/tenant) and the NestJS throttler in the same window.
