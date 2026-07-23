@@ -239,7 +239,14 @@ def test_included_rejects_symlink():
         real = wiki / "real.md"
         real.write_text("---\ntype: concept\n---\nbody\n")
         link = wiki / "link.md"
-        link.symlink_to(real)
+        try:
+            link.symlink_to(real)
+        except OSError:
+            # Windows requires Developer Mode or admin privilege to create
+            # symlinks; skip rather than fail the whole suite over an OS
+            # permission gap unrelated to boundary-score.py's own logic.
+            print("SKIP symlink exclusion (no symlink privilege on this host)")
+            return
 
         original_root = bs.VAULT_ROOT
         bs.VAULT_ROOT = tmp

@@ -42,7 +42,6 @@ Exit codes:
 """
 
 import argparse
-import fcntl
 import json
 import math
 import os
@@ -52,6 +51,35 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+try:
+    import fcntl
+except ImportError:  # Windows has no fcntl; shim flock via msvcrt byte-range locks
+    import msvcrt
+
+    class _FcntlShim:
+        LOCK_EX = 1
+        LOCK_UN = 2
+        LOCK_NB = 4
+
+        @staticmethod
+        def flock(fd, op):
+            os.lseek(fd, 0, os.SEEK_SET)
+            if op & _FcntlShim.LOCK_UN:
+                try:
+                    msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+                except OSError:
+                    pass
+                return
+            mode = msvcrt.LK_NBLCK if (op & _FcntlShim.LOCK_NB) else msvcrt.LK_LOCK
+            try:
+                msvcrt.locking(fd, mode, 1)
+            except OSError as exc:
+                if op & _FcntlShim.LOCK_NB:
+                    raise BlockingIOError(str(exc)) from exc
+                raise
+
+    fcntl = _FcntlShim()
 from datetime import datetime, timezone
 from pathlib import Path
 

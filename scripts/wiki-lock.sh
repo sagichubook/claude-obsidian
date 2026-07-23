@@ -147,15 +147,30 @@ is_alive() {
   kill -0 "$1" 2>/dev/null
 }
 
-# Atomic meta-lock wrapper. Funcs that mutate LOCK_DIR call under this lock so
+# Portable mutex: `mkdir` is atomic on every filesystem this script runs on
+# (POSIX and Windows/Git-Bash alike), unlike `flock`, which Git-Bash doesn't
+# ship. Spin with a short sleep until acquired or the timeout elapses.
+acquire_meta_mutex() {
+  local mdir="$1" timeout="$2" start now
+  start=$(now_epoch)
+  while true; do
+    mkdir "$mdir" 2>/dev/null && return 0
+    now=$(now_epoch)
+    [ $((now - start)) -ge "$timeout" ] && return 1
+    sleep 0.1
+  done
+}
+
+# Meta-lock wrapper. Funcs that mutate LOCK_DIR call under this lock so
 # acquire/release/clear-stale don't race against each other.
 with_meta_lock() {
   ensure_dirs
-  # Use flock under bash's redirect; meta lock is short-lived per command.
+  local mdir="${META_LOCK}.d"
   (
-    flock -x -w 5 9 || die "could not acquire meta-lock within 5s" 1
+    acquire_meta_mutex "$mdir" 5 || die "could not acquire meta-lock within 5s" 1
+    trap 'rmdir "$mdir" 2>/dev/null || true' EXIT
     "$@"
-  ) 9>"$META_LOCK"
+  )
 }
 
 read_lockfile() {

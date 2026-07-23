@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "7ff4c0a975f3346b",
+        "id": "1629d2e80ca0d17b",
         "type": "tabs",
         "children": [
           {
-            "id": "816d1dbe47f613fa",
+            "id": "122e4176a9735102",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Dux Decisions & Traceability Reference"
+              "title": "New tab"
             }
           }
         ]
@@ -191,8 +187,16 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "816d1dbe47f613fa",
+  "active": "122e4176a9735102",
   "lastOpenFiles": [
+    "docs/install-guide.pdf",
+    "docs/methodology-modes-guide.md",
+    "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md",
+    "tests/test_boundary_score.py.tmp.18456.a1e43805ba98",
+    "scripts/rerank.py.tmp.18456.f80890fb7701",
+    "scripts/bm25-index.py.tmp.18456.ccdd706c6d60",
+    "scripts/tiling-check.py.tmp.18456.2f35e1bf4dd7",
+    "scripts/wiki-lock.sh.tmp.18456.25d10cc0372f",
     "wiki/resources/dux-api/Dux API Reference.md",
     "wiki/areas/dux-ai-safety/Dux AI Safety Operations Reference.md",
     "wiki/log.md.tmp.6984.284f151ac549",
@@ -209,11 +213,6 @@
     "wiki/hot.md.tmp.542.fda4fbff65d9",
     "wiki/log.md.tmp.542.4fbf56277dac",
     "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md.tmp.542.e08b9b793872",
-    "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md.tmp.542.8471905dc740",
-    "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md.tmp.542.f6f322bdeca5",
-    "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md.tmp.542.eaa38c5e7ea5",
-    "wiki/resources/dux-api/Dux API Reference.md.tmp.542.0bce9110e0ae",
-    "wiki/resources/dux-api/Dux API Reference.md.tmp.542.087ed5b038c1",
     "Legal-Finance Hub.md",
     "assets/diagrams/hybrid-retrieval.svg",
     "wiki/meta/retrieval-benchmark-v1.7.md",
@@ -233,12 +232,9 @@
     "wiki/areas/dux-gtm/Dux GTM Area.md",
     "wiki/areas/dux-gtm/Competitive Positioning & POC.md",
     "docs/dragonscale-guide.md",
-    "docs/methodology-modes-guide.md",
     "wiki/index.md",
     "wiki/areas/dux-product/Assessment Trace.md",
     "wiki/areas/dux-product/Dux Product Overview.md",
-    "wiki/areas/dux-product/Product Hub.md",
-    "wiki/areas/dux-product/Security Stepper.md",
     "wiki/Wiki Map.canvas",
     "wiki/canvases/youtube-explainer.canvas",
     "wiki/canvases/welcome.canvas",
