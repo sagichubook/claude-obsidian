@@ -18,7 +18,7 @@ Reads should prefer the same transport the rest of the plugin uses. Consult `.va
 - **mcp-obsidian** / **mcpvault** — `obsidian_get_file_contents` (single note), `obsidian_batch_get_file_contents` (several at once), `obsidian_simple_search`/`obsidian_complex_search`; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
 - **filesystem** — Claude's `Read` and `Glob`/`Grep` tools (final floor; always works)
 
-Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Quick mode (hot.md only) is transport-agnostic — always uses `Read`.
+Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport). Quick mode (hot.md only) is transport-agnostic — always uses `Read`.
 
 ---
 

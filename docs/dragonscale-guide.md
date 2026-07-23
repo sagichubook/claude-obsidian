@@ -1,6 +1,6 @@
 # DragonScale Memory Guide
 
-DragonScale Memory is an optional extension for `claude-obsidian`. It adds conservative helpers for log rollups, stable page addresses, duplicate-page linting, and frontier topic suggestion. Start with [docs/install-guide.md](./install-guide.md). For the design spec and rationale, read [wiki/concepts/DragonScale Memory.md](../wiki/concepts/DragonScale%20Memory.md).
+DragonScale Memory is an optional extension for `claude-obsidian`. It adds conservative helpers for log rollups, stable page addresses, duplicate-page linting, and frontier topic suggestion. Start with [docs/install-guide.md](./install-guide.md).
 
 This page stays close to shipped behavior in `v1.6.0`. It explains what setup creates, what each mechanism actually does, what it needs, and how to turn it off safely without uninstalling the repo.
 
@@ -12,7 +12,7 @@ DragonScale is a memory-layer extension for the wiki. It covers rollups, determi
 
 If you never run `bash bin/setup-dragonscale.sh`, the base install and the original skill behavior remain in place. The repo uses feature detection so DragonScale can stay optional instead of becoming a hard dependency.
 
-The concept page is broader than this guide. This guide is operational. When the spec and implementation differ in detail, prefer the shipped scripts and skills for day-to-day behavior.
+This guide is operational. When docs and implementation differ in detail, prefer the shipped scripts and skills for day-to-day behavior.
 
 ### What ships in 1.6.0
 
@@ -23,7 +23,7 @@ Version `1.6.0` ships all four DragonScale mechanisms as opt-in features:
 - Mechanism 3, Semantic Tiling Lint: `scripts/tiling-check.py` plus `wiki-lint` integration
 - Mechanism 4, Boundary-First Autoresearch: `scripts/boundary-score.py` plus `skills/autoresearch/SKILL.md` Topic Selection logic
 
-Use `CHANGELOG.md` for the release trail, [docs/install-guide.md](./install-guide.md) for the quick-start view, and [wiki/concepts/DragonScale Memory.md](../wiki/concepts/DragonScale%20Memory.md) for the full design context.
+Use `CHANGELOG.md` for the release trail and [docs/install-guide.md](./install-guide.md) for the quick-start view.
 
 ## Before You Enable It
 

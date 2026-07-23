@@ -50,7 +50,7 @@ This writes `.vault-meta/transport.json` with the schema:
 }
 ```
 
-**Read this file before any non-trivial vault mutation.** Skills that need to read or write should consult `preferred` and pick the corresponding transport. The decision tree lives at `wiki/references/transport-fallback.md`.
+**Read this file before any non-trivial vault mutation.** Skills that need to read or write should consult `preferred` and pick the corresponding transport. The fallback chain is Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport).
 
 Refresh detection with `--force` after installing/removing the Obsidian CLI:
 ```bash
@@ -155,7 +155,7 @@ obsidian-cli bookmarks "$VAULT"
 
 ## Cross-reference
 
-- Decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md)
+- Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport)
 - Legacy MCP options (A/B/C/D): [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
 - Concurrency policy (v1.7+): [`skills/wiki-ingest/SKILL.md`](../wiki-ingest/SKILL.md) §Concurrency
 - Detection script: [`scripts/detect-transport.sh`](../../scripts/detect-transport.sh)

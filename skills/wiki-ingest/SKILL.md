@@ -19,7 +19,7 @@ Before mutating any vault file, consult `.vault-meta/transport.json` (auto-creat
 - **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create pages (also works on new files), `obsidian_patch_content` to edit an existing section precisely, `obsidian_get_file_contents`/`obsidian_batch_get_file_contents` for reads; see [`skills/wiki/references/mcp-setup.md`](../wiki/references/mcp-setup.md)
 - **filesystem** — Claude's `Write`/`Edit` tools with absolute vault-rooted paths (final floor; always works)
 
-Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md).
+Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport).
 
 ---
 

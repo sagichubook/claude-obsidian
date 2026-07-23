@@ -26,7 +26,7 @@ The session-note write itself follows the standard transport policy. Read `.vaul
 - **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create the note (also works on new files), `obsidian_patch_content` to edit an existing section precisely
 - **filesystem** — Claude's `Write` tool with absolute path
 
-Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Index/log/hot updates use the same transport.
+Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport). Index/log/hot updates use the same transport.
 
 ---
 

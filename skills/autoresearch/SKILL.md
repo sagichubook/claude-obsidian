@@ -27,7 +27,7 @@ The research loop writes a lot — source pages, concept pages, entity pages, ma
 - **mcp-obsidian** / **mcpvault** — `obsidian_append_content` to create each page (also works on new files), `obsidian_patch_content` to edit an existing section precisely
 - **filesystem** — Claude's `Write` tool with absolute path
 
-Full decision tree: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md). Web fetches (`WebFetch`/`WebSearch`) are transport-agnostic.
+Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport). Web fetches (`WebFetch`/`WebSearch`) are transport-agnostic.
 
 ---
 

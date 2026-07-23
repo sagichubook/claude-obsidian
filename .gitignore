@@ -10,6 +10,9 @@
 # Excalidraw main.js is 8MB — downloaded by setup-vault.sh, not tracked in git
 .obsidian/plugins/obsidian-excalidraw-plugin/main.js
 
+# Local REST API main.js is a 4MB downloaded plugin build, not source — not tracked in git
+.obsidian/plugins/obsidian-local-rest-api/main.js
+
 # Large binary assets — add your own images to _attachments/images/
 # Uncomment the line below to exclude images from git (recommended for large vaults)
 # _attachments/images/

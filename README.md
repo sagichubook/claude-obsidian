@@ -1,10 +1,6 @@
 
 # claude-obsidian: Self-Organizing AI Second Brain for Obsidian + Claude Code
 
-<p align="center">
-  <img src="wiki/meta/claude-obsidian-gif-cover-16x9.gif" alt="claude-obsidian: persistent compounding wiki vault for Claude Code and Obsidian" width="100%" />
-</p>
-
 [![GitHub stars](https://img.shields.io/github/stars/AgriciDaniel/claude-obsidian?style=flat&color=e8734a)](https://github.com/AgriciDaniel/claude-obsidian/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/AgriciDaniel/claude-obsidian?color=blue)](https://github.com/AgriciDaniel/claude-obsidian/releases/latest)
@@ -65,10 +61,6 @@ Open-source Obsidian AI plugin for AI note-taking, personal knowledge management
 
 ### [YouTube Demo](https://www.youtube.com/watch?v=a2hgayvr-H4)
 
-<p align="center">
-  <img src="wiki/meta/welcome-canvas.gif" alt="claude-obsidian welcome canvas: visual demo of the wiki vault workflow" width="96%" />
-</p>
-
 You drop sources. Claude reads them, extracts entities and concepts, updates cross-references, and files everything into a structured Obsidian vault. The wiki gets richer with every ingest.
 
 You ask questions. Claude reads the hot cache (recent context), scans the index, drills into relevant pages, and synthesizes an answer. It cites specific wiki pages, not training data.
@@ -76,11 +68,6 @@ You ask questions. Claude reads the hot cache (recent context), scans the index,
 You lint. Claude finds orphans, dead links, stale claims, and missing cross-references. Your wiki stays healthy without manual cleanup.
 
 At the end of every session, Claude updates a hot cache. The next session starts with full recent context, no recap needed.
-
-<p align="center">
-  <img src="wiki/meta/image-example-graph-view.png" alt="Obsidian graph view showing the claude-obsidian knowledge graph with color-coded nodes for concepts, entities, and sources" width="48%" />
-  <img src="wiki/meta/image-example-wiki-map-view.png" alt="Wiki Map canvas: visual hub linking domain pages, concepts, and entities" width="48%" />
-</p>
 
 ---
 
@@ -520,11 +507,6 @@ The default program works for general research. Override it for your domain. A m
 A fresh clone starts empty — `/wiki` scaffolds the folder structure (PARA, LYT, Zettelkasten, or Generic, your choice), then every `ingest [source]` you run adds 8-15 cross-referenced pages under `wiki/`. `wiki/meta/dashboard.base` (Bases, works in any Obsidian v1.9.10+) and `wiki/meta/dashboard.md` (legacy Dataview fallback) ship ready to use from the first ingest onward.
 
 The graph view fills in as you go — a handful of connected pages after your first ingest, a dense cross-referenced web after a dozen.
-
-<p align="center">
-  <img src="wiki/meta/wiki-graph-grow.gif" alt="Animated GIF: claude-obsidian knowledge graph growing from a few seeded pages to a dense web of cross-referenced concepts after multiple ingests" width="48%" />
-  <img src="wiki/meta/workflow-loop.gif" alt="Animated GIF: claude-obsidian workflow loop showing ingest, query, lint, save, and hot-cache refresh cycle" width="48%" />
-</p>
 
 ---
 

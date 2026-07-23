@@ -202,7 +202,7 @@ Documented for transparency; not implemented in v1.7.0:
 
 ## Cross-reference
 
-- Decision tree for transports: [`wiki/references/transport-fallback.md`](../../wiki/references/transport-fallback.md)
+- Transport fallback chain: Obsidian CLI → mcp-obsidian → mcpvault → filesystem (see CLAUDE.md §Transport)
 - Concurrency policy: [`skills/wiki-ingest/SKILL.md`](../wiki-ingest/SKILL.md) §Concurrency
 - DragonScale Memory: [`docs/dragonscale-guide.md`](../../docs/dragonscale-guide.md)
 - Anthropic Contextual Retrieval research: https://www.anthropic.com/news/contextual-retrieval
