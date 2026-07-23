@@ -2,7 +2,7 @@
 type: project
 title: "Dux Portfolio"
 created: 2026-07-21
-updated: 2026-07-22
+updated: 2026-07-23
 status: active
 deadline: "Phase 1 exit, Week 16 (Gate 1 review Week 12)"
 tags: [project, dux, dux/execution]
@@ -10,19 +10,23 @@ related: ["[[Dux]]", "[[Dux Decisions & Traceability Reference]]", "[[Dux AI Saf
 sources: [".raw/dux/90-execution/README.md", ".raw/dux/90-execution/traceability.md", ".raw/dux/90-execution/backlog-ep01.md", ".raw/dux/90-execution/backlog-ep02.md", ".raw/dux/90-execution/backlog-ep03.md", ".raw/dux/90-execution/backlog-ep04.md", ".raw/dux/90-execution/backlog-ep05.md", ".raw/dux/90-execution/backlog-ep06.md", ".raw/dux/90-execution/backlog-ep07.md", ".raw/dux/90-execution/backlog-ep08.md", ".raw/dux/90-execution/backlog-ep09.md", ".raw/dux/90-execution/backlog-ep10.md"]
 ---
 
-# Dux Portfolio
+# Two Thousand One Hundred Eighteen Hours: Inside the Dux Phase-1 Backlog
+
+### How ten epics, twenty-eight canonical stories, and a 42-hour buffer turn a product vision into a 16-week build plan
 
 Navigation: [[Dux]] | [[Dux Product Guide]] | [[Dux Decisions & Traceability Reference]]
 
-## Executive Summary
+Every product roadmap eventually has to answer an unglamorous question: *who is doing what, in what order, and does it fit in the calendar we've got?* For Dux — a platform whose entire pitch rests on the claim that it can tell a security team which vulnerabilities are actually exploitable in their environment — that question got answered in a document that is equal parts spreadsheet and constitution. This is that document, told as a walk through the build.
 
-This is the complete Epic → Feature → Story → Task decomposition of the Phase-1 build of the Dux platform, a 16-week engagement starting 2026-06-23. The portfolio contains 10 epics, 22 features, 28 canonical user stories, and approximately 150 tasks across five engineering roles. The planning source is imported into the team's actual project tracker (Linear) — this document is not a live status mirror.
+The shape of it: **10 epics, 22 features, 28 canonical user stories, and roughly 150 tasks**, spread across five engineering roles over a 16-week engagement that started 2026-06-23. The plan lives here for reference; it was imported into the team's actual tracker (Linear) as the working source, and this page is not a live status mirror of that tracker.
 
-The backlog totals **2,118 engineering hours** against a **2,160-hour capacity envelope** (5 engineers × 16 weeks × 27 focused hours/week), landing at **~98.1% utilization with a 42-hour buffer**. The envelope was re-baselined three times (D-19, D-23, D-40) and each time the team chose to re-baseline rather than cut scope. A manual audit caught a 20-hour arithmetic slip that had silently accumulated in the rollup table, fixed via the same reconciliation script that validates the rest of this corpus.
+What makes it worth reading as a narrative rather than skimming as a table is the arithmetic underneath it. The backlog totals **2,118 engineering hours** against a **2,160-hour capacity envelope** — 5 engineers × 16 weeks × 27 focused hours a week — which lands at **~98.1% utilization with a 42-hour buffer**. That envelope wasn't set once and left alone. It was re-baselined three separate times (decisions D-19, D-23, D-40), and each time the team's answer to "we're over capacity" was to raise the envelope rather than cut scope. A manual audit later caught a 20-hour arithmetic slip that had quietly accumulated in the rollup table — fixed by the same reconciliation script, `scripts/validate-playbooks.py`, that keeps the rest of this corpus honest.
 
-Seven documented, deliberate deviations from the Epic/Feature/Story framework are on the record — stories are never invented to hit a quota (the 28-story set is closed and canonical), and role placeholders stand in for team members not yet named. Agentic RAG, the graph database layer (Apache AGE), and the Gate-2 vLLM+Phi-4 S-LLM path are deliberately left unestimated as net-new scope and are not covered by the D-40 buffer.
+The framework itself bends in seven documented, deliberate places — never to invent a story to hit a quota (the 28-story set is closed and canonical), but to accommodate placeholders for team members not yet hired, or to admit that some scope genuinely isn't ready to be estimated. Three pieces of work — Agentic RAG, the Apache AGE graph database layer, and the Gate-2 vLLM+Phi-4 S-LLM path — are deliberately left unestimated as net-new scope and sit outside the 42-hour D-40 buffer entirely.
 
-## ID Scheme
+## The ID scheme that holds it together
+
+Before the epics, the skeleton. Every level of the plan maps to a fixed ID format, and only two of those levels are allowed to mint new IDs at this planning layer:
 
 | Level | Format | Source |
 |-------|--------|--------|
@@ -33,7 +37,9 @@ Seven documented, deliberate deviations from the Epic/Feature/Story framework ar
 
 **Capacity:** 5 engineers (3 TypeScript: TS-1, TS-2, TS-3; 2 Python: PY-1, PY-2), plus Security (SEC), PM, and CTO role placeholders. Definition of Done: every merge gate green + verification command passing + deployed to staging + demoed — no partial credit.
 
-## Portfolio at a Glance
+## The portfolio, at a glance
+
+Ten epics carry the weight unevenly. Three of them — data ingestion, the assessment engine, and multi-tenant auth — account for well over half the hours. Two more (triage disposition and personalization) carry zero Gate-1 hours at all; they exist in the plan as placeholders, not as work in flight.
 
 | Epic | ID | Focus | BR(s) | Priority | Hours | Share | Gate |
 |------|----|-------|-------|----------|-------|-------|------|
@@ -48,6 +54,8 @@ Seven documented, deliberate deviations from the Epic/Feature/Story framework ar
 | Triage disposition | EP-09 | Acknowledgment lifecycle | BR-012 | P1 | 0 | — | Deferred (Gate 2) |
 | Personalization | EP-10 | Preference learning | BR-002 | P2 | 0 | — | Deferred (Gate 2c) |
 | **Total** | | | | | **2,118** | **100%** | |
+
+Laid out across the calendar, the dependency chain becomes visible: platform and safety work runs from day one because everything else needs a foundation to stand on; ingestion and the assessment engine start in parallel because the assessment engine needs evidence to reason about; and the analyst-facing surfaces only really get going once there's something to display.
 
 ```mermaid
 gantt
@@ -71,7 +79,9 @@ gantt
     Personalization (deferred)    :done, ep10, 2026-08-01, 1d
 ```
 
-## Hour Rollup by Epic
+## Where the hours actually came from
+
+The 2,118-hour total isn't a single estimate handed down at kickoff — it's a base figure that absorbed six separate waves of correction and addition as the team learned more about what "done" would actually require: a costed-spine pass to price out infrastructure plumbing, an "H-fold" wave (D-8), a competitor-scan wave that added claims the product needed to be able to back up, a traceability-audit gap-fill, a CI-07 closure pass that funded claims-alignment work, and — the largest single jolt — a self-hosted Kubernetes stack replacement in mid-July (D-33/D-34) that added 98 hours to EP-01 alone.
 
 | Epic | Base | Costed Spine | H-Fold (D-8) | Competitor-Scan | Traceability Audit | CI-07 Closure | K8s Stack (D-33/D-34) | Total |
 |------|------|-------------|-------------|-----------------|-------------------|---------------|----------------------|-------|
@@ -87,7 +97,7 @@ gantt
 | EP-10 Personalization | 0 | — | — | — | — | — | — | 0 |
 | **Total** | **1,614** | **+174** | **+42** | **+120** | **+52** | **+38** | **+98** | **2,118** |
 
-## Capacity Analysis
+Stack that total against what five people can actually deliver in sixteen weeks, and the margin is thin but real:
 
 | Metric | Value |
 |--------|-------|
@@ -97,9 +107,11 @@ gantt
 | Deferred to Gate 2 (D-19) | EP-09 (30 h) + US-015 (11 h) + US-005 (30 h) = **71 h** |
 | Unestimated net-new scope | Agentic RAG, Apache AGE, Gate-2 vLLM+Phi-4 — deliberately not in buffer |
 
-**Discipline load:** Backend ~52% · Frontend ~17% · QA ~13% · DevOps ~10% · Security ~8%. TS-1/PY-1 are critical-path-loaded Weeks 3–8; SEC is a single point of failure for kernel + MCP + identity.
+That buffer isn't evenly distributed across the team, either. **Discipline load:** Backend ~52% · Frontend ~17% · QA ~13% · DevOps ~10% · Security ~8%. TS-1 and PY-1 carry the critical-path load through Weeks 3–8, and Security is a single point of failure across the kernel, the MCP gateway, and identity — three separate concerns owned by one role.
 
-## Gate Assignments
+## The gates the work has to clear
+
+Nothing in this plan ships in a vacuum — it ships against five checkpoints, and Gate 1 is the one that matters most for the next twelve weeks.
 
 | Gate | Week | Key Milestones |
 |------|------|----------------|
@@ -110,14 +122,11 @@ gantt
 | Gate 3 | Post-Gate 2c | Outcome learning (EP-03-F03), closed-loop validation (EP-06-F04) |
 | Seed | Post-Gate 3 | Public data API `/v1` (US-022/024), outbound MCP server (US-026) |
 
-## Epic Details
+With the scaffolding in place, here's the epic-by-epic walk — roughly in build order, following the dependency chain rather than the numbering.
 
-### EP-01 — Multi-Tenant Platform & Auth (370h, P0)
+## EP-01 — Multi-Tenant Platform & Auth (370h, P0)
 
-**Objective:** BR-001 zero cross-tenant leakage (KPI: isolation 100% in CI)
-**Metrics:** `test:fuzz-tenant-id` 100%, ISO-001–010 + ISO-FUZZ-001–005 green, AUTH-001–005 green
-**Target:** Gate 1 (Week 12); isolation harness Week 4 (blocks Gate 1)
-**Constraints:** ADR-001 (Better Auth via `AuthPort`), ADR-002 R2 (shared-schema RLS FORCE on CloudNativePG; PgBouncer transaction mode), composite FKs, fail-closed GUC
+Everything else in this plan sits on top of tenant isolation, so EP-01 goes first not because it's numbered first but because nothing downstream is safe to build without it. Its objective is BR-001: zero cross-tenant leakage, measured by 100% isolation in CI. **Metrics:** `test:fuzz-tenant-id` 100%, ISO-001–010 + ISO-FUZZ-001–005 green, AUTH-001–005 green. **Target:** Gate 1 (Week 12); the isolation harness itself is due Week 4 and blocks Gate 1 outright. **Constraints:** ADR-001 (Better Auth via `AuthPort`), ADR-002 R2 (shared-schema row-level security FORCEd on CloudNativePG; PgBouncer transaction mode), composite foreign keys, fail-closed GUC.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -126,12 +135,9 @@ gantt
 
 **EP-01 total: 370h** — includes +98h from the 2026-07-19 self-hosted Kubernetes stack replacement (D-33/D-34). The P0 Bifrost bake-off spike (16h) was retired by D-34.
 
-### EP-02 — Environmental Data Ingestion (434h, P0)
+## EP-02 — Environmental Data Ingestion (434h, P0)
 
-**Objective:** BR-004 multi-source ingestion (KPI: time-to-value <48h from AWS connect; ≥3 vendor connectors live at Gate 1)
-**Metrics:** connector sync tests green; CONN-001 staleness; first report <48h
-**Target:** Gate 1 (Week 12); AWS P0 by Week 6 vertical slice
-**Constraints:** ADR-004 (SDK v3, cross-account IAM + external ID), ADR-011 R2 (`vendor-contract.ts`, role interfaces, RLS-scoped), ADR-006 R4
+The moment tenants can be trusted to stay in their own lane, the platform needs something to reason about — which is where EP-02 picks up. This is the largest single epic in the portfolio by hours, and its objective, BR-004 multi-source ingestion, comes with two sharp KPIs: time-to-value under 48 hours from AWS connect, and at least three vendor connectors live by Gate 1. **Target:** Gate 1 (Week 12); AWS lands as the P0 vertical slice by Week 6. **Constraints:** ADR-004 (SDK v3, cross-account IAM + external ID), ADR-011 R2 (`vendor-contract.ts`, role interfaces, RLS-scoped), ADR-006 R4.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -143,12 +149,9 @@ gantt
 
 **EP-02 total: 434h** — includes +76h competitor-scan additions (CS-16, CS-23, CS-25) and +16h Splunk connector (US-002-T06).
 
-### EP-03 — Exploitability Assessment Engine (426h, P0)
+## EP-03 — Exploitability Assessment Engine (426h, P0)
 
-**Objective:** BR-002 (core product) + BR-007 AI-BOM accuracy (KPIs: MTXV <15 min/CVE; golden-set ≥80% by Gate 1, <2% regression; cost ≤$0.75/assessment)
-**Metrics:** golden set + DeepEval CI; TR-NFR-005 start p95 <2s; cost gates D-3
-**Target:** Gate 1 (Week 12); vertical slice Week 6
-**Constraints:** ADR-007 R3 (self-hosted Temporal, orchestrator-worker, child-workflow-per-tenant), ADR-008 R2 (CaMeL routing, domicile rules), ADR-015 R4 (self-hosted Firecracker microVM + AST pre-scan)
+This is the core product. Everything upstream — tenancy, evidence — exists to feed this pipeline, and everything downstream — dashboards, chat, the write path — exists to act on what it decides. Its objective is twofold: BR-002 (the core product itself) and BR-007 (AI-BOM accuracy), with KPIs that read like a service-level agreement for judgment: mean time to exploitability verdict under 15 minutes per CVE, a golden-set accuracy floor of 80% by Gate 1 with under 2% regression tolerance, and a cost ceiling of $0.75 per assessment. **Target:** Gate 1 (Week 12); vertical slice by Week 6. **Constraints:** ADR-007 R3 (self-hosted Temporal, orchestrator-worker, child-workflow-per-tenant), ADR-008 R2 (CaMeL routing, domicile rules), ADR-015 R4 (self-hosted Firecracker microVM + AST pre-scan).
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -159,23 +162,17 @@ gantt
 
 **EP-03 total: 426h** — includes +72h costed spine (LLM gateway, calibration bands, sandbox cap), +20h H1 env fixtures, +14h CS-15 WAF/IPS, +8h search_msrc, +26h CI-07 closure. EP-03-F03 adds 0h (deferred).
 
-### EP-04 — Continuous Re-assessment (68h, P0)
+## EP-04 — Continuous Re-assessment (68h, P0)
 
-**Objective:** BR-002 "continuous/24-7" claim engineering-true at Gate 1 (GCIS G1)
-**Metrics:** `test:reassessment-trigger` + `test:reassessment-dirtycheck`; most triggers resolve without LLM call
-**Target:** Gate 1 (Week 12)
-**Constraints:** ADR-016 R2 (event + scheduled + dirty-check), NATS core pub/sub, `ReassessmentDebouncer` 15-min coalesce
+The assessment engine's output is only as good as its freshness — a "continuous, 24/7" claim in the product marketing has to be engineering-true, not aspirational, by Gate 1. That's the whole reason EP-04 exists, and it's deliberately small: BR-002's continuous claim, measured against the GCIS G1 gate. **Metrics:** `test:reassessment-trigger` + `test:reassessment-dirtycheck`; the design goal is that most triggers resolve without a fresh LLM call at all. **Target:** Gate 1 (Week 12). **Constraints:** ADR-016 R2 (event + scheduled + dirty-check triggers), NATS core pub/sub, a `ReassessmentDebouncer` that coalesces on a 15-minute window.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
 | **EP-04-F01** Continuous assessment engine | US-021 (8 pts) | ReassessmentSchedulerWorkflow (16h), NATS event bus wiring (14h), ReassessmentDebouncer (8h), evidence-hash dirty-check (12h), schedule API + settings UI (8h), test suites (10h) | 68 |
 
-### EP-05 — Analyst Surfaces & APIs (322h, P0)
+## EP-05 — Analyst Surfaces & APIs (322h, P0)
 
-**Objective:** BR-002/006/008/010 (KPIs: queue thousands→tens; 2+ committed design partners by Gate 1; SSE <1s queue patch)
-**Metrics:** US-010 SSE <1s; US-012 <5s; drill-down p95 <500ms (NFR-013); WCAG 2.2 AA axe-core 0
-**Target:** Gate 1 (Week 12); chat spike Week 4; chat writes Week 14
-**Constraints:** ADR-014 R2 (React + Vite/TanStack Router, SSE+POST not WebSocket), read-only MCP Phase 1, CaMeL boundary for chat
+With the assessment engine producing verdicts and re-assessment keeping them fresh, EP-05 is where a human actually sees the work — dashboards, drill-down, and the chat interface that turns queue triage from thousands of items down to tens. Objective: BR-002/006/008/010, with KPIs that are as much about perceived speed as raw throughput — sub-1-second SSE patches to the queue, and at least two committed design partners by Gate 1. **Target:** Gate 1 (Week 12); the chat spike happens Week 4, chat writes not until Week 14. **Constraints:** ADR-014 R2 (React + Vite/TanStack Router, SSE+POST rather than WebSocket), read-only MCP in Phase 1, and a CaMeL boundary drawn around chat specifically.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -185,12 +182,9 @@ gantt
 
 **EP-05 total: 322h** — net of −11h US-015 deferral and −16h US-008-T02 decision sprint closure (D-35/ADR-021).
 
-### EP-06 — Mitigation & Remediation Write Path (196h, P0)
+## EP-06 — Mitigation & Remediation Write Path (196h, P0)
 
-**Objective:** BR-002/003 — GCIS G3 "full pipeline at machine speed": Analyze→Mitigate→Remediate exists at Gate 1, unattended by default
-**Metrics:** `test:vendor-action-hitl`, `test:governance-kernel`, `test:remediation-ticket-create`
-**Target:** Gate 1 (Week 12): unattended action cards + fast actions + ticket create/route; Gate 3: closed-loop validation (US-019)
-**Constraints:** ADR-012 R3 (`VendorActionGate`, canonical→native mapping, T1–T3 tiers), gate chain Intent→Budget→Effect→VendorAction→HITL
+Seeing the risk is only half the product; EP-06 is where Dux starts acting on it. Objective: BR-002/003 — the GCIS G3 claim that the full pipeline runs "at machine speed," Analyze→Mitigate→Remediate, unattended by default at Gate 1. **Metrics:** `test:vendor-action-hitl`, `test:governance-kernel`, `test:remediation-ticket-create`. **Target:** Gate 1 (Week 12) ships unattended action cards, fast actions, and ticket create/route; closed-loop validation (US-019) waits for Gate 3. **Constraints:** ADR-012 R3 (`VendorActionGate`, canonical→native mapping, T1–T3 tiers), and a gate chain — Intent→Budget→Effect→VendorAction→HITL — that every write has to pass through.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -201,12 +195,9 @@ gantt
 
 **EP-06 total: 196h** — net of −30h US-005 deferral (D-19). Includes +10h H4 impact preview, +14h CS-20 compensating controls, +16h CS-27 severity routing.
 
-### EP-07 — Safety & Governance (262h, P0)
+## EP-07 — Safety & Governance (262h, P0)
 
-**Objective:** BR-003 (<5s halt) + BR-005 (tamper-evident audit) + BR-009 (AIBOM drift CI) — KPI: kill switch p99 <5s pre-launch
-**Metrics:** KS-001–007; GOV-001–013 `test:governance-kernel`; `/audit/verify`; AIBOM drift gate
-**Target:** pre-launch/Gate 1; KS-007 Week-2 spike → Gate-1 release gate
-**Constraints:** `KillSwitchRelay` NATS core pub/sub + CloudNativePG LISTEN/NOTIFY fallback, fail-closed worker breaker, kernel Chain of Responsibility before every LLM call/tool dispatch, hash-chained audit partitions
+Running alongside all of the above — not after it — is the epic that makes the rest of the plan trustworthy enough to ship. EP-07 covers three business requirements at once: BR-003 (a halt in under 5 seconds), BR-005 (tamper-evident audit), and BR-009 (AI-BOM drift caught in CI), with the headline KPI being a kill-switch p99 under 5 seconds before launch. **Metrics:** KS-001–007; GOV-001–013 via `test:governance-kernel`; `/audit/verify`; the AI-BOM drift gate. **Target:** pre-launch/Gate 1, with the KS-007 spike due Week 2 and gating the Gate-1 release itself. **Constraints:** a `KillSwitchRelay` on NATS core pub/sub with a CloudNativePG LISTEN/NOTIFY fallback, a fail-closed worker breaker, and a governance kernel implemented as a Chain of Responsibility that runs before every LLM call or tool dispatch — hash-chained audit partitions underneath all of it.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -215,12 +206,9 @@ gantt
 
 **EP-07 total: 262h** — includes MCP gateway split into T10a–d (+18h) and LLM09 citations gate (+18h). Single point of failure: SEC owns kernel + MCP + identity concurrently.
 
-### EP-08 — Programmatic Platform (40h, P1)
+## EP-08 — Programmatic Platform (40h, P1)
 
-**Objective:** BR-006 programmatic access Gate 1; BR-011 public data API at Seed
-**Metrics:** HMAC + DLQ replay tests; OpenAPI contract tests (Seed)
-**Target:** webhooks Gate 1 (P1); public `/v1` at Seed trigger
-**Constraints:** ADR-005 R2 (NATS JetStream durable queues), HMAC-SHA256 + `Idempotency-Key`, 5 attempts exp backoff → `webhook_dead_letter`
+The smallest funded epic, and deliberately so — EP-08 is the seam where Dux starts talking to the outside world programmatically, but only the P1 slice (webhooks) is scheduled for Gate 1. Objective: BR-006 programmatic access at Gate 1, BR-011 public data API held for Seed. **Metrics:** HMAC + DLQ replay tests; OpenAPI contract tests at Seed. **Target:** webhooks at Gate 1; public `/v1` waits for the Seed trigger. **Constraints:** ADR-005 R2 (NATS JetStream durable queues), HMAC-SHA256 signing plus an `Idempotency-Key`, and 5 delivery attempts with exponential backoff before falling into `webhook_dead_letter`.
 
 | Feature | Stories | Key Tasks | Hours |
 |---------|---------|-----------|-------|
@@ -228,19 +216,17 @@ gantt
 | **EP-08-F02** Public data API `/v1` | US-022, US-024 (deferred) | No tasks — Seed trigger; openapi.yaml skeleton ready (BS-17a) | 0 |
 | **EP-08-F03** Outbound MCP server | US-026 (deferred) | No tasks — no near-term trigger; gates through EP-07 kernel | 0 |
 
-### EP-09 — Triage Disposition (0h, Deferred)
+## EP-09 and EP-10 — the two epics with nothing scheduled
 
-**Objective:** BR-012 risk-acknowledgment lifecycle with audit
-**Target:** Gate 2 write; Seed public read of `is_acknowledged`
-**Status:** Deferred to Gate-2 backlog (D-19 capacity fallback; 30h). Spec ready: `VulnerabilityInstanceAckService`.
+Two epics round out the ten, and both carry zero Gate-1 hours by design rather than by oversight.
 
-### EP-10 — Personalization (0h, Deferred)
+**EP-09 — Triage Disposition (0h, Deferred).** Objective: BR-012, the risk-acknowledgment lifecycle with audit. **Target:** a Gate-2 write path, with a Seed-stage public read of `is_acknowledged`. **Status:** deferred to the Gate-2 backlog as a D-19 capacity fallback (30 hours parked there). The spec is ready — `VulnerabilityInstanceAckService` — it simply isn't funded in this pass.
 
-**Objective:** BR-002 per-customer triage personalization
-**Target:** Gate 2c — deliberately not promoted (needs behavioral data volume, GCIS §B still-staged list)
-**Status:** Spec ready: `PreferenceEngine`. Never cross-tenant training (isolation invariant).
+**EP-10 — Personalization (0h, Deferred).** Objective: BR-002's per-customer triage personalization. **Target:** Gate 2c — and deliberately not promoted any earlier, because it needs a volume of behavioral data the product won't have generated yet (it sits on the GCIS §B still-staged list). **Status:** spec ready — `PreferenceEngine` — with one invariant already locked in regardless of when it ships: it will never train across tenants. That's the isolation invariant EP-01 exists to guarantee, and EP-10 inherits it.
 
-## User Story Index
+## The user story index
+
+Twenty-eight stories, closed set, no exceptions. Reading this table left to right tells you not just what each story is, but which epic funds it, how many points it carries, who it's for, and whether it's actually scheduled or waiting on a gate.
 
 | Story | Epic | Feature | Points | Persona | Status | Gate |
 |-------|------|---------|--------|---------|--------|------|
@@ -273,9 +259,9 @@ gantt
 | US-027 | EP-02 | EP-02-F05 | 8 | Security engineer | To Do | Gate 2 candidate |
 | US-028 | EP-03 | EP-03-F04 | — | Security engineer | Spec authored | Gate 2 |
 
-## Dependencies & Sequencing
+## Sequencing: what actually blocks what
 
-Critical path dependencies that gate later work:
+None of the epic-by-epic order above is arbitrary — it follows a real dependency chain, and eight links in that chain are the ones that would actually stall the schedule if missed.
 
 | Dependency | Blocks | Week |
 |------------|--------|------|
@@ -288,9 +274,9 @@ Critical path dependencies that gate later work:
 | EP-02 CrowdStrike/Wiz connectors | EP-06-F02 control refinements (deferred) | Week 7 |
 | EP-05 F02 chat spike (Week 4) | EP-05 F02 chat writes (Week 14) | Week 4 → 14 |
 
-## Documented Framework Deviations (D-EX)
+## Where the plan breaks its own rules — on purpose
 
-Seven deliberate breaks from the Epic/Feature/Story template:
+A strict Epic/Feature/Story framework would fail this backlog in seven places, and rather than paper over the gaps, the team documented every one of them as a deliberate exception with a rationale attached.
 
 | # | Rule | Deviation | Rationale |
 |---|------|-----------|-----------|
@@ -302,9 +288,9 @@ Seven deliberate breaks from the Epic/Feature/Story template:
 | D-EX-6 | Feature must have ACs, dependencies, API boundary, SLA | Deferred/draft features carry only Parent / FR / Story-in-prose | No scheduled build target — specifying ACs/SLA would fake precision |
 | D-EX-7 | Story DoD = merge gates + verification + staging + demo | Per-story DoD states only merge gates + verification | Full four-part bar enforced at Epic/Sprint level, not repeated across 40+ story lines |
 
-## Validation Rules
+## The rules that hold the whole thing together
 
-Enforced on every change by `scripts/validate-playbooks.py`:
+None of the above works without automated enforcement. `scripts/validate-playbooks.py` runs on every change and checks six invariants:
 
 1. **No orphans** — every Feature has a parent Epic, every Story a Feature, every Task a Story or Feature (D-EX-3)
 2. **No widows** — every Epic has ≥1 Feature; every non-deferred Feature has ≥1 Story or enabler task
@@ -313,7 +299,9 @@ Enforced on every change by `scripts/validate-playbooks.py`:
 5. **Status cascade** — parent is Done only when every child is Done
 6. **Tech-lead gate** — every task carries assignee, hours, discipline, type, and target week
 
-## Risk Items & Mitigations
+## What could still go wrong
+
+A 42-hour buffer is not a large margin for error, and the team's own risk register names exactly where the pressure points are.
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
@@ -325,9 +313,9 @@ Enforced on every change by `scripts/validate-playbooks.py`:
 | EU AI Act counsel opinion | Blocks EU provisioning if not delivered Week 6 | Legal/PM lane — 0 eng hours but hard external deadline |
 | ZDR with OpenAI + Anthropic | Subprocessor-listing precondition, H2 deadline | Legal/PM lane — 0 eng hours, tracked in executive summary |
 
-## What's Deliberately Excluded from Gate-1 Sum
+## What's deliberately left out of the Gate-1 sum
 
-A small Gate-2/fast-follow register (D-8, not in the Gate-1 total):
+Not everything the team wants to build lives in the 2,118-hour total. A small Gate-2/fast-follow register (D-8) sits outside it on purpose:
 
 | Item | Est. Hours | Notes |
 |------|-----------|-------|
@@ -335,6 +323,10 @@ A small Gate-2/fast-follow register (D-8, not in the Gate-1 total):
 | H8 connector-freshness + live contract tests | ~16h | — |
 | H11 full SBOM/SLSA | ~8h | — |
 | H6/H9 runbook/instrumentation | Low | Not separately called out |
+
+## The takeaway
+
+Strip away the table formatting and what this document really is becomes clear: a record of a team repeatedly choosing honesty over comfort. When the numbers didn't fit the calendar, they raised the calendar rather than quietly trim scope three times running. When a framework rule didn't fit reality, they wrote down why they broke it instead of hiding the break. When an arithmetic error crept into a 2,000-plus-hour rollup, a script caught it and the record was corrected in the open. That's what a 42-hour buffer against 2,118 hours of committed work actually buys a team at Week 0: not safety margin, but the discipline to know exactly how thin the margin is.
 
 ## Sources
 
