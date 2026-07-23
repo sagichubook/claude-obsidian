@@ -176,7 +176,7 @@ The design stub `security/design/inter-agent-jwt.md` is a pre-seed exit artifact
 
 ### 1.9 · Authorization model
 
-Least-privilege subsets live in the agent's `config.permissions`: `allowed_tools`, `max_autonomy` (`supervised` / `autonomous`), and `rate_limits`.
+Proving who you are is only half of it — what you're allowed to do is a separate, narrower question. Least-privilege subsets live in the agent's `config.permissions`: `allowed_tools`, `max_autonomy` (`supervised` / `autonomous`), and `rate_limits`.
 
 - **An agent cannot self-escalate.**
 - **Cross-tenant access is forbidden** at the credential-validation layer.
