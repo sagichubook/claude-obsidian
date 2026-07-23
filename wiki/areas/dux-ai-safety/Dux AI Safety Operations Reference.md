@@ -192,7 +192,7 @@ Every delegation is recorded in this table with the granting user, the target ag
 
 ### 1.11 · Audit and WORM chain
 
-**Required fields on every action:**
+Everything above only matters if it's provably recorded afterward — an unauditable identity system is just a promise. **Required fields on every action:**
 
 | Field | Required | Notes |
 |-------|----------|-------|
