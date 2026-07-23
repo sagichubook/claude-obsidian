@@ -213,11 +213,15 @@ Everything above only matters if it's provably recorded afterward — an unaudit
 
 ## 2 · Confidence calibration
 
+An identity check answers *who*. This section answers something harder: how sure is the agent actually allowed to sound? A model that's confidently wrong is worse than one that admits uncertainty, so nothing in Dux trusts a raw self-reported confidence number.
+
 **Purpose:** how an assessment's `confidence_score` is produced, calibrated, and turned into a verdict label or an abstention. **Parents:** BR-002 (BRD-EXP-003 — exploitability trust → calibration pipeline → false-positive-rate KPI).
 
 Extends `EXPLOITABILITY_ASSESSMENT.confidence_score`, which is Platt-scaled.
 
 ### 2.1 · Three-signal ensemble
+
+No single signal is trusted alone — three independent measurements get blended into one score:
 
 | Signal | Weight | When available |
 |--------|--------|----------------|
