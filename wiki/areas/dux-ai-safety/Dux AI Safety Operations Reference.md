@@ -323,6 +323,8 @@ The 20% theoretical-maturity stratum (n≈50) sits at the floor, not above it �
 
 ### 2.10 · Re-sampling schedule
 
+Calibration isn't a one-time fit — the world drifts, so the schedule has to catch drift from two different sources, not just model changes:
+
 - **On model/prompt change:** re-fit Platt parameters whenever `model_version` or `prompt_version` changes (already required — a `CalibrationRecord` is keyed on both).
 - **Quarterly cadence regardless of pin changes**, to catch calibration drift from distribution shift in incoming CVEs rather than only from model changes.
 - **Targeted re-sample:** a stratum whose Brier score regresses more than 10% between fits is flagged for a targeted re-sample (additional golden-set cases added to that stratum specifically) rather than a full 250-case re-collection.
