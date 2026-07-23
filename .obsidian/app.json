@@ -6,6 +6,8 @@
     "skills/",
     "_templates/",
     ".github/",
+    ".git/",
+    ".raw/",
     "README.md",
     "CLAUDE.md",
     "WIKI.md",

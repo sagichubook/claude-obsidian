@@ -11,14 +11,10 @@
             "id": "56a9c5f33d840e78",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "wiki/areas/dux-operations/Dux Customer Success Guide.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Dux Customer Success Guide"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ]
@@ -193,6 +189,9 @@
   },
   "active": "56a9c5f33d840e78",
   "lastOpenFiles": [
+    "wiki/areas/dux-operations/Dux Customer Success Guide.md",
+    "wiki/areas/dux-product/Dux Product Guide.md.tmp.6960.1ec333a089d3",
+    "wiki/areas/dux-product/Dux Product Guide.md.tmp.6960.094b935f81f0",
     "camel-plane.md",
     "wiki/areas/dux-ai-safety/Dux AI Safety Guide.md",
     "wiki/log.md",
@@ -215,8 +214,6 @@
     "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md.tmp.6960.512030731b8d",
     "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md.tmp.6960.84ea2d5bedd4",
     "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md.tmp.6960.e61c930d1d94",
-    "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md.tmp.6960.c2a5ff4fff4b",
-    "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md.tmp.6960.6eb995097d05",
     "wiki/areas/dux-gtm/Dux GTM Guide.md",
     "architecture-diagrams.md",
     "GEMINI.md",
@@ -229,7 +226,6 @@
     "docs/methodology-modes-guide.md",
     "wiki/resources/dux-meta/Dux Decisions & Traceability Reference.md",
     "wiki/resources/dux-api/Dux API Reference.md",
-    "wiki/hot.md",
     "assets/diagrams/hybrid-retrieval.svg",
     "assets/social-preview.png",
     "assets/diagrams/vault-flow.svg",
