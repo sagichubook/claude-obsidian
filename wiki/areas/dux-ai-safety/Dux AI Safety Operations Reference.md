@@ -667,6 +667,8 @@ Two rate limiters — the model provider's and Dux's own — can trip in the sam
 
 ### 4.9 · R6 — Context window exhaustion
 
+A large tenant's asset count can run the agent straight into the 128 K ceiling — this is how it fails without losing the work already done.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** `DuxContextWindowExhausted` (128 K).
