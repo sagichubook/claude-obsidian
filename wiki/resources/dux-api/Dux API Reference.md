@@ -1,6 +1,7 @@
 ---
 type: resource
 title: "Dux API Reference"
+address: c-000015
 topic: "dux/api"
 created: 2026-07-22
 updated: 2026-07-23
