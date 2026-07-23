@@ -105,6 +105,8 @@ Seven claims, and every agent token carries them all — this is the shape every
 
 ### 1.3 · Credential types
 
+Four credential families exist side by side, each scoped to a different surface — none of them are interchangeable:
+
 | Type | Use |
 |------|-----|
 | Per-agent **session JWT** | MCP gateway authentication |
