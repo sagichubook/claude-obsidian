@@ -750,6 +750,8 @@ A HITL queue that rubber-stamps everything isn't providing review — it's provi
 
 ### 4.13 · R10 — Memory / context poisoning
 
+This is CaMeL's own detection surface (`camel.output_audit_failed`, `connector_drift_anomaly`) turning into an active containment procedure.
+
 > **Severity:** P1 · **Type:** AGENTIC-SAAS
 
 **Trigger:** `camel.output_audit_failed` spike or a `connector_drift_anomaly` tied to one tenant/session.
