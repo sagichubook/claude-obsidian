@@ -3,10 +3,15 @@ owner: Founder
 status: canonical
 gate: 1
 last_reviewed: 2026-07-21
+updated: 2026-07-23
 decisions: [D-3, D-4, D-7, D-17, D-36, H1, H4, H5]
 ---
 
 # Dux Product Guide
+
+## Thousands to Tens: How Dux Decides What Actually Matters
+
+*A per-environment, attacker-minded reasoning system that tells a security team which findings are exploitable right now — and what to do about it.*
 
 **Purpose:** what Dux is, what ships at Gate 1, and what is deliberately fenced beyond it. **Parents:** all BRs · **Canon:** ideal-state v2.2 · **Marketing language:** Dux Vision Reference.
 
@@ -18,11 +23,13 @@ Navigation: [[Dux]] | [[Dux Feature Reference]] | [[Dux Taxonomy & Catalogs]]
 
 **"Thousands to tens"** — the product's core promise.
 
-## Thesis
+## The Question Every Security Team Is Actually Asking
+
+Every security team drowning in scanner output asks the same question: of the thousands of findings on the board, which ones can an attacker actually use right now? Dux exists to answer that question directly.
 
 Dux is a **per-environment, attacker-minded reasoning system**. It decides what is *actually exploitable here*, and the *fastest path to protection*.
 
-Every security team drowning in scanner output asks the same question: of the thousands of findings on the board, which ones can an attacker actually use right now? Dux exists to answer that question directly. It is a multi-tenant SaaS platform where an AI agent takes a CVE plus a customer's live environment evidence and works out what's genuinely exploitable and the fastest way to shut the door on it: an **Analyze → Mitigate → Remediate** pipeline that, as of Gate 1, runs unattended by default for three of its five possible write actions.
+It is a multi-tenant SaaS platform where an AI agent takes a CVE plus a customer's live environment evidence and works out what's genuinely exploitable and the fastest way to shut the door on it: an **Analyze → Mitigate → Remediate** pipeline that, as of Gate 1, runs unattended by default for three of its five possible write actions.
 
 It runs at machine speed for analysis and re-assessment. It is personalized per customer through coding agents rather than static rules. It rides third-party frontier models. **It is defensive only.** And it takes governed write actions on the customer's security stack. Three of five actions are unattended by default, with human review as the anomaly-escalation path; the other two (`endpoint.isolate`, `patch.deploy_special_devices`) are gated to mandatory human approval until each earns unattended execution via a field-proven safety record (D-17). Of the three, `network.blocklist_add` and `ticket.create_remediation` are live at Gate 1; `policy.deploy_device_config`'s unattended posture activates only once its Gate-3/W2 Intune connector ships.
 
@@ -32,7 +39,7 @@ The product thesis and every gate criterion trace back to one Founder, Sagi (see
 
 ---
 
-## Core Properties
+## Four Properties That Make Dux More Than a Chatbot Wrapped Around a Scanner
 
 Dux rests on four core properties that distinguish it from a chatbot wrapped around a scanner:
 
@@ -57,14 +64,14 @@ The practical implication: every capability in the table below has a clear deliv
 
 ---
 
-## Five Delivery Pillars
+## Five Delivery Pillars, One Interlocking System
 
 | Pillar | Delivers | Canonical spec |
 |--------|----------|----------------|
-| **A** — Moat: World Model, eval, personalization | [[Dux Taxonomy & Catalogs|World Model]], investigation-code artifacts, preference engine, golden-set eval | [[Dux Architecture Guide|data-model]], [[Dux Taxonomy & Catalogs|taxonomy]], US-017 / US-009 |
+| **A** — Moat: World Model, eval, personalization | [[Dux Taxonomy & Catalogs\|World Model]], investigation-code artifacts, preference engine, golden-set eval | [[Dux Architecture Guide\|data-model]], [[Dux Taxonomy & Catalogs\|taxonomy]], US-017 / US-009 |
 | **B** — Safety scales with autonomy | governance kernel, kill switch, CaMeL, anomaly-escalation HITL | [[Dux AI Safety Guide]] |
 | **C** — Claim ↔ capability firewall | claims traceability, gate-safe copy | [[Dux GTM Guide]] |
-| **D** — Isolation + compliance invariants | RLS FORCE, composite keys, SOC 2 / ISO | [[Dux Architecture Guide|multi-tenancy]], [[Dux Governance & Compliance Guide]] |
+| **D** — Isolation + compliance invariants | RLS FORCE, composite keys, SOC 2 / ISO | [[Dux Architecture Guide\|multi-tenancy]], [[Dux Governance & Compliance Guide]] |
 | **E** — Extensibility spine | the 8-part contract, catalogs-as-manifest | [[Dux Taxonomy & Catalogs]] |
 
 Pillar B is worth dwelling on, because it's the thesis behind Dux's whole approach to autonomy: safety doesn't get bolted on after the agent gets more capable, it scales *with* capability, gate by gate. That principle shows up everywhere below.
@@ -131,7 +138,7 @@ This earned-trust model is the product's most defensible moat. Any competitor th
 
 ---
 
-## The Dux Agent
+## The Dux Agent: One Face, a Small Fleet of Specialists
 
 **The agent persona — Dux Agent.** An "Aggressive Exposure Management Specialist": calm, logical, humble, transparency-focused, and **citation-first** — every exploitability claim references a permitted source (NVD, asset inventory, control evidence).
 
@@ -150,7 +157,7 @@ The agent's reasoning is citation-first: every exploitability claim references a
 
 ---
 
-## Human Personas
+## Who's Actually Using This
 
 | Persona | Goal | Primary stories | Degraded path without connectors |
 |---------|------|-----------------|----------------------------------|
@@ -184,13 +191,13 @@ The eight-icon sidebar plus chat maps directly onto the user-story set:
 
 Feature specs live in `features/`. The nav-label vs page-title split, and the Mitigation-nav vs Mitigate-stage distinction, are canonical in [[Dux Taxonomy & Catalogs]] — they are easy to conflate, and must not be.
 
-### Nav-Label vs Page-Title Distinction
+### The Mix-Up to Avoid: Nav-Label vs Page-Title
 
 The **Mitigation nav** (the sidebar item, really the Analyze-stage research queue) is not the same thing as the **Mitigate stage** (the automation that actually executes a write action). They sound alike and they aren't. The nav-label vs page-title split, and the Mitigation-nav vs Mitigate-stage distinction, are canonical in [[Dux Taxonomy & Catalogs]] — they are easy to conflate, and must not be. This is the single most common mix-up in the whole corpus. The nav-label vs page-title split exists because the sidebar uses action-oriented language ("Mitigation") while the page title uses outcome-oriented language ("Research Dashboard"). Both are correct, but they describe different things. When in doubt, refer to [[Dux Taxonomy & Catalogs]] for the authoritative mapping.
 
 ---
 
-## Phase-1 Gate Model
+## Phase-1 Gate Model: Bars to Clear, Not Dates on a Calendar
 
 Dux ships in gates, not sprints-with-a-deadline. Each gate is a bar to clear, not a date on a calendar. **Gates activate on events, not on the calendar.**
 
