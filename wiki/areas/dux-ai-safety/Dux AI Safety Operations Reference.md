@@ -309,7 +309,7 @@ The **n ≥ 50** holdout above wasn't picked arbitrarily — here's the statisti
 
 ### 2.9 · Per-stratum minimums
 
-The golden set's CVSS-decile stratification ([ci-cd-testing §3](../50-engineering/ci-cd-testing.md)) puts ~25 CVEs per decile bin, each crossed with environment fixtures — comfortably above the 40–60 floor once crossed.
+The overall floor is one thing; the binding constraint turns out to live in a narrower slice of the data. The golden set's CVSS-decile stratification ([ci-cd-testing §3](../50-engineering/ci-cd-testing.md)) puts ~25 CVEs per decile bin, each crossed with environment fixtures — comfortably above the 40–60 floor once crossed.
 
 The binding constraint is **exploit-maturity strata** (30% functional / 50% PoC / 20% theoretical of 250 ≈ **75 / 125 / 50**), since `test:calibration --stratified` fits Platt parameters per stratum where per-stratum drift is suspected.
 
