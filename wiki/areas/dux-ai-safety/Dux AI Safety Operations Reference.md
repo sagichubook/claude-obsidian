@@ -350,6 +350,8 @@ Identity and calibration are Dux-specific mechanisms. This section is the outsid
 
 ### 3.2 · Agentic risks — ASI01–ASI10
 
+Ten categories, scored honestly rather than uniformly marked "Implemented" — several rows are still Partial, and that's stated plainly:
+
 | ID | Risk | Maturity | Residual | Key controls |
 |----|------|----------|----------|--------------|
 | ASI01 | Agent Goal Hijack | Implemented | Low | CaMeL L1–L2, GOV-001, prompt-injection CI |
