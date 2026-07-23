@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux GTM Guide"
+address: c-000008
 topic: "dux/gtm"
 created: 2026-07-22
 updated: 2026-07-23
