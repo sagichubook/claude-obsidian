@@ -3,26 +3,32 @@ type: resource
 title: "Dux Taxonomy & Catalogs"
 topic: "dux/product"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [resource, dux, dux/product]
 status: mature
 sources: [".raw/dux/10-product/taxonomy.md", ".raw/dux/10-product/catalogs.md"]
 related: ["[[Dux]]", "[[Dux Product Guide]]", "[[Dux Feature Reference]]", "[[Dux AI Safety Guide]]", "[[Dux Architecture Guide]]"]
 ---
 
-# Dux Taxonomy & Catalogs
+# The Controlled Vocabulary Dux Speaks
+
+### How one word means the same thing everywhere in the product — and what happens the moment it doesn't
 
 Navigation: [[Dux]] | [[Dux Product Guide]] | [[Dux Feature Reference]]
 
-Two registries in one page because they answer the same underlying question from opposite directions: the **taxonomy** fixes what every label and enum *means*, and the **catalogs** fix what every extension point *is*. Between them, they're the controlled vocabulary the entire product speaks. OpenAPI 3.1 owns the public wire enums; this page owns the UI and application-layer projections onto them.
+---
+
+## Why a vocabulary page earns its own place in the corpus
+
+Every non-trivial product eventually hits the same failure mode: the word "Exploitable" means one thing in the database, something slightly different in the UI copy, and something else again on the public API — and nobody notices until a customer's dashboard disagrees with their own webhook payload. Dux fights that failure mode with two registries that answer the same underlying question from opposite directions. The **taxonomy** fixes what every label and enum *means*. The **catalogs** fix what every extension point *is*. Between them, they're the controlled vocabulary the entire product speaks — and this page holds both, because splitting them across two files would just recreate the drift they exist to prevent. OpenAPI 3.1 owns the public wire enums; this page owns the UI and application-layer projections onto them.
 
 **Parents:** BR-002, BR-011 · **Authority:** OpenAPI 3.1 owns the public enums; this document owns the UI and application projections.
 
 ---
 
-## 1. Layered exploitability model
+## 1. One exploitability model, three layers, one direction of travel
 
-Three layers, projected in **one direction only** — application → UI → public API, never the reverse:
+The single most important discipline on this page is that exploitability data flows in **one direction only** — application → UI → public API, never the reverse. That's not an implementation detail; it's what keeps a public API consumer from ever seeing more granularity than a UI user, and what keeps the UI from ever showing more than the application layer actually computed.
 
 | Layer | Values | Where used |
 |---|---|---|
@@ -32,7 +38,7 @@ Three layers, projected in **one direction only** — application → UI → pub
 
 ### Confidence bands
 
-Lower bound inclusive, upper exclusive:
+The application layer's five-way label isn't arbitrary — it's a direct read of a numeric confidence score, bucketed with the lower bound inclusive and the upper bound exclusive:
 
 | Band | Label |
 |------|-------|
@@ -42,7 +48,9 @@ Lower bound inclusive, upper exclusive:
 | [0.00, 0.40) | `not_exploitable` |
 | abstain | `insufficient_data` |
 
-### Application → public projection
+### How the internal label becomes the public one
+
+Nothing on the public API surface is computed independently — every value there is a deliberate, coarser projection of the internal assessment label:
 
 | Assessment label | Confidence band | Public `exploitability_status` |
 |------------------|-----------------|-------------------------------|
@@ -53,17 +61,17 @@ Lower bound inclusive, upper exclusive:
 | `insufficient_data` | abstain | `null` |
 | CVE not researched | — | `null` |
 
-`confidence_score` is **not** exposed on public v1. `insufficient_data_reason` (`asset_gap` · `intel_gap` · `context_limit`) is application and UI only.
+`confidence_score` is **not** exposed on public v1 — that granularity stays internal by design. `insufficient_data_reason` (`asset_gap` · `intel_gap` · `context_limit`) is application and UI only, never public.
 
-**Network exposure verdict** (`network_exposure`): `internet` · `external` · `internal` · `unreachable`. Nullable.
+One more verdict rounds out the model: **network exposure** (`network_exposure`) is `internet` · `external` · `internal` · `unreachable`, and it's nullable.
 
-**UI label aliases.** Figma "Exploitable" → the Mitigation Required subset (`potentially_exploitable`). "Not Exploitable" / "Unexploitable" → Protected (`not_exploitable`). "Unresearched" → `null`.
+And because design files don't always speak the same language as engineering specs, there's a standing alias table: Figma's "Exploitable" label maps to the Mitigation Required subset (`potentially_exploitable`); "Not Exploitable" / "Unexploitable" maps to Protected (`not_exploitable`); "Unresearched" maps to `null`.
 
 ---
 
-## 2. Confidence scoring methodology
+## 2. What actually produces a confidence score
 
-**This is confidence-in-exploitability, not a composite risk score.** Dux does not compute a CVSS × EPSS × criticality × exposure formula, an asset-criticality multiplier, or a config-drift baseline comparison — there is no DuxScore. What produces `confidence_score` is a three-signal ensemble, specified in full in [[Dux AI Safety Guide]]:
+It's worth being explicit about what this system is *not* doing, because the instinct in security tooling is almost always to reach for a composite formula. **This is confidence-in-exploitability, not a composite risk score.** Dux does not compute a CVSS × EPSS × criticality × exposure formula, an asset-criticality multiplier, or a config-drift baseline comparison — there is no DuxScore. What actually produces `confidence_score` is a three-signal ensemble, specified in full in [[Dux AI Safety Guide]]:
 
 | Signal | Weight | When available |
 |--------|--------|----------------|
@@ -71,13 +79,13 @@ Lower bound inclusive, upper exclusive:
 | Semantic entropy, over meaning-clustered completions | 0.35 | always |
 | Verbalized confidence, from structured output | 0.25 | always |
 
-### Renormalization
+### When a signal goes missing
 
-When logprobs are unavailable, the remaining two signals renormalize to **entropy 0.54 / verbalized 0.46**. The ensemble output feeds **Platt scaling**, which produces the calibrated `confidence_score` that the bands in §1 threshold against.
+Not every model API exposes logprobs, so the ensemble has a defined fallback rather than silently degrading: when logprobs are unavailable, the remaining two signals renormalize to **entropy 0.54 / verbalized 0.46**. The ensemble output then feeds **Platt scaling**, which produces the calibrated `confidence_score` that the bands in §1 threshold against.
 
-### CalibrationRecord
+### The record behind the scaling
 
-The `CalibrationRecord` behind that scaling is the global `CALIBRATION_RECORD` entity in [[Dux Architecture Guide]], carrying these fields:
+The `CalibrationRecord` behind that scaling is the global `CALIBRATION_RECORD` entity in [[Dux Architecture Guide]], and it carries exactly four fields:
 
 | Field | Purpose |
 |-------|---------|
@@ -88,13 +96,13 @@ The `CalibrationRecord` behind that scaling is the global `CALIBRATION_RECORD` e
 
 ---
 
-## 3. Evidence freshness (H8, Gate-2 hardening)
+## 3. Why a stale connector is a safety defect, not a data-quality nit
 
-**A stale connector does not fail loudly — it feeds stale evidence, which produces a wrong verdict. That is a safety defect, not a data-quality nit.**
+It's tempting to treat connector freshness as an operational metric — something for a status page, not a spec. Dux treats it as a first-class safety concern instead, and the reasoning is worth stating plainly: **a stale connector does not fail loudly — it feeds stale evidence, which produces a wrong verdict.** That's the H8 finding, and it's tracked as Gate-2 hardening rather than a nice-to-have.
 
-Every connector carries a freshness SLO, measured as the age of its last successful sync (the CONN-001 pattern). Evidence past its freshness window sets a **degraded-evidence flag** on the affected verdicts, and **degraded evidence cannot support a high-confidence band**: an `exploitable` or `likely` verdict is downgraded, or becomes `insufficient_data` with reason `intel_gap` or `asset_gap`.
+Every connector carries a freshness SLO, measured as the age of its last successful sync (the CONN-001 pattern). Evidence past its freshness window sets a **degraded-evidence flag** on the affected verdicts, and — this is the enforcement mechanism that makes the whole thing matter — **degraded evidence cannot support a high-confidence band**: an `exploitable` or `likely` verdict gets downgraded, or becomes `insufficient_data` with reason `intel_gap` or `asset_gap`.
 
-### Maintenance tiering
+Maintenance itself is tiered by how load-bearing a connector is:
 
 | Tier | Treatment |
 |------|-----------|
@@ -105,7 +113,7 @@ Every connector carries a freshness SLO, measured as the age of its last success
 
 ## 4. EntityType: the closed set behind DQL and custom metrics
 
-Eight entity types, gated in two waves:
+Every entity a tenant can query through DQL or build a custom metric against belongs to one of eight closed types, and those eight types ship in two waves rather than all at once:
 
 | Gate | Types |
 |------|-------|
@@ -114,21 +122,21 @@ Eight entity types, gated in two waves:
 
 ---
 
-## 5. World Model evidence types
+## 5. The World Model, and the evidence it's built from
 
-`World Model` is a proper noun — a versioned artifact (`world_model_versions`, ADR-003), never written lowercase. It is the evidence substrate every Dux Agent assessment reasons over, built from eight evidence types:
+`World Model` is a proper noun — a versioned artifact (`world_model_versions`, ADR-003), never written lowercase. It's the evidence substrate every Dux Agent assessment reasons over, and it's built from exactly eight evidence types:
 
 `ASSET` · `FINDING` · `CONTROL` · `OWNERSHIP_EVIDENCE` · `EXPLOITABILITY_ASSESSMENT` · `ASSESSMENT_REASONING_STEP` · `ATTACK_PATH` · `CONTROL_MAPPING`
 
-A new evidence type extends the catalogs registry **before** it extends any connector annex: evidence typing is corpus-governed, not something a connector integration can define locally.
+The ordering rule matters here too: a new evidence type extends the catalogs registry **before** it extends any connector annex. Evidence typing is corpus-governed, not something a connector integration is allowed to define locally — otherwise the same drift problem this whole page exists to prevent would just re-open through the back door.
 
-Agentic RAG retrieval runs against the World Model's graph projection (Apache AGE) and vector store (pgvector) in parallel with episodic memory and live threat-intel APIs: see [[Dux Architecture Guide]] for the full retrieval architecture.
+Agentic RAG retrieval runs against the World Model's graph projection (Apache AGE) and vector store (pgvector) in parallel with episodic memory and live threat-intel APIs — the full retrieval architecture lives in [[Dux Architecture Guide]].
 
 ---
 
-## 6. Mitigation factor cards (US-011)
+## 6. Mitigation factor cards: the evidence behind a Protected verdict
 
-Figma display titles map to a canonical `factor_type`:
+When a UI shows a customer *why* something is protected rather than just asserting that it is, that explanation comes from a factor card. Each Figma display title maps to exactly one canonical `factor_type`:
 
 | Display title | `factor_type` | Source | Gate |
 |---------------|--------------|--------|------|
@@ -138,11 +146,11 @@ Figma display titles map to a canonical `factor_type`:
 | Firewall Blocks Exploitation | `firewall_blocks_exploitation` | `crowdstrike` | Gate 1 (connector live) |
 | Process Not Listening On Ports | `process_not_listening` | `dux-resident-agent` | Gate 5 |
 
-**Figma's "playbook cards" are these same factor cards under a design-file name, never a separate entity.**
+**Figma's "playbook cards" are these same factor cards under a design-file name, never a separate entity** — a naming trap worth flagging explicitly, because it's exactly the kind of drift this whole page exists to prevent.
 
-### Control settings
+### One layer underneath: control settings
 
-`CONTROL.settings` (JSONB — see [[Dux Architecture Guide]]) is a free-form bag today. The UI surfaces specific named settings as the evidence behind a Protected or blocked verdict. These are the canonical values; treat them as a controlled vocabulary going forward:
+`CONTROL.settings` (JSONB — see [[Dux Architecture Guide]]) is a free-form bag today, but the UI surfaces a specific set of named settings as the evidence behind a Protected or blocked verdict. These three are canonical; treat them as a controlled vocabulary going forward:
 
 | Setting | Meaning | Example attribution |
 |---------|---------|---------------------|
@@ -150,25 +158,23 @@ Figma display titles map to a canonical `factor_type`:
 | `RestrictedIPAllowlist` | allows access only from approved IP ranges | — |
 | `DefaultDenyExternalAccess` | denies all unsolicited external connections by default | — |
 
-These sit **underneath** the factor cards above — they are the rule detail shown when a factor card is expanded. They do not replace the factor-card model.
+These sit **underneath** the factor cards above — they're the rule detail shown when a factor card is expanded, not a replacement for the factor-card model.
 
 ---
 
-## 7. Reachable vs breachable
+## 7. Reachable vs breachable: the customer-facing translation
 
-The UI frames exploitability as **reachable** (an attacker has a network path) versus **breachable** (reachable *and* prerequisites met *and* no blocking control).
+Engineers and the UI need a way to talk about exploitability that doesn't require explaining confidence bands to a CISO mid-demo. The answer is a simple two-word frame: **reachable** (an attacker has a network path) versus **breachable** (reachable *and* prerequisites met *and* no blocking control).
 
-This is the same distinction the corpus already models — the `network_exposure` verdict (§1), the four-state exposure model, and the mitigation factor cards — expressed in customer-facing words. **Use "reachable vs breachable" in UI copy and GTM material; `network_exposure` and the exposure states remain the internal and API vocabulary. No schema change is implied.**
+This isn't a new model bolted on top — it's the same distinction the corpus already computes, expressed in customer-facing words: the `network_exposure` verdict from §1, the four-state exposure model, and the mitigation factor cards above. **Use "reachable vs breachable" in UI copy and GTM material; `network_exposure` and the exposure states remain the internal and API vocabulary. No schema change is implied.**
 
-**Relationship Graph Engine** is the customer-facing name for the existing vulnerability ↔ asset ↔ control mapping capability, backed by `ATTACK_PATH` and `CONTROL_MAPPING` (§5) and the graph query model in [[Dux Architecture Guide]]. **It names something already built. It is not a new build.**
-
-**Today this is single-hop mapping only** — one vulnerability to one asset to one control, not multi-hop lateral-movement kill-chain traversal. Multi-hop attack-path graph traversal is roadmap, not scoped for Phase 1.
+The **Relationship Graph Engine** name deserves the same clarification. It's the customer-facing name for the existing vulnerability ↔ asset ↔ control mapping capability, backed by `ATTACK_PATH` and `CONTROL_MAPPING` (§5) and the graph query model in [[Dux Architecture Guide]]. **It names something already built. It is not a new build.** And it's worth being precise about its current limits: **today this is single-hop mapping only** — one vulnerability to one asset to one control, not multi-hop lateral-movement kill-chain traversal. Multi-hop attack-path graph traversal is roadmap, not scoped for Phase 1.
 
 ---
 
-## 8. Naming glossary
+## 8. The naming glossary — where most terminology bugs actually come from
 
-Roughly half of every cross-file terminology bug found during the corpus's own review traces back to violating one of these rules:
+If there's one table on this page worth memorizing, it's this one. Roughly half of every cross-file terminology bug found during the corpus's own review traces back to violating one of these ten rules:
 
 | Canonical | Deprecated / internal alias | Rule |
 |-----------|----------------------------|------|
@@ -183,11 +189,13 @@ Roughly half of every cross-file terminology bug found during the corpus's own r
 | tenant | organization (UI only) | API and code always say `tenant_id` |
 | exploitability assessment | assessment (UI shorthand) | Formal docs and US-011 |
 
-**"Mitigation nav" and "Mitigate stage" are different things.** The nav is the Analyze-stage research queue. The stage is mitigation automation. Conflating them is the most common naming error in this corpus.
+The single most common naming error in this corpus deserves its own sentence, not just a table row: **"Mitigation nav" and "Mitigate stage" are different things.** The nav is the Analyze-stage research queue. The stage is mitigation automation. Conflating them is the error this whole glossary exists to catch.
 
 ---
 
-## 9. Design system
+## 9. The design system: color, shape, type, and motion
+
+A design system is its own kind of controlled vocabulary — a color means a state, an icon means a state, and neither is allowed to mean two things.
 
 ### Exposure-state colors
 
@@ -203,11 +211,11 @@ Roughly half of every cross-file terminology bug found during the corpus's own r
 | Page background | `#F3F4F6` |
 | Card background | `#FFFFFF` |
 
-**Stage pills.** Exploitability Analysis — pink (`#EC4899` family). Lightweight Mitigations — tan/brown. Remediation Acceleration — blue.
+**Stage pills** carry their own distinct palette from the exposure states above: Exploitability Analysis is pink (`#EC4899` family), Lightweight Mitigations is tan/brown, and Remediation Acceleration is blue.
 
-### Iconography
+### Iconography — never color alone
 
-Color **and** shape, per WCAG 2.2 SC 1.4.1 — color alone never carries meaning:
+Per WCAG 2.2 SC 1.4.1, color alone is never allowed to carry meaning — every state pairs a color with a distinct shape:
 
 | Icon | State |
 |------|-------|
@@ -224,9 +232,11 @@ Color **and** shape, per WCAG 2.2 SC 1.4.1 — color alone never carries meaning
 
 ### Typography
 
-Inter or system font. Headline 24/700; card title 16/600; metric 32/700 in the state color; body 14/400. Spacing on a 4 px base — card padding 24, gap 16, section 32.
+Inter or system font. Headline is 24px/700 weight; card title 16/600; metric 32/700 in the state color; body 14/400. Spacing runs on a 4px base — card padding 24, gap 16, section 32.
 
 ### Contrast audit (WCAG 2.2 SC 1.4.3)
+
+Not every color in the palette above actually passes contrast on its own — this audit is why the iconography rule above isn't optional:
 
 | Color | Ratio | Verdict |
 |-------|-------|---------|
@@ -236,17 +246,17 @@ Inter or system font. Headline 24/700; card title 16/600; metric 32/700 in the s
 | `#8B5CF6` on gray | 3.8:1 | large text only |
 | `#8B5CF6` on white | 4.6:1 | pass |
 
-### AI worker status messages
+### How the agent narrates its own reasoning
 
-Stream on screens 1–9, with agent states `REASONING` / `TOOL_CALLING` / `EVALUATING` / `COMPLETE`. Each line carries a **non-color indicator** — a spinner or an icon. These states are emitted by the Temporal workflow via NATS SSE fan-out, not by a framework intermediary (ADR-021) — the dashboard receives raw `AssessmentDelta` events from `ExploitabilityAssessmentWorkflow`.
+AI worker status messages stream on screens 1–9, cycling through agent states `REASONING` / `TOOL_CALLING` / `EVALUATING` / `COMPLETE`. Each line carries a **non-color indicator** — a spinner or an icon — consistent with the contrast-failure lesson above. These states are emitted by the Temporal workflow via NATS SSE fan-out, not by a framework intermediary (ADR-021) — the dashboard receives raw `AssessmentDelta` events straight from `ExploitabilityAssessmentWorkflow`.
 
 ---
 
 ## 10. Error taxonomy
 
-### DuxErrorCode
+When something goes wrong, it goes wrong through one of two parallel vocabularies — a wire-level code shared across every transport, and an application-level exception class underneath it.
 
-Shared across REST, SSE, and webhooks:
+### DuxErrorCode — shared across REST, SSE, and webhooks
 
 | Code | HTTP |
 |------|------|
@@ -271,6 +281,8 @@ A workflow abandons at **15 minutes**. Context checkpoints at ≥80% depth, and 
 
 ## 11. Platform edge cases
 
+Every one of these rows exists because something specific was observed to go wrong, and each carries the exact behavior that's supposed to happen instead plus the test ID that verifies it:
+
 | Scenario | Expected behavior | Test |
 |----------|-------------------|------|
 | NVD unavailable >2 h | serve from S3 cache; warn `NVD_SYNC_WARN` at >2 h, critical `NVD_SYNC_STALE` at >4 h | CONN-001 |
@@ -283,9 +295,9 @@ A workflow abandons at **15 minutes**. Context checkpoints at ≥80% depth, and 
 
 ---
 
-## 12. Extensibility framework (the 8-part contract)
+## 12. The extensibility framework: how a new axis gets added without drifting
 
-Every extension axis conforms to all eight:
+This is the mechanism that keeps the fourteen-axis registry system below from decaying the way most "add a row to this table" systems eventually do. Every extension axis — integrations, agents, models, events, flags, actions — conforms to the same eight-part contract:
 
 1. A path-derived, stable ID.
 2. The SSoT registry is a manifest view.
@@ -296,9 +308,9 @@ Every extension axis conforms to all eight:
 7. A lifecycle runbook — add, promote, deprecate, retire.
 8. CI parity.
 
-### Expansion ripple sequence
+### The expansion ripple, in order
 
-The expansion ripple, in order: **new ID → registry row → spec → BR/FR/US link → gate + flag → event + test → CI green → deprecate on retire.**
+**new ID → registry row → spec → BR/FR/US link → gate + flag → event + test → CI green → deprecate on retire.**
 
 ### Controlled vocabularies (validator-enforced)
 
@@ -309,13 +321,13 @@ The expansion ripple, in order: **new ID → registry row → spec → BR/FR/US 
 | `status` | `active`, `gate_2c`, `gate_3`, `gate_5`, `ui_evidence`, `platform_managed`, `roadmap`, `deprecated`, `retired` |
 | agent `layer` | `product_persona`, `runtime_service`, `workflow_subagent`, `gate3_workflow`, `third_party_isv`, `roadmap` |
 
-**The filesystem plus the AI-BOM is the source of truth.** The tables below are human-readable views that CI compiles and validates (`validate-playbooks.py`, `pnpm test:agent-registry-parity`, `aibom-validate`). **Add rows here or in the named catalog — never in a derived view.**
+**The filesystem plus the AI-BOM is the source of truth.** The tables in this page are human-readable views that CI compiles and validates (`validate-playbooks.py`, `pnpm test:agent-registry-parity`, `aibom-validate`). **Add rows here or in the named catalog — never in a derived view.**
 
 ---
 
 ## 13. Integration catalog
 
-The connector framework and ≥3 live connectors (CrowdStrike, Wiz, ServiceNow/Entra) ship at Gate 1 (ADR-011 R2). Ingest gates for the W1 launch set are Gate 1; W2 and W3 are later waves.
+This is where every connector, feed, and research source Dux talks to gets a stable ID, a role, and a wave. **The connector framework and ≥3 live connectors (CrowdStrike, Wiz, ServiceNow/Entra) ship at Gate 1** (ADR-011 R2). Ingest gates for the W1 launch set are Gate 1; W2 and W3 are later waves.
 
 | `integration_id` | kind | capabilities | role | ingest wave | action | primary US | ingest spec |
 |----------------|------|--------------|------|-------------|--------|-----------|-------------|
@@ -341,11 +353,13 @@ The connector framework and ≥3 live connectors (CrowdStrike, Wiz, ServiceNow/E
 | `netskope`, `perimeter81`, `prisma_browser`, `island` | vendor_connector / roadmap | ingest | network_context — first real use of this ADR-011 R2 role interface (D-54) | roadmap | — | — | — |
 | `horizon3_nodezero` | vendor_connector / roadmap | ingest | validation — autonomous pentest/BAS, first real use of this ADR-011 R2 role interface (D-54) | roadmap | — | — | — |
 
+Two-thirds of that table is roadmap rows rather than shipped connectors, and that's deliberate: every real vendor worth integrating with gets a placeholder row and a role the day it's identified, long before engineering hours are budgeted for it, so nothing has to be invented later just to file a decision about it.
+
 ---
 
-## 14. Sources OpenAPI enum (full 42 values)
+## 14. The Sources OpenAPI enum: all 42 values, and why the count is bigger than the connector list
 
-**The `Sources` enum is not the connector list.** The OpenAPI `Sources` enum values are used as scanner and ingest provenance **attribution tags** on API responses. They are not contractual connectors.
+This section exists to head off a specific, recurring confusion. **The `Sources` enum is not the connector list.** The OpenAPI `Sources` enum values are used as scanner and ingest provenance **attribution tags** on API responses. They are not contractual connectors.
 
 **Marketing's "10+ tools" means integration-catalog connectors, not the attribution tags.** The full source × ConnectorRole × wave taxonomy (roles: `asset_discovery`, `scanner`, `identity`, `threat_intel`, `network_context`, `validation`, `ticketing`) lives in ADR-011 R2. **CI asserts that no enum value lacks a taxonomy row.** This count (42) differs from the count cited in ADR-011 R2; the gap is tracked as Open Items.
 
@@ -355,7 +369,7 @@ The `Sources` enum, as shipped on the wire (`components.schemas.Sources`, `docs/
 
 All 42 are confirmed live vendor/source identifiers off the wire — not a smaller subset. `aws`, `nvd`, `crowdstrike`, `wiz`, `servicenow`, `qualys`, and `sentinelone` match an `integration_id` in the catalog above (§13) literally. `cisa` and `microsoft_entra` are the likely wire-name counterparts of `cisa-kev` and `entra-id` respectively, but the enum uses a different naming scheme (bare snake_case) than the catalog (kebab-case with a role suffix — `-kev`, `-id`, `-idp`) — this divergence is not yet confirmed as a 1:1 identity and is folded into Open Items. The remaining 33 values — Jamf, JumpCloud, Okta, Kandji, Jira, Workspace ONE, OneLogin, Microsoft Intune, Microsoft Defender, Azure AD App, Azure Cloud, GCP, Netskope, Kace, Google Workspace, Google Cloud Identity, Prisma Access Browser, Rapid7 InsightVM, Perimeter 81, Island, Horizon3.ai NodeZero, Orca Security, Apple Business Manager, Tenable.io, Tenable.sc, Nessus, Trellix, Tanium, FIRST/EPSS, Exploit-DB, Freshservice, Upwind, ServiceDesk Plus, and VulnCheck — are real, named vendors with **no catalog row yet**. That is a coverage gap in the integration catalog, not an open question about whether they're legitimate sources.
 
-### Sources role breakdown (33 not-yet-built values)
+### How those 33 not-yet-built values break down by role
 
 | Role | Count | Vendors |
 |---|---|---|
@@ -369,9 +383,9 @@ All 42 are confirmed live vendor/source identifiers off the wire — not a small
 
 ---
 
-## 15. Data Ingestion Spec Index
+## 15. Where the ingestion spec actually lives (it's scattered on purpose)
 
-No single indexed doc holds the ingestion spec — it is correctly cross-referenced but scattered across five files by design (each owns the layer it's canonical for, per standing editorial rule 3). This is that index:
+A newcomer looking for "the" ingestion spec will not find one file — and that's a deliberate editorial choice, not an oversight. The spec is correctly cross-referenced but scattered across five files, each owning the layer it's canonical for, per standing editorial rule 3. This is the index that ties them together:
 
 | Layer | File |
 |-------|------|
@@ -383,15 +397,17 @@ No single indexed doc holds the ingestion spec — it is correctly cross-referen
 
 ---
 
-## 16. NVD enrichment fallback priority
+## 16. When NVD goes dark: the enrichment fallback
 
-NVD enrichment collapsed 2026-04-15, leaving roughly 29,000 pre-March-2026 CVEs stuck `Not Scheduled`. When NVD enrichment is unavailable or a CVE is `Not Scheduled`, the ingest pipeline falls back to `cisa-kev` (binary known-exploited signal) and `epss` (probability score) as the primary enrichment sources for that CVE.
+NVD enrichment collapsed on 2026-04-15, leaving roughly **29,000 pre-March-2026 CVEs** stuck in a `Not Scheduled` state. That event is the reason this fallback exists at all: when NVD enrichment is unavailable, or a CVE is `Not Scheduled`, the ingest pipeline falls back to `cisa-kev` (a binary known-exploited signal) and `epss` (a probability score) as the primary enrichment sources for that CVE.
 
-This mirrors the H8 stale-connector-evidence pattern in §3: **missing full NVD enrichment caps the assessment at the `likely` confidence band — it can never reach `exploitable` — until NVD data resolves for that CVE.** CISA-KEV and EPSS evidence alone is not sufficient grounds for the highest confidence band.
+This mirrors the H8 stale-connector-evidence pattern from §3, and the enforcement is just as strict: **missing full NVD enrichment caps the assessment at the `likely` confidence band — it can never reach `exploitable` — until NVD data resolves for that CVE.** CISA-KEV and EPSS evidence alone is not sufficient grounds for the highest confidence band, no matter how strong the signal looks on its own.
 
 ---
 
 ## 17. Agent catalog
+
+Every agent that runs in production has a row here — its layer, whether it's customer-visible, its blast radius, and the gate it ships at:
 
 | `agent_id` | layer | customer-visible | `agent_type` | blast radius | gate | primary US |
 |----------|-------|------------------|-----------|--------------|------|-----------|
@@ -406,7 +422,7 @@ This mirrors the H8 stale-connector-evidence pattern in §3: **missing full NVD 
 | `dux-resident-agent` | runtime_service | N | physical_resident | high | Gate 5 | US-020 |
 | `third-party-isv` | third_party_isv | Y | supervised | high | Series B | — |
 
-### New runtime agent requirements
+### What it takes to add a new one
 
 A new runtime agent requires **all of**:
 
@@ -421,9 +437,9 @@ The agent persona (Dux Agent by default) is defined in [[Dux Product Guide]].
 
 ---
 
-## 18. Model provider catalog
+## 18. Model provider catalog — and the retention problem sitting underneath it
 
-Pins dated 2026-06, on a **quarterly pin-review cadence** tied to the CI pin gate — checked against each provider's current GA lineup and retirement policy every quarter, not only when a pin breaks.
+Model pins are dated 2026-06, on a **quarterly pin-review cadence** tied to the CI pin gate — checked against each provider's current GA lineup and retirement policy every quarter, not only when a pin breaks:
 
 | `provider_id` | role | model strings | residency | status |
 |-------------|------|---------------|-----------|--------|
@@ -433,25 +449,25 @@ Pins dated 2026-06, on a **quarterly pin-review cadence** tied to the CI pin gat
 
 Escalation to `openai/gpt-5.5` runs behind the Unleash flag `reasoning_model_tier` — enterprise plus critical CVEs only.
 
-**Providers are subprocessors — data leaves. Connectors are not.**
+**Providers are subprocessors — data leaves. Connectors are not.** That distinction is the reason the retention question below matters as much as it does.
 
 **Model IDs and prices are point-in-time pins.** The durable mechanism is `models.json` + AI-BOM + the CI pin gate (standing editorial rule 2, Dux Decisions Log).
 
 ### Zero Data Retention (H2 — Gate-1 legal task)
 
-**Dux sends customer environment topology — assets, controls, network, identity — to these providers.**
+Here's the part of this catalog that isn't just a lookup table — it's an open legal and procurement risk stated plainly: **Dux sends customer environment topology — assets, controls, network, identity — to these providers.**
 
-Neither trains on API data by default. **But abuse-monitoring logs are retained by default: OpenAI ~30 days; Anthropic 7 days by default since 2025-09-14.** Anthropic's "Covered Models" list (per Anthropic's Usage Policy) is excluded from even that 7-day default and follows separate terms. **ZDR is a separate contractual arrangement, and requires provider approval at both vendors.**
+Neither provider trains on API data by default. **But abuse-monitoring logs are retained by default: OpenAI ~30 days; Anthropic 7 days by default since 2025-09-14.** Anthropic's "Covered Models" list (per Anthropic's Usage Policy) is excluded from even that 7-day default and follows separate terms. **ZDR is a separate contractual arrangement, and requires provider approval at both vendors.**
 
-For a security vendor, default retention of a customer's live attack surface — 7 to 30 days depending on provider — is an enterprise-procurement blocker.
+For a security vendor, default retention of a customer's live attack surface — 7 to 30 days depending on provider — is an enterprise-procurement blocker, not a footnote.
 
-**ZDR negotiated with OpenAI and Anthropic is a precondition of subprocessor listing.** Until ZDR is in place, **the CaMeL S-LLM must not receive customer-identifying context.** That is a data-residency invariant, not merely an injection defense (see [[Dux AI Safety Guide]]).
+**ZDR negotiated with OpenAI and Anthropic is a precondition of subprocessor listing.** Until ZDR is in place, **the CaMeL S-LLM must not receive customer-identifying context.** That's a data-residency invariant, not merely an injection defense — see [[Dux AI Safety Guide]] for the full boundary design.
 
 ---
 
 ## 19. Event catalog (SSoT for webhooks / SSE / audit)
 
-Full DTO and delivery spec: [[Dux API Reference]].
+Every event the platform can emit — over webhook, SSE, or the audit stream — has a canonical ID, a producer, and a gate. Full DTO and delivery spec: [[Dux API Reference]].
 
 | `event_id` | class | gate | producer |
 |----------|-------|------|----------|
@@ -474,9 +490,9 @@ Full DTO and delivery spec: [[Dux API Reference]].
 
 ---
 
-## 20. Feature-flag catalog
+## 20. Feature-flag catalog — and why it's not the same thing as the kill switch
 
-Unleash flags. **These are distinct from the kill switch** — a flag is a release control; the kill switch is a safety control. Never conflate the two.
+Unleash flags govern release rollout. **These are distinct from the kill switch** — a flag is a release control; the kill switch is a safety control. Never conflate the two, because they answer different questions: a flag asks "should this ship yet," a kill switch asks "should this stop running right now."
 
 | `flag_id` | gate | default | kill-switch relation |
 |---------|------|---------|----------------------|
@@ -494,11 +510,13 @@ Unleash flags. **These are distinct from the kill switch** — a flag is a relea
 | `risk_trend_forecasting` | Gate 2 | off | — |
 | `rag_enabled` | Seed, reassess | **on** (2026-07-19, D-34 — Agentic RAG with constrained decoding, ADR-020 R2) | — |
 
-`mitigation_stage` and `remediation_stage` describe unattended automation for the three earned-autonomy actions, and default **on** at Gate 1. The approval surface (D-4) is the anomaly-escalation UI for those three; for `endpoint.isolate` and `patch.deploy_special_devices` it is the mandatory pre-approval gate — see [[Dux AI Safety Guide]].
+`mitigation_stage` and `remediation_stage` describe unattended automation for the three earned-autonomy actions, and they default **on** at Gate 1. The approval surface (D-4) is the anomaly-escalation UI for those three; for `endpoint.isolate` and `patch.deploy_special_devices` it is the mandatory pre-approval gate — see [[Dux AI Safety Guide]] for how that distinction is enforced end to end.
 
 ---
 
-## 21. Vendor action catalog (write path)
+## 21. Vendor action catalog — the write path
+
+This is the single most consequential table on this page: it's the exact list of everything Dux Agent is allowed to *do* to a customer's live security stack, and the HITL posture attached to each action.
 
 **The HITL tier column is the tier used for anomaly escalation on the three earned-autonomy actions. For `endpoint.isolate` and `patch.deploy_special_devices` it is a mandatory gate on every call, not an escalation-only path.**
 
@@ -510,11 +528,13 @@ Unleash flags. **These are distinct from the kill switch** — a flag is a relea
 | `patch.deploy_special_devices` | high | T3 | — | **Gate 1, mandatory HITL** — no API-level rollback on firmware-only devices; not unattended |
 | `ticket.create_remediation` | low | T1 | `servicenow` | **Gate 1 (create + route), unattended by default** |
 
-**Writes flow only through `VendorActionGate`. Connectors must not call vendor mutation APIs.** Vendor-native name mapping: ADR-012.
+**Writes flow only through `VendorActionGate`. Connectors must not call vendor mutation APIs.** Vendor-native name mapping lives in ADR-012.
 
 ---
 
 ## 22. Reasoning eval catalog
+
+Five named evals gate every model change before it can regress silently:
 
 | Eval | Asserts |
 |------|---------|
@@ -526,7 +546,7 @@ Unleash flags. **These are distinct from the kill switch** — a flag is a relea
 
 **A golden-set regression above 2% is a P0 merge block** (NFR-008).
 
-**Personalization artifacts are tenant-scoped. There is never cross-tenant training.**
+**Personalization artifacts are tenant-scoped. There is never cross-tenant training** — a design invariant worth stating alongside the evals, since it's exactly the kind of guarantee an eval suite alone can't prove.
 
 ---
 
@@ -543,15 +563,17 @@ Full detail in [[Dux Governance & Compliance Guide]].
 
 ### Isolation invariants (non-negotiable)
 
+Three architectural guarantees sit underneath every compliance claim above and are never traded away for convenience:
+
 - **RLS FORCE** on every `tenant_id` table
 - **Composite foreign keys**
 - **Apache AGE graph isolation**, with Neo4j reserved as a future escape valve only
 
 ---
 
-## 24. Other registries (14-axis index)
+## 24. The other ten axes of the registry — and where they actually live
 
-The full index spans 14 axes. These live elsewhere:
+The full controlled-vocabulary index spans 14 axes; this page owns the ones dense enough to need their own tables. The rest live where their canonical spec already lives, cross-referenced here rather than duplicated:
 
 | Axis | Canonical home |
 |------|----------------|
@@ -568,3 +590,4 @@ The full index spans 14 axes. These live elsewhere:
 
 - `.raw/dux/10-product/taxonomy.md`
 - `.raw/dux/10-product/catalogs.md`
+</content>
