@@ -626,6 +626,8 @@ A forced migration shifts the golden-set baseline, and **schema-parity checks al
 
 ### 4.7 · R4 — MCP dependency failure
 
+A dead MCP server is deceptively quiet — nothing crashes, results just stop showing up.
+
 > **Severity:** P2 · **Type:** AGENTIC-SAAS
 
 **Trigger:** MCP errors >50% over 5 min, or a health-check failure.
