@@ -583,6 +583,8 @@ Cost evaluation order (D-3): **$0.675/assessment breaker → $25/hour CostCap �
 
 ### 4.5 · R3 — Model provider outage
 
+When the upstream model provider goes down, the assessment pipeline has to degrade gracefully rather than silently fail.
+
 > **Severity:** P1 · **Type:** COMPOSITE
 
 **Trigger:** OpenAI status ≠ operational, or `DuxLLMAvailabilityFastBurn`.
