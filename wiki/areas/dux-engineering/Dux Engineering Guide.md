@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux Engineering Guide"
+address: c-000006
 topic: "dux/engineering"
 created: 2026-07-22
 updated: 2026-07-23
