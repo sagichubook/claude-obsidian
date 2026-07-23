@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux AI Safety Guide"
+address: c-000003
 topic: "dux/ai-safety"
 created: 2026-07-22
 updated: 2026-07-23
