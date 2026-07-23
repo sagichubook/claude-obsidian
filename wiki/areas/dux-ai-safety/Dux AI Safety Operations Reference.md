@@ -371,6 +371,8 @@ Ten categories, scored honestly rather than uniformly marked "Implemented" — s
 
 ### 3.3 · LLM risks — LLM01–LLM10
 
+The agentic-specific list above sits alongside the more general LLM Top 10 — and here the whole program comes down to a single blocking row:
+
 | ID | Risk | Maturity | Gate-1 blocker? |
 |----|------|----------|-----------------|
 | LLM01 | Prompt Injection | Implemented (Promptfoo block + Garak nightly) | No |
