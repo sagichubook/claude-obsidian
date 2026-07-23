@@ -3,18 +3,26 @@ type: resource
 title: "Dux Decisions & Traceability Reference"
 topic: "dux/governance"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [resource, dux, dux/governance]
 status: mature
 sources: [".raw/dux/00-meta/decisions-log.md", ".raw/dux/00-meta/traceability-matrix.md", ".raw/dux/00-meta/open-items.md", ".raw/dux/00-meta/quick-reference.md"]
 related: ["[[Dux]]", "[[Dux Architecture Guide]]", "[[Dux Governance & Compliance Guide]]"]
 ---
 
-# Dux Decisions & Traceability Reference
+# Every Call Dux Ever Made, and Why
+
+### The audit trail behind a product that promised its specs would never quietly drift from its history
 
 Navigation: [[Dux]] | [[Dux Architecture Guide]] | [[Dux Governance & Compliance Guide]]
 
-This page is the audit trail: every decision that shaped the product, every open item still unresolved, the quick-reference governance facts, and the join table connecting business requirements down to individual verification commands. It's reference material by design — dense and lookup-oriented rather than narrative, because that's what an audit trail is actually for. Specs elsewhere state current truth in the present tense with no change history; this is the deliberate, sole exception, and it's the most cross-referenced page in the entire corpus.
+---
+
+## Why this page reads differently from every other page in the corpus
+
+Every other spec in this knowledge base is written in the present tense on purpose — read one and you learn what's true *today*, with no chain of dated diffs to mentally apply. That rule (D-12) makes the rest of the corpus fast to read. But it only works if somewhere, in exactly one place, the history that rule deliberately hides still gets recorded in full. This is that place.
+
+This page is the audit trail: every decision that shaped the product, every open item still unresolved, the quick-reference governance facts, and the join table connecting business requirements down to individual verification commands. It's reference material by design — dense and lookup-oriented rather than narrative, because that's what an audit trail is actually for. Specs elsewhere state current truth in the present tense with no change history; this is the deliberate, sole exception, and it's the most cross-referenced page in the entire corpus — the raw decisions-log alone carries 53 inbound references, cited by decision ID, which is why nobody is allowed to move it, rename it, or renumber its decisions.
 
 ---
 
@@ -28,7 +36,9 @@ These decisions bind the `docs/` tree. The original playbooks live in git histor
 
 > **This file is the exception to D-12.** Specs state current truth in the present tense and carry no change history — **this log carries all of it.** If you want to know what a document used to say, and why it changed, the answer is here, or in `git log`. **It is not in the spec.**
 
-## Process decisions
+## Where the discipline itself came from
+
+Before any product decisions get logged, five process decisions set the rules of the game for how this whole tree would be written and maintained:
 
 | # | Decision |
 |---|----------|
@@ -38,7 +48,9 @@ These decisions bind the `docs/` tree. The original playbooks live in git histor
 | P-4 | Structure: numbered domain folders (00-meta … 80-gtm) mirroring the product's feature structure |
 | P-5 | Contradictions resolved by the corpus's own authority hierarchy (GCIS → OpenAPI 3.1 for `/v1/*` → BR→FR→US → Claims map → agent registry); scope/audience questions asked, judgment calls documented |
 
-## Foundational tech-stack decisions (2026-07-05)
+## The foundational tech-stack calls (2026-07-05)
+
+Nine decisions made in one sitting set the technical spine everything else built on:
 
 | # | Area | Decision | Rationale |
 |---|------|----------|-----------|
@@ -48,43 +60,35 @@ These decisions bind the `docs/` tree. The original playbooks live in git histor
 | D-4 | HITL timing | **Approve/deny surface is a Gate-1 blocker for write actions**: API approval Week 8 → minimal approve/deny UI by Gate 1 review (Week 12 under D-7 R1) → full chat HITL UI Week 14 (`chat_write_tools`). Write actions do not enable before their approval surface exists. *(Superseded in part 2026-07-13: the surface no longer gates every write — it serves the anomaly-escalation path; timing unchanged.)* | ADR-012 R2 ships HITL writes at launch; an approval path must launch with them (resolves BS-16); weeks shifted with the D-7 re-baseline |
 | D-5 | Secrets | **AWS SSM Parameter Store** on ECS Fargate from Gate 1; Vault optional later (transit for OAuth refresh tokens may stay per ADR-011) | Follows the ECS promotion; native IAM integration |
 | D-6 | Rate limits | Two explicit planes: **application API** 1,000 / 5,000 / 10,000 req/min (Starter/Pro/Enterprise) and **public data API** 60 / 300 / negotiated req/min | Resolves BS-25; both tables were plane-specific, never reconciled |
-| D-7 | Plan re-baseline | *(Original 2026-07-05)* the 5-engineer × 14-week calendar was sized for Analyze-only; re-baseline required at build start. **R1 (RESOLVED 2026-07-09): Gate 1 moves to Week 12, Phase-1 exit to Week 16 (16-week / 2,000 h envelope).** | GCIS promoted scope without re-baselining effort (blind spot A-4); quantified by the [execution backlog](../90-execution/traceability.md) |
+| D-7 | Plan re-baseline | *(Original 2026-07-05)* the 5-engineer × 14-week calendar was sized for Analyze-only; re-baseline required at build start. **R1 (RESOLVED 2026-07-09): Gate 1 moves to Week 12, Phase-1 exit to Week 16 (16-week / 2,000 h envelope).** | GCIS promoted scope without re-baselining effort (blind spot A-4); quantified by the [[Dux Portfolio]] execution backlog |
 | D-8 | Adversarial-audit disposition (H1–H11, 2026-07-09) | 🔴 **H1–H4 fold into Gate-1 scope now** (+42 eng h) → Gate-1 backlog ≈**1,901 h (95% of 2,000 h, ~99 h buffer)**. 🟠 H5–H9 = Gate-2 hardening register. 🟡 H10–H11 = fast-follows | seam audit (marketing↔product↔engineering); the four 🔴s are enterprise-review blockers |
 | D-9 | Sandbox budget & partial-failure semantics | Per-tenant **300 sandbox-seconds/hr + 5 concurrent microVMs**, enforced in the governance kernel (`budget_exceeded` → L2); partial-failure semantics BLOCKED → no retry / TIMEOUT → 1 retry then HITL T3 / OOM → no retry + HITL T3 | closes TBD E-3 (uncapped-execution hole) |
 
-## Update 2026-07-09 — canonical-v3 absorption
+## The long middle: absorption, audits, and re-gating
 
-The ClickUp knowledge export (canonical v3 corpus + deep-research validations + adversarial audit + claim-safe patch set) was absorbed into this tree. Claim-safe wording applied; **Gartner sourcing reversal** — the Mar-2026 Gartner (Nunez) 2028/70% quote is confirmed primary research; EU AI Act status updated to Digital-Omnibus-Council-adopted/OJ-pending; 2026 citations added corpus-wide.
+What follows is a chronological run of working sessions, each closing real findings rather than just discussing them. Reading them in order shows the actual shape of how this corpus matured — not a straight line, but a series of audits catching real defects and getting them fixed on the spot.
 
-## Update 2026-07-11 — competitor-scan promotion
+**Update 2026-07-09 — canonical-v3 absorption.** The ClickUp knowledge export (canonical v3 corpus + deep-research validations + adversarial audit + claim-safe patch set) was absorbed into this tree. Claim-safe wording applied; **Gartner sourcing reversal** — the Mar-2026 Gartner (Nunez) 2028/70% quote is confirmed primary research; EU AI Act status updated to Digital-Omnibus-Council-adopted/OJ-pending; 2026 citations added corpus-wide.
 
-A hypothetical/unverified competitor spec ("Dux Plus") was scanned for feature insights. 32 items checked, 16 real findings surfaced (5 claims-critical, 3 medium, 8 opportunistic). Sagi reviewed and accepted all 16, promoting them into the real backlog:
+**Update 2026-07-11 — competitor-scan promotion.** A hypothetical/unverified competitor spec ("Dux Plus") was scanned for feature insights. 32 items checked, 16 real findings surfaced (5 claims-critical, 3 medium, 8 opportunistic). Sagi reviewed and accepted all 16, promoting them into the real backlog:
 
 - **Backlog additions:** `US-002-T05`/`US-001-T12` (asset criticality/environment fields, EP-02/EP-03), `US-018-T06` (severity-tiered remediation routing, EP-06), `US-004-T07` (IAM/segmentation compensating controls, EP-06), `US-007-T06` (broader auto-tagging, EP-02). New Stories: `US-025` Outcome Learning (EP-03-F03, deferred post-Gate-3), `US-026` Outbound MCP Server (EP-08-F03, deferred), `US-027` Proactive Tool Discovery (EP-02-F05, Gate 2 candidate). New FRs: `FR-027`/`FR-028`/`FR-029`.
 - **GTM copy:** `gtm-guardrails.md` qualifier tightened; `competitive.md` gets a forward-looking note about the DeepEval + 250-CVE golden-set eval harness.
 - **Explicitly not done:** no "Dux Plus" row added to `competitive.md` (not a real competitor).
 
-## Update 2026-07-12 — full BR→Epic→US→Task traceability audit
+**Update 2026-07-12 — full BR→Epic→US→Task traceability audit.** Findings and fixes: matrix bugs fixed (BR-009, BR-010, US-003 reference gaps); hour-math bug found and fixed at its root; 4 features documented as already-live with zero backing engineering task added as real scheduled tasks (+52h); corrected grand total: 2,073h against the 2,000h envelope — a 73h overrun; 3 stale traceability ranges fixed; file-removal check: nothing removable.
 
-Findings and fixes: matrix bugs fixed (BR-009, BR-010, US-003 reference gaps); hour-math bug found and fixed at its root; 4 features documented as already-live with zero backing engineering task added as real scheduled tasks (+52h); corrected grand total: 2,073h against the 2,000h envelope — a 73h overrun; 3 stale traceability ranges fixed; file-removal check: nothing removable.
+**Update 2026-07-12 (later session) — closed audit files removed.** Six point-in-time audit/checklist artifacts deleted. `stack-review-2026-07.md` kept (19 findings still awaiting disposition). Two defects fixed: `backlog-ep03.md` footer total corrected; stale `public-data-api.md` line fixed.
 
-## Update 2026-07-12 (later session) — closed audit files removed
+**Update 2026-07-12 (third session) — multi-expert docs review pass.** Five-reviewer panel over the full `docs/` tree. Resolutions: US-004/US-006 dual-spec ownership resolved; stale Railway references fixed; `architecture-overview.md` infra-tree comment corrected; dangling M-10 reference fixed; `validate-playbooks.py` tracked in git; panel-discovered corrections applied (D-4 timing drift, etc.).
 
-Six point-in-time audit/checklist artifacts deleted. `stack-review-2026-07.md` kept (19 findings still awaiting disposition). Two defects fixed: `backlog-ep03.md` footer total corrected; stale `public-data-api.md` line fixed.
+**Update 2026-07-13 — H5/unattended-write escalation resolved.** **HITL requirement lifted for Gate-1 launch.** Vendor write actions execute by default at Gate 1 without waiting for human approval. Compensating controls stay fully intact: kill switch (KS-L1–L4, <5 s propagation), governance-kernel budget/effect/DLP gates, least-privilege scoped action credentials, hash-chained audit, blast-radius tiering. HITL retained only as an **anomaly-escalation path** (low-confidence verdicts, sandbox TIMEOUT/OOM per D-9, extreme-blast-radius outliers).
 
-## Update 2026-07-12 (third session) — multi-expert docs review pass
+**Update 2026-07-13 (second session) — re-gating propagation + claims-alignment.** Two outcomes: (1) **Claims-alignment directive (Sagi): live marketing claims bind the corpus 100%.** (2) **Re-gating propagation completed.** The first pass missed the authority and execution layers — fixed across 20+ files.
 
-Five-reviewer panel over the full `docs/` tree. Resolutions: US-004/US-006 dual-spec ownership resolved; stale Railway references fixed; `architecture-overview.md` infra-tree comment corrected; dangling M-10 reference fixed; `validate-playbooks.py` tracked in git; panel-discovered corrections applied (D-4 timing drift, etc.).
+### The documentation-discipline turn (2026-07-14)
 
-## Update 2026-07-13 — H5/unattended-write escalation resolved
-
-**HITL requirement lifted for Gate-1 launch.** Vendor write actions execute by default at Gate 1 without waiting for human approval. Compensating controls stay fully intact: kill switch (KS-L1–L4, <5 s propagation), governance-kernel budget/effect/DLP gates, least-privilege scoped action credentials, hash-chained audit, blast-radius tiering. HITL retained only as an **anomaly-escalation path** (low-confidence verdicts, sandbox TIMEOUT/OOM per D-9, extreme-blast-radius outliers).
-
-## Update 2026-07-13 (second session) — re-gating propagation + claims-alignment
-
-Two outcomes: (1) **Claims-alignment directive (Sagi): live marketing claims bind the corpus 100%.** (2) **Re-gating propagation completed.** The first pass missed the authority and execution layers — fixed across 20+ files.
-
-## Documentation discipline decisions (2026-07-14)
+This is the pivot point where the corpus stopped over-compressing itself. Two audit passes — one on writing quality, one on validator and cross-reference machinery — found the docs weren't over-sold (the hype lexicon returned just 4 hits across 67.6k words, three of them quotations under review), but they *were* over-compressed and under-governed: no metadata layer on any of 66 files, 39 open questions spread across seven unrelated ID schemes, and roughly 122 inline change-history markers making specs read as diffs against their own past rather than statements of current truth. Three decisions fixed that at the root:
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -92,7 +96,9 @@ Two outcomes: (1) **Claims-alignment directive (Sagi): live marketing claims bin
 | D-11 | **Open questions leave prose and enter a register.** `open-items.md` is the single list (`OI-##`), each with an owner, a severity, and what it blocks; the originating ID is preserved in an Origin column | 39 TBD boxes with no owner had turned the corpus into an issue tracker with no assignee column |
 | D-12 | **Change history leaves prose and stays in this file.** Specs state current truth in the present tense. This log plus git history is the record | a reader had to reconstruct the current state by mentally applying a chain of dated diffs |
 
-## Update 2026-07-14 (second session) — Bedrock inference path; write-path control gaps closed
+The same pass repaired the validator itself, which had been silently inert since it was written: `finditer(text, re.MULTILINE)` was passing the flag as `pos`, and the pattern carried no `MULTILINE` flag, so `^` never matched and every task-hour sum silently evaluated to zero.
+
+**Update 2026-07-14 (second session) — Bedrock inference path; write-path control gaps closed.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -101,7 +107,7 @@ Two outcomes: (1) **Claims-alignment directive (Sagi): live marketing claims bin
 | D-15 | **A rollback catalog is authored for the 5 canonical write actions** (R-01…R-05). Resolves OI-03. | `rollbackProcedure` was a required field pointing at nothing |
 | D-16 | **Temporal Cloud transport/payload security specified:** mTLS client certs via AWS SSM, per-tenant-DEK `PayloadCodec`. | ADR-007 R2 left this as "still to be specified at build" |
 
-## Update 2026-07-15 — architecture-panel recommendations disposed
+**Update 2026-07-15 — architecture-panel recommendations disposed.** A panel review's central finding was that the 2026-07-13 unattended-by-default posture was out of step with the 2026 market's tiered-autonomy consensus. This is where the write-action posture got its lasting shape:
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -109,11 +115,11 @@ Two outcomes: (1) **Claims-alignment directive (Sagi): live marketing claims bin
 | D-18 | **OI-04 resolved: tenant offboarding soft-deletes at day 0.** `multi-tenancy.md` §5 confirmed as authority. | Three-way GDPR/DPA-relevant conflict resolved |
 | D-19 | **OI-05 resolved: documented fallback lever applied.** EP-09 (30h), US-015 (11h), US-005 (30h) deferred to Gate-2. Gate-1 total: 2,002h against 2,000h envelope (~100.1%). | Closest available without further scope cut or envelope re-baseline |
 
-## Update 2026-07-16 — stack-review quick wins applied
+D-17 is the decision every write-path table in this corpus ultimately traces back to — it's why two of the five canonical actions stay gated to mandatory human review while the other three run unattended.
 
-SR-01 (cache scope), SR-06 (PgBouncer/Neon), SR-08 (Temporal harness citation), SR-09 (model pins), SR-10 (OTel GenAI semconv), SR-15 (Temporal versioning wording) — all applied.
+**Update 2026-07-16 — stack-review quick wins applied.** SR-01 (cache scope), SR-06 (PgBouncer/Neon), SR-08 (Temporal harness citation), SR-09 (model pins), SR-10 (OTel GenAI semconv), SR-15 (Temporal versioning wording) — all applied.
 
-## Update 2026-07-16 (second session) — full audit-remediation pass
+**Update 2026-07-16 (second session) — full audit-remediation pass.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -121,11 +127,9 @@ SR-01 (cache scope), SR-06 (PgBouncer/Neon), SR-08 (Temporal harness citation), 
 | D-21 | **ASI02/ASI09 re-scored (resolves OI-28).** ASI02: Implemented/Low → Implemented/Low-Medium. ASI09: Partial/Medium → Partial/Medium-High. | D-17's mixed-autonomy posture invalidated the original rating's premise |
 | D-22 | **OI-06 reconciled.** `checkCostCap` is one mechanism, not two. The 40–80 action-budget range kept; p95 ≈ 58, consistent with sold p95<60 KPI. | The contradiction had already been sold as a customer-facing SLO |
 
-Also: OI-02 closed (MCP write-tool catalog authored); DA/DF/panel findings closed; Quick Reference Card authored.
+Also closed in this pass: OI-02 (MCP write-tool catalog authored); DA/DF/panel findings closed; the Quick Reference Card (reproduced in Part 3 below) was authored for the first time.
 
-## Update 2026-07-16 (third session) — engineering-owned open-items pass: 16 items closed
-
-OI-07, 08, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 29 closed. Key decisions:
+**Update 2026-07-16 (third session) — engineering-owned open-items pass: 16 items closed.** OI-07, 08, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 29 closed. Key decisions:
 
 - **OI-17: AWS CDK (TypeScript)** for ECS deploy tooling
 - **OI-12: per-tier re-assessment rate caps** (Design Partner 50/hr, Starter 200/hr, Professional 2,000/hr, Enterprise 10,000/hr)
@@ -135,42 +139,34 @@ OI-07, 08, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 29 closed. Key de
 - **OI-24: `engineering-standards.md` authored**
 - **OI-20: `DuxOnboardingHealthCheckMissed` alert added**
 
-## Update 2026-07-16 (fourth session) — SR-02, SR-17 closed
+**Update 2026-07-16 (fourth session) — SR-02, SR-17 closed.** Better Auth security review (3 findings closed) and vendor corporate-event currency verified. OI-25 fully closed.
 
-Better Auth security review (3 findings closed) and vendor corporate-event currency verified. OI-25 fully closed.
-
-## Update 2026-07-16 (fifth session) — OI-32 resolved
+**Update 2026-07-16 (fifth session) — OI-32 resolved.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-23 | **Gate-1 envelope re-baselined from 2,000h to 2,080h** (25 → 26 focused h/week). 5 engineers, no sixth hire. | Every deferrable item was already deferred; the 38h CI-07 is claims-binding work |
 
-## Update 2026-07-16 (sixth session) — OI-09 resolved
+**Update 2026-07-16 (sixth session) — OI-09 resolved.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-24 | **E4 specced as evidence-trend computation, not ML model or composite score.** BR-013 → EP-03 (F04) → US-028 → FR-030, Gate 2. | A trend over real evidence answers "which assets are likely to become risky" literally, without a black box |
 
-## Update 2026-07-16 (seventh session) — MC-11 sourced, MC-14 drafted
+**Update 2026-07-16 (seventh session) — MC-11 sourced, MC-14 drafted.** LinkedIn RSA-2026 "65-day MTTR" claim sourced (Edgescan Vulnerability Statistics Report). "How it works" section drafted in `gtm-guardrails.md` §8.
 
-LinkedIn RSA-2026 "65-day MTTR" claim sourced (Edgescan Vulnerability Statistics Report). "How it works" section drafted in `gtm-guardrails.md` §8.
-
-## Update 2026-07-16 (eighth session) — OI-10, OI-11 closed
+**Update 2026-07-16 (eighth session) — OI-10, OI-11 closed.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-25 | **Gartner quote internal-use only** until reprint licence secured. Resolves OI-10. | No licence exists |
 | — | **CybersecTools CSF percentages confirmed third-party fabrication.** Resolves OI-11. | Never Dux-supplied |
 
-## Update 2026-07-17 — drafted deliverables not requiring live-system access
+**Update 2026-07-17 — drafted deliverables not requiring live-system access.** A1 and C1/C2 (OI-27) specced. OI-26 external actions drafted in `external-corrections-2026-07.md`.
 
-A1 and C1/C2 (OI-27) specced. OI-26 external actions drafted in `external-corrections-2026-07.md`.
+**Update 2026-07-17 (second session) — OI-26, OI-27 closed.** Both closed as Founder calls. Corpus/spec-side work complete; remaining items are pure execution tracked outside the register.
 
-## Update 2026-07-17 (second session) — OI-26, OI-27 closed
-
-Both closed as Founder calls. Corpus/spec-side work complete; remaining items are pure execution tracked outside the register.
-
-## External best-practice review adopted (2026-07-18)
+### External best-practice review adopted (2026-07-18)
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -181,35 +177,41 @@ Both closed as Founder calls. Corpus/spec-side work complete; remaining items ar
 | D-30 | **Dataviz: headless charts + SVG (ADR-019).** Visx for donut/trend/distributions; custom SVG for attack path. | Headless keeps charts on same token system and accessibility discipline |
 | D-31 | **Post-Phase-1 retrieval: stay on Postgres** (pgvector + pgvectorscale) until ~100M vectors. Hybrid search + cross-encoder reranker. | One RLS-enforced store keeps the tenancy story unified |
 
-## Update 2026-07-18 (second session) — external TDD re-evaluation
+**Update 2026-07-18 (second session) — external TDD re-evaluation.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-32 | **Canon holds on every conflicting axis; external TDD's "confirmed" stack not adopted.** No ADR or safety-spine change. | Both TDDs are outsider reconstructions; each divergence is either premature-scaling or positioning-breaking |
 
-## Update 2026-07-19 — full stack replacement
+### The infrastructure reversal (2026-07-19)
+
+Three sessions in one day rewrote the hosting stack twice — worth reading in sequence, because the second and third session each revise what the one before it just decided.
+
+**Update 2026-07-19 — full stack replacement.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-33 | **Full stack replacement to self-hosted Kubernetes.** ECS Fargate → K8s (DO/Linode LKE); CDK → Pulumi; Neon → CloudNativePG; Upstash → NATS + Valkey; Temporal Cloud → self-hosted; E2B → self-hosted Firecracker (Gate-1 default); AWS SSM → Vault. ADR-017 reversed (Bedrock-only → multi-provider). OI-36 resolved (Better Auth + Unleash + Grafana LGTM kept). | Finance/healthcare ICPs demand portability, auditability, no single-vendor dependency |
 
-## Update 2026-07-19 (third session) — v4.0 unified architecture adopted
+**Update 2026-07-19 (third session) — v4.0 unified architecture adopted.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-34 | **Hosting reverts to EKS.** LiteLLM removed entirely → direct Bedrock SDK behind `LLMProviderPort`. Agentic RAG re-enabled with constrained decoding. Apache AGE added as graph layer. vLLM + Phi-4 S-LLM path at Gate-2. | v4.0 is the new locked source of truth; AWS GovCloud/FedRAMP outweighs single-vendor concern |
 
-## Update 2026-07-19 (fourth session) — Mastra/LangGraph.js removed
+**Update 2026-07-19 (fourth session) — Mastra/LangGraph.js removed.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-35 | **Remove Mastra and LangGraph.js entirely.** Agent reasoning loop is Temporal workflow calling Bedrock Converse API directly. Retires Gate-2 vLLM+Phi-4 S-LLM path. | Both frameworks are abstraction layers over capabilities Temporal and Bedrock Converse already own |
 
-## Update 2026-07-19 (fifth session) — strict end-to-end review
+**Update 2026-07-19 (fifth session) — strict end-to-end review.** Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430→426h, EP-05 338→322h, grand total 2,138→2,118h). FR-ID for Agentic RAG split into OI-44. OI-45 raised (traceability.md present-tense exception). Full 65-file corpus read completed.
 
-Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430→426h, EP-05 338→322h, grand total 2,138→2,118h). FR-ID for Agentic RAG split into OI-44. OI-45 raised (traceability.md present-tense exception). Full 65-file corpus read completed.
+### The Founder clears the register (2026-07-20 and 2026-07-21)
 
-## Update 2026-07-20 (second session) — Founder closes eight open items
+Two long sessions worked through the open-items backlog item by item — the density of decision IDs below reflects how much genuinely got closed in a short window.
+
+**Update 2026-07-20 (second session) — Founder closes eight open items.**
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -222,19 +224,13 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 | D-42 | **OI-45 closed: `traceability.md` added as third present-tense exception.** | Running capacity ledger needs visible history |
 | D-43 | **OI-46 closed: Apache AGE supersedes Neo4j** as first-line graph-latency migration trigger. | AGE fulfills the NFR-004 3-hop-CTE need without leaving Postgres |
 
-## Update 2026-07-21 — best-practice review + web-research refresh
+**Update 2026-07-21 — best-practice review + web-research refresh.** 140 sourced facts gathered. 10/10 web-research discovery angles completed. Product/API folders reviewed. 12 mechanical fixes applied. 5 new open items registered (OI-50 through OI-54).
 
-140 sourced facts gathered. 10/10 web-research discovery angles completed. Product/API folders reviewed. 12 mechanical fixes applied. 5 new open items registered (OI-50 through OI-54).
+**Update 2026-07-21 (second session) — remaining folders reviewed.** 40-ai-safety, 20-architecture, 60-operations, 70-governance, 80-gtm, 90-execution, 00-meta-consistency reviewed. 3 more open items (OI-55, OI-56, OI-57). Vision-reference §7 updated with headcount (24), leadership hire, and Israel Security Prize detail.
 
-## Update 2026-07-21 (second session) — remaining folders reviewed
+**Update 2026-07-21 (third session) — substantive facts written.** `vision-reference.md` §6 gains V-14 (unearned certification badges, OI-57 P0). `compliance-program.md` §4 gains Privacy Policy disclosure paragraph. `competitive.md` §1 gains corroborating CVE-exploit stat.
 
-40-ai-safety, 20-architecture, 60-operations, 70-governance, 80-gtm, 90-execution, 00-meta-consistency reviewed. 3 more open items (OI-55, OI-56, OI-57). Vision-reference §7 updated with headcount (24), leadership hire, and Israel Security Prize detail.
-
-## Update 2026-07-21 (third session) — substantive facts written
-
-`vision-reference.md` §6 gains V-14 (unearned certification badges, OI-57 P0). `compliance-program.md` §4 gains Privacy Policy disclosure paragraph. `competitive.md` §1 gains corroborating CVE-exploit stat.
-
-## Update 2026-07-21 (fourth session) — Founder works the register live
+**Update 2026-07-21 (fourth session) — Founder works the register live.** Fourteen more decisions closed the last of the standing register in one sitting:
 
 | # | Decision | Rationale |
 |---|----------|-----------|
@@ -244,7 +240,7 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 | D-47 | **OI-50 closed: "MVP connector set" table wins**, superseded table removed. New narrower gap: OI-58 (Wiz/Intune cadence). | Surviving table is vendor-specific and rate-limit-grounded |
 | D-48 | **OI-52 closed: Gartner quote downgraded to unconfirmed**, pulled from active sales use. | Sagi could not confirm anyone holds the primary document |
 | D-49 | **OI-56 closed: LinkedIn RSA-2026 post confirmed real.** URL + wording added. Two adjacent false claims recorded as standing guardrail. | Founder located the post directly |
-| D-50 | **OI-55 closed: `crowdstrike` named as Gate-1 executor for `network.blocklist_add.** Via IOC/indicator blocklisting. | CrowdStrike already a Gate-1-floor, action-capable connector |
+| D-50 | **OI-55 closed: `crowdstrike` named as Gate-1 executor for `network.blocklist_add`.** Via IOC/indicator blocklisting. | CrowdStrike already a Gate-1-floor, action-capable connector |
 | D-51 | **OI-54 closed: "Dux, Inc." confirmed correct legal entity.** Privacy Policy PDF is the error; external follow-up. | Sagi's call as the signing entity |
 | D-52 | **OI-49 closed: series-b-scale.md Ready row corrected.** | Mechanical fix |
 | D-53 | **OI-53 closed: all three stats corrected with honest attribution.** | Keep real numbers with honest attribution rather than discard |
@@ -253,13 +249,15 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 | D-56 | **OI-42 closed: both "missing" endpoints already exist under other names.** Cross-references added. | Naming/cross-reference gap, not missing product surface |
 | D-57 | **OI-47 closed: local-development.md §4a first-run setup confirmed accurate.** | Sagi confirmed matches team's real workflow |
 
-## Footer conventions
+## The seven footer conventions
+
+Everything above only stays legible if a few conventions are followed consistently, so the log itself ends with the rules for reading it:
 
 1. Gates cited are ideal-state canon; where a gate moved, the doc says "promoted from X (GCIS §B)" once, in place.
 2. Model IDs and prices are **pins dated 2026-06** — the mechanism (`models.json` + AI-BOM + CI pin gate) is the durable fact.
 3. Later-stage content states deltas; canonical definitions live in exactly one file, linked elsewhere.
-4. Every feature spec carries its BR/Epic/US/FR IDs from the [traceability matrix](./traceability-matrix.md).
-5. **Open engineering questions live in [open-items.md](open-items.md), never as `> **TBD**` boxes inside a spec** (D-11).
+4. Every feature spec carries its BR/Epic/US/FR IDs from the [traceability matrix](#part-4--traceability-matrix) below.
+5. **Open engineering questions live in Part 2 below, never as `> **TBD**` boxes inside a spec** (D-11).
 6. **Specs state current truth in the present tense** (D-12). Change history belongs in this log.
 7. **Every file carries front-matter:** `owner`, `status`, `gate`, `last_reviewed`.
 
@@ -269,11 +267,13 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 
 **Purpose:** the single list of every unresolved question in the corpus. Specs state what is true today; anything still undecided lives here with an ID, an owner, and the thing it blocks.
 
+If Part 1 is the record of decisions already made, this register is its mirror image: the record of decisions **not yet made**. The distinction matters because a spec is never allowed to carry an open question in its own body — it states current truth and links here instead, which is what keeps the rest of the corpus readable in the present tense.
+
 ## How this register works
 
 1. **One ID scheme.** Every open question is `OI-##`. The original ID is kept in the Origin column, never dropped.
 2. **A spec never carries an open question in its body.** It states current truth and links here. The exception is `decisions-log.md`.
-3. **Nothing here is resolved by editing prose.** An item closes when its owner makes the call; the decision is recorded in [decisions-log.md](decisions-log.md) and the affected spec is updated to state it as fact.
+3. **Nothing here is resolved by editing prose.** An item closes when its owner makes the call; the decision is recorded in Part 1 above and the affected spec is updated to state it as fact.
 4. **Severity is about consequence, not effort.**
    - **P0** — blocks a Gate-1 ship, or is a live legal/compliance exposure.
    - **P1** — blocks a plan, a date, or an external commitment already made.
@@ -293,6 +293,8 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 
 ## P2 — spec debt
 
+Every P0 and P1 item is closed as of this writing — the register's entire live surface is these four P2 items, real gaps but none of them currently unsafe or over-promised:
+
 | ID | Item | Origin | Blocks | Owner |
 |----|------|--------|--------|-------|
 | **OI-40** | **Temporal namespace-per-tenant trigger needs re-deriving for self-hosted.** The prior 15,000-active-task-queue trigger was keyed to Temporal Cloud's ~20K-poller-per-namespace SaaS ceiling. Self-hosted Temporal's scaling ceiling depends on cluster resource allocation — the numeric trigger needs re-deriving against real self-hosted capacity planning. No Phase-1 impact (single-namespace model unaffected). **Recommendation:** load-test actual matching/history/frontend pod allocation against synthetic workflow-task volume, find the poller-per-task-queue count where p99 schedule-to-start latency degrades, apply ~75% safety margin. | D-33, D-34 | Namespace-per-tenant migration planning | Engineering |
@@ -308,7 +310,7 @@ Validator restored. Hour-reconciliation bugs fixed (EP-01 386→370h, EP-03 430�
 
 An item leaves this register only when its owner decides it. On close:
 
-1. Record the decision in [decisions-log.md](decisions-log.md) with the date and the person who made the call.
+1. Record the decision in Part 1 above with the date and the person who made the call.
 2. Update the affected spec to state the outcome as present-tense fact.
 3. Delete the row here.
 
@@ -316,7 +318,7 @@ An item leaves this register only when its owner decides it. On close:
 
 # Part 3 — Quick Reference Card
 
-A pure compilation of facts already documented elsewhere — no new claims, no new numbers. If a figure here disagrees with its source doc, the source doc wins.
+A pure compilation of facts already documented elsewhere — no new claims, no new numbers. If a figure here disagrees with its source doc, the source doc wins. This part exists for one reason: when someone needs a threshold or a level number fast, they shouldn't have to open five different guides to find it.
 
 ## Write-action autonomy (5 canonical actions)
 
@@ -328,7 +330,7 @@ A pure compilation of facts already documented elsewhere — no new claims, no n
 | `patch.deploy_special_devices` | mandatory HITL — every call | R-04 |
 | `ticket.create_remediation` | unattended by default, anomaly-only escalation | R-05 |
 
-See [[Dux Feature Reference]] for the write surfaces, [[Dux AI Safety Guide#Governance Kernel]], and D-17 in this document.
+See [[Dux Feature Reference]] for the write surfaces, [[Dux AI Safety Guide#Governance Kernel]], and D-17 above.
 
 ## Kill-switch levels
 
@@ -399,6 +401,8 @@ See [[Dux Feature Reference#Product Overview|the product overview]].
 
 **Purpose:** the join table for the whole corpus. It binds BR ↔ Epic ↔ US ↔ FR ↔ NFR/TR-NFR ↔ Gate ↔ feature spec ↔ verification command.
 
+This is the piece that turns a marketing claim or an executive ask into something an engineer can actually build against, and turns a shipped feature back into the claim it justifies. Every level in the chain below references its parent, and the feature specs elsewhere in the corpus cite these IDs right back.
+
 ## The chain
 
 ```
@@ -418,6 +422,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 
 ## 1. Epics
 
+Ten epics group the corpus's full FR range into delivery themes:
+
 | Epic | Name | FRs | Parent BRs |
 |------|------|-----|-----------|
 | EP-01 | Multi-tenant platform & auth | FR-001, FR-009 | BR-001 |
@@ -432,6 +438,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 | EP-10 | Personalization (preference learning) | FR-018 | BR-002 |
 
 ## 2. Business requirements → epics → user stories
+
+The core join, thirteen business requirements deep, each carrying its vision anchor, its epics, its user stories, its gate, and the exact command that verifies it shipped:
 
 | BR | Business requirement | Vision anchors | Epics | User stories | Gate | Verification |
 |----|----------------------|----------------|-------|--------------|------|--------------|
@@ -450,6 +458,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 | BR-013 | Predictive risk forecasting — surface assets trending toward higher risk via evidence-trend deltas (EPSS/finding-count/control-coverage), not a new ML model or composite score | E4 | EP-03 | US-028 | Gate 2 | Trend-computation tests against fixture deltas |
 
 ## 3. User story index (US → parent epic/BR → spec)
+
+Twenty-eight user stories, each cited back to its epic, its BR, its FR, and the exact feature-spec file that owns it:
 
 | US | Title (screen) | Epic | BR | FR | Gate (canon) | Feature spec |
 |----|----------------|------|----|----|--------------|--------------|
@@ -483,6 +493,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 | US-028 | Asset Risk Trend Forecast | EP-03 | BR-013 | FR-030 | Gate 2 | `predictive-risk-forecasting.md` |
 
 ## 4. FR → implementation (component / verification / gate)
+
+Every functional requirement, down to the component or ADR that implements it and the exact test that proves it:
 
 | FR | Component / ADR | Verification | Gate (canon) |
 |----|------------------|--------------|--------------|
@@ -520,6 +532,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 
 ## 5. NFR crosswalk (PRD → TRD)
 
+Non-functional requirements are where a claim like "fast" or "reliable" gets pinned down to an actual measured target:
+
 | NFR | Requirement | TR-NFR | Target / measurement |
 |-----|-------------|--------|----------------------|
 | NFR-001 | Zero cross-tenant reads | TR-NFR-002 | ISO-001–010, 100% CI |
@@ -541,6 +555,8 @@ Gates reflect the ideal-state canon (GCIS v2.2).
 
 ## 6. Non-FR traceability rows
 
+A handful of capabilities don't map to a single FR but still need a home in the chain:
+
 | Capability | BR | Component | Gate |
 |-----------|----|-----------|------|
 | Trust/status portals | BR-005 (comms trust) | Cloudflare DNS + static shell | **Launch blocker** (GCIS §E) |
@@ -560,3 +576,4 @@ The chain is bidirectional in principle but the validator only checks the forwar
 - `.raw/dux/00-meta/traceability-matrix.md`
 - `.raw/dux/00-meta/open-items.md`
 - `.raw/dux/00-meta/quick-reference.md`
+</content>
