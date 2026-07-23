@@ -3,20 +3,24 @@ type: area
 title: "Dux Customer Success Guide"
 topic: "dux/operations"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [area, dux, dux/operations, dux/customer-success]
 status: mature
 sources: [".raw/dux/60-operations/customer-lifecycle.md", ".raw/dux/40-ai-safety/incident-runbooks.md", ".raw/dux/60-operations/runbooks.md", ".raw/dux/80-gtm/pricing-packaging.md", ".raw/dux/80-gtm/gtm-guardrails.md"]
 related: ["[[Dux]]", "[[Dux Operations Guide]]", "[[Dux GTM Guide]]", "[[Dux AI Safety Operations Reference]]"]
 ---
 
-# Dux Customer Success Guide
+# Three Health Scores That Refuse to Become One, and Other Things Customer Success Has to Get Right
+
+### Provisioning, the 7-day onboarding tripwire, status-page copy written before the incident happens, and why Dux never collapses "happy customer" into "safe tenant"
 
 Navigation: [[Dux]] | [[Dux Operations Guide]] | [[Dux GTM Guide]]
 
 Everything a customer-facing team needs in one place: provisioning, onboarding health checks, trust portal gates, billing metering, incident comms, support tiers, health formulas, risk signals, and the triage-value hypothesis.
 
-## Provisioning and onboarding
+The throughline across all of it is a discipline the team keeps returning to: don't merge things that are answering different questions, and don't say something is measured until it actually is. A CSM health score and an AI-safety health score sound like they could be one number. They aren't, and the reasons why turn out to matter more than the formulas themselves.
+
+## Provisioning and Onboarding
 
 ### The provisioning flow
 
@@ -34,9 +38,9 @@ Create the tenant through the NestJS API (idempotent) → validate the AWS cross
 8. Optionally, test an API key and a webhook.
 9. Document the escalation path for that specific customer.
 
-### 7-day health-check alert (resolves OI-20)
+### The 7-day health-check alert that closed a 14-day blind spot (resolves OI-20)
 
-A daily automated sweep, not the biweekly customer-success check-in cadence, is what actually catches a stalled onboarding. `DuxOnboardingHealthCheckMissed` fires at exactly **7 days post-provisioning** if the tenant has **no** completed first sync **and** no completed first assessment — checked by a scheduled job (`admin:onboarding-health-sweep`, daily), not the 2-week CSM cadence.
+Here's the gap the team found: a biweekly CSM check-in is a fine cadence for a relationship, but it's a bad instrument for catching a stalled onboarding — by the time someone notices, up to 14 days can have passed. The fix was a daily automated sweep instead. `DuxOnboardingHealthCheckMissed` fires at exactly **7 days post-provisioning** if the tenant has **no** completed first sync **and** no completed first assessment — checked by a scheduled job (`admin:onboarding-health-sweep`, daily), not the 2-week CSM cadence.
 
 Routing:
 
@@ -63,7 +67,9 @@ flowchart LR
 
 **Worth being honest about:** the "8,341 → 2,143" queue-reduction number sometimes quoted alongside onboarding is explicitly labeled illustrative in the source material, not a measured activation funnel. It needs validation against at least 10 real design partners before it could be treated as a real metric. There is no activation A/B-test log or stage-by-stage conversion funnel (signup → connector → first sync → first assessment → first mitigation) anywhere in the source corpus.
 
-## Trust and status portal gates
+## Trust and Status Portal Gates
+
+Two portals, two different launch blockers, and a written escape hatch for the gap between them:
 
 | Tier | Requirement | Blocks |
 |---|---|---|
@@ -75,17 +81,19 @@ flowchart LR
 
 Provisioning a partner before P0 requires a **CEO and Security Officer signed risk acceptance, per tenant** — artifact `RA-TRUST-INTERIM-{tenant_id}-{YYYYMMDD}`, filed in the provisioning ticket. Not a blanket policy, a per-tenant sign-off.
 
-## Billing metering
+## Billing Metering
 
 Stripe meter events for tokens and agent runs. Daily reconciliation of platform usage against the Stripe meter. Invoice line items must match the usage dashboard. Overage alerts fire at **80%, 100%, and 120%** of quota.
 
 **Drift above 5%** → the billing reconciliation drift runbook in [[Dux Operations Guide]].
 
-## Status page and incident communications
+## Status Page and Incident Communications
 
 `https://status.dux.io` — **a launch blocker. It must return 200 before the first design partner.**
 
 Approver: Founder or PM before Gate 2; `@product-oncall` after. **SLA: 15 minutes.** Subscribe-by-email is available, and 99.5% historical uptime is visible.
+
+The copy below isn't drafted live during an incident — it's pre-written precisely so a stressed on-call engineer never has to compose customer-facing language under pressure:
 
 ### Literal copy table
 
@@ -100,7 +108,7 @@ Approver: Founder or PM before Gate 2; `@product-oncall` after. **SLA: 15 minute
 
 Updates go out on a 15-minute cadence during any active incident, using pre-written, severity-specific copy so a stressed on-call engineer isn't drafting customer-facing language in the middle of a P0.
 
-## Support tiers
+## Support Tiers
 
 An add-on, **separate from product packaging**.
 
@@ -152,7 +160,7 @@ Offboarding mirrors the tenant-lifecycle authority described in [[Dux Architectu
 | Legal-hold retention | Days 31–90 | `legal_hold` flag blocks purge and notifies Legal |
 | Hard purge | Day 90 | Purge across MinIO, database, and backups; email destruction certificate to customer |
 
-## Tenant health: three formulas, deliberately never merged
+## Tenant Health: Three Formulas, Deliberately Never Merged
 
 There are three separate tenant-health scoring systems in play, each owned by a different team, each routing to a different response. The source material is explicit that merging them into one number would be a mistake, not a simplification.
 
@@ -170,7 +178,7 @@ The reason these stay separate rather than blending into a single "health score"
 
 Collapsing them would hide which of those three questions is actually the problem.
 
-## Risk signals to watch
+## Risk Signals to Watch
 
 | Signal | What it means | Action |
 |---|---|---|
@@ -180,7 +188,7 @@ Collapsing them would hide which of those three questions is actually the proble
 | Governance dashboard red (<50) | Safety or operational posture degraded on this tenant | Executive review, optional L2 freeze |
 | Kill-switch L3 or L4 activation | Agent-safety event | Mandatory audit — this overrides all other priorities |
 
-## Triage-value hypothesis
+## Triage-Value Hypothesis
 
 **A GTM input, not an SLO.** Practitioners report that the majority of vulnerability-management time goes to triage rather than remediation.
 
@@ -188,7 +196,7 @@ Collapsing them would hide which of those three questions is actually the proble
 
 The urgency behind this hypothesis traces to Mandiant's M-Trends 2026 report, which found mean time-to-exploit had gone *negative*: roughly 1 day before patch availability in 2024, worsening to roughly 7 days before patch availability in 2025. When exploitation windows are shorter than patch cycles, teams need to know *what* to patch first — and that's exactly what exploitability validation provides.
 
-## Key metrics tracked across the lifecycle
+## Key Metrics Tracked Across the Lifecycle
 
 | KPI | Target | Owner |
 |---|---|---|
