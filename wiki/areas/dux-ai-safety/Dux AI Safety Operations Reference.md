@@ -402,7 +402,7 @@ Distilled down to three lines, this is what actually has to be true before pre-s
 
 ### 3.5 · Evidence commands mapping
 
-Each ASI maps to an evidence command:
+A maturity rating means nothing without a command that actually proves it. Each ASI maps to an evidence command:
 
 | ASI | Evidence command |
 |-----|-----------------|
