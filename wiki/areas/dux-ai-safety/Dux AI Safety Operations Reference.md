@@ -454,6 +454,8 @@ MCP gets its own risk taxonomy, distinct from the general LLM and Agentic ones �
 
 ### 3.9 · Remediation calendar
 
+Every "Partial" row above has a date attached, not just a promise — this is the calendar that closes them out:
+
 | When | Items |
 |------|-------|
 | Week 8 (Gate 2) | Self-hosted Firecracker microVM operational; HITL API; LLM03 pin gate |
