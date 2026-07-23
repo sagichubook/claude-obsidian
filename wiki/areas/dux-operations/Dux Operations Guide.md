@@ -3,14 +3,16 @@ type: area
 title: "Dux Operations Guide"
 topic: "dux/operations"
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 tags: [area, dux, dux/operations]
 status: mature
 sources: [".raw/dux/60-operations/operations-overview.md", ".raw/dux/60-operations/observability-slo.md", ".raw/dux/60-operations/runbooks.md", ".raw/dux/60-operations/dr-bcp.md"]
 related: ["[[Dux]]", "[[Dux Customer Success Guide]]", "[[Dux AI Safety Operations Reference]]", "[[Dux Architecture Guide]]", "[[Dux Engineering Guide]]"]
 ---
 
-# Dux Operations Guide
+# Running Dux at Seed Stage: On-Call, SLOs, and the Discipline of Not Confusing Ops-Readiness With a Funding Round
+
+### Gate 2, MELT, MWMBR burn-rate alerts, and the RTO/RPO ladder that has to hold before the first enterprise RFP
 
 Navigation: [[Dux]] | [[Dux Customer Success Guide]] | [[Dux AI Safety Operations Reference]]
 
@@ -18,9 +20,11 @@ This guide defines the seed-stage operational playbook for Dux — on-call, prod
 
 > **This is an operational-maturity stage. It is not the December-2025 funding round.**
 
+The team is explicit about that distinction, and it's worth sitting with for a second: a lot of the numbers below — the 4-hour RTO, the 23 dry-run scenarios, the three health-score formulas that deliberately never merge — exist because "we raised money" and "we can run this safely in production" are different claims, and conflating them is how a seed-stage company ends up promising an SLA it can't back.
+
 ---
 
-## 1. Gate 2 consolidated criteria
+## 1. Gate 2 Consolidated Criteria
 
 Operational maturity 2 activates at Gate 2. The consolidated bar is split into **mandatory** and **optional** tiers — a deliberate discipline against conflating commercial readiness with operational readiness.
 
@@ -37,7 +41,7 @@ Roughly **30 developers within 6 months of Gate 2a**, 40–50 employees total �
 
 ### Pre-seed build triggers
 
-Carried from the pre-seed playbook:
+Carried from the pre-seed playbook — each row exists because something specific in the build phase has to hand off to something specific in ops:
 
 | # | Build-phase event | Activates |
 |---|-------------------|-----------|
@@ -52,12 +56,12 @@ Carried from the pre-seed playbook:
 
 ### Seed triggers
 
-Reconstructed from cross-references (BS-21):
+Reconstructed from cross-references (BS-21), since the original playbook referenced "seed triggers" without ever tabulating them:
 
 | # | Trigger | Starts work on |
 |---|---------|----------------|
 | 1 | The first enterprise prospect requiring SOC 2 evidence, **or** a Gate 2 consolidated pass | SOC 2 Type I gap assessment and readiness (audit engagement, months 9–12) |
-| 2 | The first SSO/SAML RFP, or enterprise IdP federation | the runbooks#4-sso-onboarding-seed-trigger|SSO onboarding runbook]] |
+| 2 | The first SSO/SAML RFP, or enterprise IdP federation | the [[Dux Operations Guide#SSO onboarding (seed trigger)|SSO onboarding runbook]] |
 | 3 | Public API demand from a developer or partner | the Public Data API + developer portal (`api.dux.io/docs`) |
 | 4 | The first churn-risk signal — a health score below 50 for 2 weeks | CSM EBR + customer lifecycle |
 | 5 | NHI / agent inventory above 500 (`nhi_threshold_500`) | formalize the NHI policy — Series A |
@@ -67,6 +71,8 @@ Reconstructed from cross-references (BS-21):
 | 9 | Throughput ≥500 assessments/day, **or** Temporal spend above $500/month for 30 days | the `WorkflowPort` graduate spike — Restate / Hatchet / DBOS |
 
 ### Founder checklist
+
+Three tiers, each gating a different milestone rather than one undifferentiated launch checklist:
 
 **P0 — before the first paying customer:**
 
@@ -91,7 +97,9 @@ Reconstructed from cross-references (BS-21):
 
 ### Incident roles
 
-The seed table. At 16+ FTE, the Series A delta applies.
+The seed table below is deliberately not five interchangeable rotations. The AI Safety Lead role is carved out on purpose — see the closure standard right after it for why.
+
+At 16+ FTE, the Series A delta applies.
 
 | Role | Responsibility | Default assignee |
 |------|----------------|------------------|
@@ -113,6 +121,8 @@ The seed table. At 16+ FTE, the Series A delta applies.
 
 ### Service catalog
 
+Every production service, its PagerDuty routing, and the RTO/RPO it's held to:
+
 | Service | PagerDuty | On-call | RTO | RPO |
 |---------|-----------|---------|-----|-----|
 | `dux-api` | [`dux-platform`](https://app.pagerduty.com/service-directory) | `@platform-oncall` | 4 h | 1 h |
@@ -128,7 +138,7 @@ Service names follow the Kubernetes (EKS) Deployment topology of ADR-006 R4. **G
 
 ## 2. Observability and SLO
 
-### MELT stack
+### The MELT stack
 
 Rewritten 2026-07-19 (D-33): **self-hosted Grafana LGTM stack** on Kubernetes replaces Grafana Cloud. This also closes the observability leg of OI-36 — Sentry usage was environment drift, not adopted.
 
@@ -217,7 +227,9 @@ flowchart LR
 
 ---
 
-## 3. Cost and safety dashboard
+## 3. The Cost and Safety Dashboard
+
+Cost and safety live on the same dashboard deliberately — a runaway LLM bill and a runaway agent are both things that page someone.
 
 ### Dashboard panels
 
@@ -255,9 +267,9 @@ monthly_cap / 720 × 14.4    (MWMBR form)
 
 ---
 
-## 4. MTTP — time to protection (H9)
+## 4. MTTP — Time to Protection (H9)
 
-Instrumented by Phase-1 exit.
+Instrumented by Phase-1 exit. This section exists because "we assess fast" and "we protect fast" are different claims, and the team wants the number a CISO will actually ask for, not the flattering half of it.
 
 The marketed outcome is **MTTP:** assess → the vendor action executes → exposure drops. **MTXV (<15 min) covers only the first leg.**
 
@@ -295,7 +307,7 @@ All three legs share `assessment_id` as the stitching key — the same ID on `EX
 
 ---
 
-## 5. SLO burn-rate alerts (MWMBR)
+## 5. SLO Burn-Rate Alerts (MWMBR)
 
 | Alert | SLO | Window | Runbook |
 |-------|-----|--------|---------|
@@ -339,7 +351,7 @@ Renamed in this rewrite. Kept grep-able for old dashboards and runbooks:
 
 ---
 
-## 6. TR-NFR targets
+## 6. TR-NFR Targets
 
 | ID | Requirement | Target |
 |----|-------------|--------|
@@ -363,7 +375,9 @@ Renamed in this rewrite. Kept grep-able for old dashboards and runbooks:
 
 ---
 
-## 7. SLA ladder — contractual versus operational
+## 7. The SLA Ladder: Contractual Versus Operational
+
+Why keep two columns instead of one? Because a contractual promise and an operationally-enforceable one are not the same fact, and the team refuses to sell the first before the second exists.
 
 | Tier | Contractual SLA | Operational SLO | Enforceable when |
 |------|-----------------|-----------------|------------------|
@@ -380,7 +394,7 @@ Renamed in this rewrite. Kept grep-able for old dashboards and runbooks:
 
 ---
 
-## 8. Seed operational runbooks
+## 8. Seed Operational Runbooks
 
 > These are **stage deltas only**. The canonical AI and infrastructure procedures live in incident runbooks. What follows adds PagerDuty IDs, admin CLI, and seed thresholds — **do not duplicate the canonical step tables here.**
 
@@ -507,6 +521,8 @@ The `ai-safety` PagerDuty service pages `@ai-safety-oncall`, with a **60-second 
 
 ### Seed-only extensions (all 7)
 
+The section header names 7, but the source enumerates 8 distinct extensions — kept exactly as documented rather than trimmed to match the header:
+
 **1. Shadow AI detection (AI-AGENT, P0-B).** Trigger: `DuxShadowAI` — `undeclared_count > 0`.
 
 1. Page the CTO within 5 min.
@@ -535,9 +551,11 @@ L3 and L4 escalation criteria follow blast radius, tool scope, and any cross-ten
 
 ---
 
-## 9. Disaster recovery and business continuity
+## 9. Disaster Recovery and Business Continuity
 
 ### RTO / RPO
+
+The platform-wide baseline everything else in this section is measured against:
 
 | Target | Value | Implementation |
 |--------|-------|----------------|
@@ -585,7 +603,7 @@ A drill that exceeds the 10-minute recovery bound is a scenario failure, same as
 
 ---
 
-## 10. Game days
+## 10. Game Days
 
 ### Chaos Friday
 
@@ -610,7 +628,7 @@ The DNS abort path is a **required step** in the first staging game day (§3) �
 
 ---
 
-## 11. DR / BCP forward
+## 11. DR / BCP Forward
 
 ### Series B forward
 
