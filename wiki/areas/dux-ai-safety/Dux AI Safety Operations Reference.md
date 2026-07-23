@@ -264,7 +264,7 @@ Verbalized confidence is the weakest signal in the ensemble. RLHF rewards confid
 
 ### 2.5 · From score to verdict
 
-**Abstention mapping.** Lower bound inclusive, upper bound exclusive. Unit-tested in `calibration_check`; application layer only.
+Once a score is calibrated, it has to collapse into something a human or a downstream system can act on — a label, with a review requirement attached. **Abstention mapping.** Lower bound inclusive, upper bound exclusive. Unit-tested in `calibration_check`; application layer only.
 
 | Calibrated confidence | Label | Human review |
 |-----------------------|-------|--------------|
