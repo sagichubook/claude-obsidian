@@ -118,12 +118,16 @@ Four credential families exist side by side, each scoped to a different surface 
 
 ### 1.4 · Migration ladder
 
+The credential story moves in three deliberate stages rather than jumping straight to the hardest option:
+
 ```
 pre-seed  →  seed  →  post-seed
 session JWT + API key    session JWT + OAuth (Gate 2)    mTLS + SPIRE SVID
 ```
 
 ### 1.5 · Lifecycle
+
+An agent's identity has a birth, a rotation cadence, and — when things go wrong — a suspension or a permanent death. Each stage has its own audit trail.
 
 **Creation.** A platform admin calls `POST /v1/agents` (Management plane, platform-admin JWT — [api-overview.md §1](../30-api/api-overview.md#1-three-rest-planes)) with `identity_ref`, `agent_type`, and `config`. The platform generates the `agent_id` and its per-agent session JWT issuer. Default `agent_type` is `supervised`. Audit: `agent.created`.
 
