@@ -1,6 +1,7 @@
 ---
 type: area
 title: "Dux Architecture Guide"
+address: c-000005
 topic: "dux/architecture"
 created: 2026-07-22
 updated: 2026-07-23
