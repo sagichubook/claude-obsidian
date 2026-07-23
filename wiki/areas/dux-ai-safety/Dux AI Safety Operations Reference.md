@@ -561,6 +561,8 @@ The worst-case failure in a multi-tenant agentic system: one tenant's data surfa
 
 ### 4.4 · R2 — Token cost runaway
 
+An agent stuck in a loop can burn a tenant's budget in minutes. This is the same three-tier cost evaluation order from [[Dux AI Safety Guide]], now as an incident procedure.
+
 > **Severity:** P0-C / P1 · **Type:** COMPOSITE
 
 **Trigger:** spend >3× the 7-day baseline, or >$25/hour/tenant.
